@@ -1,15 +1,15 @@
 // useStateContext.tsx
 
 import React, { useState, createContext, useEffect } from "react";
-import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitDocument, ContributionDocument, ParticipantDocument } from "../helpers/interfaces";
+import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitDocumentReferenceAndData, ContributionDocumentReferenceAndData, ParticipantDocumentReferenceAndData } from "../helpers/interfaces";
 import { getAllCollectionDocs, initializeFirebaseCoreServices } from "../helpers/utils";
 import { DocumentData } from 'firebase/firestore'
 
 export interface Project {
   ceremony: CeremonyDocumentReferenceAndData
-  circuit?: CircuitDocument
-  participants?: ParticipantDocument
-  contributions?: ContributionDocument
+  circuits?: CircuitDocumentReferenceAndData[] | null
+  participants?: ParticipantDocumentReferenceAndData[] | null
+  contributions?: ContributionDocumentReferenceAndData[] | null
 }
 
 export interface State {
@@ -19,9 +19,6 @@ export interface State {
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const Prova = async () => {
 }
 
 export const StateContext = createContext<State>({

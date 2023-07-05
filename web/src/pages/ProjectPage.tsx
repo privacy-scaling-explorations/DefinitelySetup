@@ -7,7 +7,6 @@ import {
   Text,
   Divider,
   Badge,
-  Link,
   Tabs,
   TabList,
   TabPanels,
@@ -18,10 +17,13 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  Grid
+  Grid,
+  Tag
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
+  ProjectData,
+  ProjectDataSchema,
   useProjectPageContext
 } from "../context/ProjectPageContext";
 import { FaGithub, FaCloudDownloadAlt, FaClipboard } from "react-icons/fa";
@@ -46,7 +48,7 @@ const ProjectPage: React.FC = () => {
   }
 
   // Validate the project data against the schema
-  // const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
+  const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
 
   // Commands
   const contributeCommand = `phase2cli contribute ${project.ceremony.data.title}`;
@@ -56,15 +58,35 @@ const ProjectPage: React.FC = () => {
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
   const { onCopy: copyDownload, hasCopied: copiedDownload } = useClipboard(downloadCommand);
 
-  return (
-    <VStack spacing={4} align="start" p={8}>
-      {/* Render project information from StateContext */}
-      <HStack w="100%" justifyContent={"space-between"}>
-        <Text fontSize="2xl" fontWeight="bold">
-          {project.ceremony.data.title}
-        </Text>{" "}
-      </HStack>
+  /// @todo work on multiple circuits.
+  /// @todo uncomplete info for mocked fallback circuit data.
+  const circuit = validatedProjectData.circuits ? validatedProjectData.circuits[0] : {
+    data: {
+      fixedTimeWindow: 10,
+      template: {
+        source: "todo",
+        paramsConfiguration: [2, 3, 4]
+      },
+      compiler: {
+        version: "0.5.1",
+        commitHash: "0xabc"
+      },
+      avgTimings: {
+        fullContribution: 100
+      },
+      zKeySizeInBytes: 10,
+      waitingQueue: {
+        completedContributions: 0
+      }
+    }
+  }
 
+  return (
+    <VStack align="start" spacing={4} p={5} shadow="md" borderWidth="1px">
+      {/* Render project information */}
+      <Text fontSize="xl" fontWeight="bold">
+        {project.ceremony.data.title}
+      </Text>
       <Text>{project.ceremony.data.description}</Text>
       <Divider />
       <HStack spacing={4}>
@@ -72,33 +94,32 @@ const ProjectPage: React.FC = () => {
           {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
         </Badge>
         <Badge colorScheme="blue">Penalty: {project.ceremony.data.penalty}</Badge>
-        {/* @todo this is a circuit info */}
-        {/* <Badge colorScheme="blue">Timeout: {project.ceremony.} seconds</Badge> */}
+        <Badge colorScheme="blue">Timeout: {circuit.data.fixedTimeWindow} seconds</Badge>
       </HStack>
       <Divider />
       <HStack>
         <Box as={FaGithub} w={6} h={6} />
-        {/* @todo this is a circuit info */}
-        <Link
-          href={`https://placeholder`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {/* {project.githubCircomTemplate} */}
-        </Link>
+        <Text>{circuit.data.template.source}</Text>
+      </HStack>
+      <HStack>
+        <Text>Start: {project.ceremony.data.startDate}</Text>
+        <Text>End: {project.ceremony.data.endDate}</Text>
+      </HStack>
+      <HStack>
+        <Text>Circom Version: {circuit.data.compiler.version}</Text>
+        <Text>Commit Hash: {circuit.data.compiler.commitHash}</Text>
       </HStack>
       <Divider />
-      {/* @todo this is a circuit info */}
-      {/* <Text fontSize="sm" fontWeight="bold">
-          Params:
-        </Text>
-        <HStack align="start" spacing={1}>
-          {project.paramsArray.map((param, index) => (
-            <Tag key={index} size="sm" variant="solid" colorScheme="blue">
-              {param}
-            </Tag>
-          ))}
-        </HStack> */}
+      <Text fontSize="sm" fontWeight="bold">
+        Params:
+      </Text>
+      <HStack align="start" spacing={1}>
+        {circuit.data.template.paramsConfiguration.map((param: any, index: any) => (
+          <Tag key={index} size="sm" variant="solid" colorScheme="blue">
+            {param}
+          </Tag>
+        ))}
+      </HStack>
       <Tabs>
         <TabList>
           <Tab>Contribute</Tab>
@@ -147,13 +168,11 @@ const ProjectPage: React.FC = () => {
                 </Stat>
                 <Stat>
                   <StatLabel>Circom Version</StatLabel>
-                  {/* @todo this is a circuit info */}
-                  {/* <StatNumber>{project.circomVersion}</StatNumber> */}
+                  <StatNumber>{circuit.data.compiler.version}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Commit Hash</StatLabel>
-                  {/* @todo this is a circuit info */}
-                  {/* <StatNumber>{project.commitHash}</StatNumber> */}
+                  <StatNumber>{circuit.data.compiler.commitHash}</StatNumber>
                 </Stat>
               </Grid>
             </VStack>
@@ -169,25 +188,21 @@ const ProjectPage: React.FC = () => {
               <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full">
                 <Stat>
                   <StatLabel>Average Contribution Time</StatLabel>
-                  {/* @todo this is a circuit info */}
-                  {/* <StatNumber>{validatedProjectData.avgContributionTime}</StatNumber> */}
+                  <StatNumber>{circuit.data.avgTimings?.fullContribution}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Disk Space Required</StatLabel>
-                  {/* @todo this is a circuit info */}
                   <StatNumber>
-                    {/* {validatedProjectData.diskSpaceRequired} {validatedProjectData.diskSpaceUnit} */}
+                    {circuit.data.zKeySizeInBytes} {"Bytes"}
                   </StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Last Contributor ID</StatLabel>
-                  {/* @todo this is a circuit info */}
-                  {/* <StatNumber>{validatedProjectData.lastContributorId}</StatNumber> */}
+                  <StatNumber>{circuit.data.waitingQueue?.completedContributions! > 0 ? "do something on contribution to retrieve..." : "nobody"}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>ZKey Index</StatLabel>
-                  {/* @todo this is a circuit info */}
-                  {/* <StatNumber>{validatedProjectData.zKeyIndex}</StatNumber> */}
+                  <StatNumber>{circuit.data.waitingQueue?.completedContributions! + 1}</StatNumber>
                 </Stat>
               </Grid>
             </VStack>

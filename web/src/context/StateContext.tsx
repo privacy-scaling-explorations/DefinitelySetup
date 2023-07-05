@@ -1,7 +1,9 @@
 // useStateContext.tsx
 
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitDocument, ContributionDocument, ParticipantDocument } from "../helpers/interfaces";
+import { getAllCollectionDocs, initializeFirebaseCoreServices } from "../helpers/utils";
+import { DocumentData } from 'firebase/firestore'
 
 export interface Project {
   ceremony: CeremonyDocumentReferenceAndData
@@ -17,6 +19,9 @@ export interface State {
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const Prova = async () => {
 }
 
 export const StateContext = createContext<State>({
@@ -236,6 +241,27 @@ export const useInitialStateContext = () => {
 
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
+
+  // Fetch ceremony data.
+  useEffect(() => {
+    const fetchData = async () => {
+      // 0. Prepare service.
+      const { firestoreDatabase } = await initializeFirebaseCoreServices()
+
+      // 1. Fetch data.
+      const docs = await getAllCollectionDocs(firestoreDatabase, `ceremonies`)
+
+      // 2. Post-process data.
+      const ceremonies: CeremonyDocumentReferenceAndData[] = docs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
+      const projects: Project[] = ceremonies.map((ceremony: CeremonyDocumentReferenceAndData) => { return { ceremony: ceremony } })
+
+      // 3. Store data.      
+      setProjects(projects)
+    }
+
+    fetchData()
+  })
 
   return { projects, setProjects, search, setSearch, loading, setLoading };
 };

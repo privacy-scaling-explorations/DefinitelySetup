@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { VStack, HStack, Text, Box, Tag, Badge, Divider } from "@chakra-ui/react";
+import { VStack, HStack, Text, Box, Badge, Divider } from "@chakra-ui/react";
 import { FaGithub } from "react-icons/fa";
 import { Project } from "../context/StateContext";
 
@@ -8,37 +8,43 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  console.log(project)
   return (
-    <Link to={`/projects/${project.ceremonyName}`}>
+    <Link to={`/projects/${project.ceremony.data.title}`}>
       <VStack align="start" spacing={4} p={5} shadow="md" borderWidth="1px">
         {/* Render project information */}
         <Text fontSize="xl" fontWeight="bold">
-          {project.ceremonyName}
+          {project.ceremony.data.title}
         </Text>
-        <Text>{project.description}</Text>
+        <Text>{project.ceremony.data.description}</Text>
         <Divider />
         <HStack spacing={4}>
-          <Badge colorScheme={project.fixed ? "green" : "gray"}>
-            {project.fixed ? "Fixed" : "Flexible"}
+          <Badge colorScheme={project.ceremony.data.timeoutMechanismType ? "green" : "gray"}>
+            {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
           </Badge>
-          <Badge colorScheme="blue">Threshold: {project.threshold}</Badge>
-          <Badge colorScheme="blue">Timeout: {project.timeoutThreshold} seconds</Badge>
+          <Badge colorScheme="blue">Penalty: {project.ceremony.data.penalty}</Badge>
+          {/* @todo this is a circuit info */}
+          {/* <Badge colorScheme="blue">Timeout: {project.ceremony.} seconds</Badge> */}
         </HStack>
         <Divider />
         <HStack>
           <Box as={FaGithub} w={6} h={6} />
-          <Text>{project.githubCircomTemplate}</Text>
+          <Text>No</Text>
+          {/* @todo this is a circuit info */}
+          {/* <Text>{project.githubCircomTemplate}</Text> */}
         </HStack>
         <HStack>
-          <Text>Start: {project.startDate}</Text>
-          <Text>End: {project.endDate}</Text>
+          <Text>Start: {project.ceremony.data.startDate}</Text>
+          <Text>End: {project.ceremony.data.endDate}</Text>
         </HStack>
         <HStack>
-          <Text>Circom Version: {project.circomVersion}</Text>
-          <Text>Commit Hash: {project.commitHash}</Text>
+          {/* @todo this is a circuit info */}
+          {/* <Text>Circom Version: {project.circomVersion}</Text>
+          <Text>Commit Hash: {project.commitHash}</Text> */}
         </HStack>
         <Divider />
-        <Text fontSize="sm" fontWeight="bold">
+        {/* @todo this is a circuit info */}
+        {/* <Text fontSize="sm" fontWeight="bold">
           Params:
         </Text>
         <HStack align="start" spacing={1}>
@@ -47,8 +53,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
               {param}
             </Tag>
           ))}
-        </HStack>
-      </VStack>
-    </Link>
+        </HStack> */}
+    </VStack>
+    </Link >
   );
 }

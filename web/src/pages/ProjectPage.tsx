@@ -15,8 +15,6 @@ import {
   TabPanel,
   Button,
   useClipboard,
-  Tag,
-  TagLeftIcon,
   Stat,
   StatLabel,
   StatNumber,
@@ -24,11 +22,9 @@ import {
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
-  useProjectPageContext,
-  ProjectData,
-  ProjectDataSchema
+  useProjectPageContext
 } from "../context/ProjectPageContext";
-import { FaGithub, FaTag, FaCloudDownloadAlt, FaClipboard } from "react-icons/fa";
+import { FaGithub, FaCloudDownloadAlt, FaClipboard } from "react-icons/fa";
 
 type RouteParams = {
   ceremonyName: string | undefined;
@@ -43,20 +39,20 @@ const ProjectPage: React.FC = () => {
     return <Text>Loading...</Text>;
   }
 
-  const project = projects.find((p) => p.ceremonyName === ceremonyName);
+  const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
 
   if (!project || !projectData) {
     return <Text>Error loading project.</Text>;
   }
 
   // Validate the project data against the schema
-  const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
+  // const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
 
   // Commands
-  const contributeCommand = `phase2cli contribute ${project.ceremonyName}`;
-  const downloadCommand = `aws s3 cp s3://yourbucket/zkey/${project.ceremonyName}`; // replace with your S3 bucket and file path
+  const contributeCommand = `phase2cli contribute ${project.ceremony.data.title}`;
+  const downloadCommand = `aws s3 cp s3://yourbucket/zkey/${project.ceremony.data.title}`; // replace with your S3 bucket and file path
 
-  // Hook for clipboard
+  // Hook for clipboard   
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
   const { onCopy: copyDownload, hasCopied: copiedDownload } = useClipboard(downloadCommand);
 
@@ -65,39 +61,44 @@ const ProjectPage: React.FC = () => {
       {/* Render project information from StateContext */}
       <HStack w="100%" justifyContent={"space-between"}>
         <Text fontSize="2xl" fontWeight="bold">
-          {project.ceremonyName}
+          {project.ceremony.data.title}
         </Text>{" "}
       </HStack>
 
-      <Text>{project.description}</Text>
+      <Text>{project.ceremony.data.description}</Text>
       <Divider />
       <HStack spacing={4}>
-        <Badge colorScheme={project.fixed ? "green" : "gray"}>
-          {project.fixed ? "Fixed" : "Flexible"}
+        <Badge colorScheme={project.ceremony.data.timeoutMechanismType ? "green" : "gray"}>
+          {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
         </Badge>
-        <Badge colorScheme="blue">Threshold: {project.threshold}</Badge>
-        <Badge colorScheme="blue">Timeout: {project.timeoutThreshold} seconds</Badge>
+        <Badge colorScheme="blue">Penalty: {project.ceremony.data.penalty}</Badge>
+        {/* @todo this is a circuit info */}
+        {/* <Badge colorScheme="blue">Timeout: {project.ceremony.} seconds</Badge> */}
       </HStack>
       <Divider />
       <HStack>
         <Box as={FaGithub} w={6} h={6} />
+        {/* @todo this is a circuit info */}
         <Link
-          href={`https://${project.githubCircomTemplate}`}
+          href={`https://placeholder`}
           target="_blank"
           rel="noopener noreferrer"
         >
-          {project.githubCircomTemplate}
+          {/* {project.githubCircomTemplate} */}
         </Link>
       </HStack>
       <Divider />
-      <HStack align="start" spacing={1}>
-        {project.paramsArray.map((param, index) => (
-          <Tag key={index} size="sm" variant="solid" colorScheme="blue">
-            <TagLeftIcon boxSize="12px" as={FaTag} />
-            {param}
-          </Tag>
-        ))}
-      </HStack>
+      {/* @todo this is a circuit info */}
+      {/* <Text fontSize="sm" fontWeight="bold">
+          Params:
+        </Text>
+        <HStack align="start" spacing={1}>
+          {project.paramsArray.map((param, index) => (
+            <Tag key={index} size="sm" variant="solid" colorScheme="blue">
+              {param}
+            </Tag>
+          ))}
+        </HStack> */}
       <Tabs>
         <TabList>
           <Tab>Contribute</Tab>
@@ -121,7 +122,7 @@ const ProjectPage: React.FC = () => {
               onClick={copyContribute}
               fontWeight={"regular"}
             >
-              {copiedContribute ? "Copied" : `phase2cli contribute ${project.ceremonyName}`}
+              {copiedContribute ? "Copied" : `phase2cli contribute ${project.ceremony.data.title}`}
             </Button>
           </TabPanel>
           <TabPanel>
@@ -138,19 +139,21 @@ const ProjectPage: React.FC = () => {
               <Grid templateColumns="repeat(2, 1fr)" gap={6}>
                 <Stat>
                   <StatLabel>Start Date</StatLabel>
-                  <StatNumber>{project.startDate}</StatNumber>
+                  <StatNumber>{project.ceremony.data.startDate}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>End Date</StatLabel>
-                  <StatNumber>{project.endDate}</StatNumber>
+                  <StatNumber>{project.ceremony.data.endDate}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Circom Version</StatLabel>
-                  <StatNumber>{project.circomVersion}</StatNumber>
+                  {/* @todo this is a circuit info */}
+                  {/* <StatNumber>{project.circomVersion}</StatNumber> */}
                 </Stat>
                 <Stat>
                   <StatLabel>Commit Hash</StatLabel>
-                  <StatNumber>{project.commitHash}</StatNumber>
+                  {/* @todo this is a circuit info */}
+                  {/* <StatNumber>{project.commitHash}</StatNumber> */}
                 </Stat>
               </Grid>
             </VStack>
@@ -166,21 +169,25 @@ const ProjectPage: React.FC = () => {
               <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full">
                 <Stat>
                   <StatLabel>Average Contribution Time</StatLabel>
-                  <StatNumber>{validatedProjectData.avgContributionTime}</StatNumber>
+                  {/* @todo this is a circuit info */}
+                  {/* <StatNumber>{validatedProjectData.avgContributionTime}</StatNumber> */}
                 </Stat>
                 <Stat>
                   <StatLabel>Disk Space Required</StatLabel>
+                  {/* @todo this is a circuit info */}
                   <StatNumber>
-                    {validatedProjectData.diskSpaceRequired} {validatedProjectData.diskSpaceUnit}
+                    {/* {validatedProjectData.diskSpaceRequired} {validatedProjectData.diskSpaceUnit} */}
                   </StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Last Contributor ID</StatLabel>
-                  <StatNumber>{validatedProjectData.lastContributorId}</StatNumber>
+                  {/* @todo this is a circuit info */}
+                  {/* <StatNumber>{validatedProjectData.lastContributorId}</StatNumber> */}
                 </Stat>
                 <Stat>
                   <StatLabel>ZKey Index</StatLabel>
-                  <StatNumber>{validatedProjectData.zKeyIndex}</StatNumber>
+                  {/* @todo this is a circuit info */}
+                  {/* <StatNumber>{validatedProjectData.zKeyIndex}</StatNumber> */}
                 </Stat>
               </Grid>
             </VStack>

@@ -103,7 +103,8 @@ export const useInitialStateContext = () => {
       githubCircomTemplate: "github.com/circom/template",
       commitHash: "1234567890",
       paramsArray: ["param1", "param2", "param3"]
-    },{
+    },
+    {
       ceremonyName: "ShadowedChain",
       description: "Enhanced privacy for blockchain transactions",
       startDate: "2024-01-02",
@@ -184,7 +185,7 @@ export const useInitialStateContext = () => {
   ]);
 
   const [search, setSearch] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
 
   return { projects, setProjects, search, setSearch, loading, setLoading };
 };

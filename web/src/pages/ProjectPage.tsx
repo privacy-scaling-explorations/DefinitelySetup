@@ -125,34 +125,34 @@ const ProjectPage: React.FC = () => {
             </Button>
           </TabPanel>
           <TabPanel>
-          <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
+            <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
               <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-              <Text fontSize="lg" fontWeight="bold">
-              Ceremony Configuration:
-            </Text>
-            <Text color="gray.500">
-              These are the main configuration parameters for the ceremony.
-            </Text>
+                <Text fontSize="lg" fontWeight="bold">
+                  Ceremony Configuration:
+                </Text>
+                <Text color="gray.500">
+                  These are the main configuration parameters for the ceremony.
+                </Text>
               </VStack>
-           
-            <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-              <Stat>
-                <StatLabel>Start Date</StatLabel>
-                <StatNumber>{project.startDate}</StatNumber>
-              </Stat>
-              <Stat>
-                <StatLabel>End Date</StatLabel>
-                <StatNumber>{project.endDate}</StatNumber>
-              </Stat>
-              <Stat>
-                <StatLabel>Circom Version</StatLabel>
-                <StatNumber>{project.circomVersion}</StatNumber>
-              </Stat>
-              <Stat>
-                <StatLabel>Commit Hash</StatLabel>
-                <StatNumber>{project.commitHash}</StatNumber>
-              </Stat>
-            </Grid>
+
+              <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                <Stat>
+                  <StatLabel>Start Date</StatLabel>
+                  <StatNumber>{project.startDate}</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>End Date</StatLabel>
+                  <StatNumber>{project.endDate}</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>Circom Version</StatLabel>
+                  <StatNumber>{project.circomVersion}</StatNumber>
+                </Stat>
+                <Stat>
+                  <StatLabel>Commit Hash</StatLabel>
+                  <StatNumber>{project.commitHash}</StatNumber>
+                </Stat>
+              </Grid>
             </VStack>
           </TabPanel>
           <TabPanel>
@@ -201,7 +201,6 @@ const ProjectPage: React.FC = () => {
             >
               {copiedDownload ? "Copied" : ` ${downloadCommand}`}
             </Button>
-           
           </TabPanel>
         </TabPanels>
       </Tabs>

@@ -16,7 +16,7 @@ export const ProjectDataSchema = z.object({
   url: z.string(),
   content: z.string(),
   circuitName: z.string(),
-  contributionHash: z.string(),
+  contributionHash: z.string()
 });
 
 export type ProjectData = z.infer<typeof ProjectDataSchema>;
@@ -39,13 +39,12 @@ const defaultProjectData: ProjectData = {
   url: "https://example.com",
   content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   circuitName: "Circuit ABC",
-  contributionHash: "hash123",
+  contributionHash: "hash123"
 };
-
 
 const ProjectPageContext = createContext<ProjectPageContextProps>({
   projectData: defaultProjectData,
-  isLoading: false,
+  isLoading: false
 });
 
 export const useProjectPageContext = () => useContext(ProjectPageContext);
@@ -57,13 +56,11 @@ type ProjectPageProviderProps = {
 export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ children }) => {
   // const { projectId } = useParams();
   const navigate = useNavigate();
-  const { loading:isLoading, setLoading:setIsLoading } = useContext(StateContext);
+  const { loading: isLoading, setLoading: setIsLoading } = useContext(StateContext);
 
   const [projectData, setProjectData] = useState<ProjectData | null>(defaultProjectData);
 
-
   useEffect(() => {
-
     const fetchData = async () => {
       setIsLoading(true);
       try {
@@ -73,7 +70,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
         );
         //@ts-ignore
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         const parsedData = ProjectDataSchema.parse(data);
         setProjectData(parsedData);
         setIsLoading(false);

@@ -12,11 +12,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
     <Link to={`/projects/${project.ceremonyName}`}>
       <VStack align="start" spacing={4} p={5} shadow="md" borderWidth="1px">
         {/* Render project information */}
-        <Text fontSize="xl" fontWeight="bold">{project.ceremonyName}</Text>
+        <Text fontSize="xl" fontWeight="bold">
+          {project.ceremonyName}
+        </Text>
         <Text>{project.description}</Text>
         <Divider />
         <HStack spacing={4}>
-          <Badge colorScheme={project.fixed ? "green" : "gray"}>{project.fixed ? "Fixed" : "Flexible"}</Badge>
+          <Badge colorScheme={project.fixed ? "green" : "gray"}>
+            {project.fixed ? "Fixed" : "Flexible"}
+          </Badge>
           <Badge colorScheme="blue">Threshold: {project.threshold}</Badge>
           <Badge colorScheme="blue">Timeout: {project.timeoutThreshold} seconds</Badge>
         </HStack>
@@ -34,7 +38,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
           <Text>Commit Hash: {project.commitHash}</Text>
         </HStack>
         <Divider />
-        <Text fontSize="sm" fontWeight="bold">Params:</Text>
+        <Text fontSize="sm" fontWeight="bold">
+          Params:
+        </Text>
         <HStack align="start" spacing={1}>
           {project.paramsArray.map((param, index) => (
             <Tag key={index} size="sm" variant="solid" colorScheme="blue">

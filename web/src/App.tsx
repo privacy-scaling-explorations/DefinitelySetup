@@ -16,11 +16,14 @@ function App() {
             {/* Render the SearchResults component for the index route */}
             <Route index element={<SearchResults />} />
             {/* Render the ProjectPage component for the "projects/:title" route */}
-            <Route path="projects/:ceremonyName" element={
-              <ProjectPageProvider>
-                <ProjectPage />
-              </ProjectPageProvider>
-            } />
+            <Route
+              path="projects/:ceremonyName"
+              element={
+                <ProjectPageProvider>
+                  <ProjectPage />
+                </ProjectPageProvider>
+              }
+            />
           </Route>
         </Routes>
       </StateContext.Provider>

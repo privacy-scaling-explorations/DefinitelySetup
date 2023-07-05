@@ -1,0 +1,13 @@
+{
+  "ceremonyName": "QFI Ceremony",
+  "description": "This is an example ceremony",
+  "startDate": "2023-07-01",
+  "endDate": "2023-07-31",
+  "timeoutThreshold": 3600,
+  "fixed": true,
+  "threshold": 10,
+  "circomVersion": "0.5.1",
+  "githubCircomTemplate": "github.com/circom/template",
+  "commitHash": "1234567890",
+  "paramsArray": ["param1", "param2", "param3"]
+}

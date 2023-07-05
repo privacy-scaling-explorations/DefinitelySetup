@@ -120,6 +120,9 @@ const ProjectPage: React.FC = () => {
           </Tag>
         ))}
       </HStack>
+      <VStack maxW="700px" w="100%" marginX={"auto"}>
+
+  
       <Tabs>
         <TabList>
           <Tab>Contribute</Tab>
@@ -129,7 +132,7 @@ const ProjectPage: React.FC = () => {
           <Tab>Download ZKey</Tab>
         </TabList>
 
-        <TabPanels>
+        <TabPanels >
           <TabPanel>
             <Text fontSize="lg" fontWeight="bold">
               Contribute:
@@ -226,6 +229,7 @@ const ProjectPage: React.FC = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      </VStack>
     </VStack>
   );
 };

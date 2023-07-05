@@ -11,20 +11,20 @@ import {
   Image,
   AspectRatio
 } from "@chakra-ui/react";
-import React, { useState, useEffect, useContext } from "react";
+import React, {  useEffect, useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { StateContext } from "./context/StateContext";
+import {ColorModeSwitch} from './components/ColorModeSwitch';
 import { FaGithub, FaHeart } from "react-icons/fa";
 
 const Layout: React.FC<React.PropsWithChildren> = ({}) => {
-  const { search, setSearch } = useContext(StateContext);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { search, setSearch,loading, setLoading } = useContext(StateContext);
 
   useEffect(() => console.log("searchL", search), [search]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false);
+      setLoading(false);
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -37,7 +37,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           size="sm"
           hasStripe
           width={"100%"}
-          isIndeterminate={isLoading}
+          isIndeterminate={loading}
           bg={"linear-gradient(139deg, #fb8817, #ff4b01, #c12127, #e02aff)"}
           colorScheme="pink"
         />
@@ -55,6 +55,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
             <Link to="/page1">Fork</Link>
             <Link to="/page2">About</Link>
             <Link to="/page3">Documentation</Link>
+            <ColorModeSwitch />  {/* Add ColorModeSwitcher here */}
           </HStack>
         </HStack>
         <HStack

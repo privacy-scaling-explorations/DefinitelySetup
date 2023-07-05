@@ -42,7 +42,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           colorScheme="pink"
         />
       </VStack>
-      <VStack height="100vh" overflow="scroll" minWidth="100%">
+      <VStack height="100vh">
         {/* Show a loading progress bar if isLoading is true */}
 
         <HStack alignSelf="stretch" justifyContent="space-between" minH={"42px"} my={2} px={8}>
@@ -52,7 +52,6 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           </HStack>
           <HStack spacing="24px">
             {/* Navigation links */}
-            <Link to="/page1">Fork</Link>
             <Link to="/page2">About</Link>
             <Link to="/page3">Documentation</Link>
             <ColorModeSwitch />  {/* Add ColorModeSwitcher here */}

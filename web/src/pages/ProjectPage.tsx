@@ -61,9 +61,9 @@ const ProjectPage: React.FC = () => {
   const { onCopy: copyDownload, hasCopied: copiedDownload } = useClipboard(downloadCommand);
 
   return (
-    <VStack spacing={4} align="start" p={8}>
+    <VStack spacing={4} align="start" p={8} w="full" >
       {/* Render project information from StateContext */}
-      <HStack w="100%" justifyContent={"space-between"}>
+      <HStack justifyContent={"space-between"}>
         <Text fontSize="2xl" fontWeight="bold">
           {project.ceremonyName}
         </Text>{" "}
@@ -98,6 +98,9 @@ const ProjectPage: React.FC = () => {
           </Tag>
         ))}
       </HStack>
+      <VStack maxW="700px" w="100%" marginX={"auto"}>
+
+  
       <Tabs>
         <TabList>
           <Tab>Contribute</Tab>
@@ -107,7 +110,7 @@ const ProjectPage: React.FC = () => {
           <Tab>Download ZKey</Tab>
         </TabList>
 
-        <TabPanels>
+        <TabPanels >
           <TabPanel>
             <Text fontSize="lg" fontWeight="bold">
               Contribute:
@@ -204,6 +207,7 @@ const ProjectPage: React.FC = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+      </VStack>
     </VStack>
   );
 };

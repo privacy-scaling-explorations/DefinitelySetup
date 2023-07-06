@@ -7,7 +7,6 @@ import {
   Text,
   Divider,
   Badge,
-  Link,
   Tabs,
   TabList,
   TabPanels,
@@ -15,20 +14,19 @@ import {
   TabPanel,
   Button,
   useClipboard,
-  Tag,
-  TagLeftIcon,
   Stat,
   StatLabel,
   StatNumber,
-  Grid
+  Grid,
+  Tag
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
-  useProjectPageContext,
   ProjectData,
-  ProjectDataSchema
+  ProjectDataSchema,
+  useProjectPageContext
 } from "../context/ProjectPageContext";
-import { FaGithub, FaTag, FaCloudDownloadAlt, FaClipboard } from "react-icons/fa";
+import { FaGithub, FaCloudDownloadAlt, FaClipboard } from "react-icons/fa";
 
 type RouteParams = {
   ceremonyName: string | undefined;
@@ -43,7 +41,7 @@ const ProjectPage: React.FC = () => {
     return <Text>Loading...</Text>;
   }
 
-  const project = projects.find((p) => p.ceremonyName === ceremonyName);
+  const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
 
   if (!project || !projectData) {
     return <Text>Error loading project.</Text>;
@@ -53,47 +51,71 @@ const ProjectPage: React.FC = () => {
   const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
 
   // Commands
-  const contributeCommand = `phase2cli contribute ${project.ceremonyName}`;
-  const downloadCommand = `aws s3 cp s3://yourbucket/zkey/${project.ceremonyName}`; // replace with your S3 bucket and file path
+  const contributeCommand = `phase2cli contribute ${project.ceremony.data.title}`;
+  const downloadCommand = `aws s3 cp s3://yourbucket/zkey/${project.ceremony.data.title}`; // replace with your S3 bucket and file path
 
-  // Hook for clipboard
+  // Hook for clipboard   
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
   const { onCopy: copyDownload, hasCopied: copiedDownload } = useClipboard(downloadCommand);
 
-  return (
-    <VStack spacing={4} align="start" p={8} w="full" >
-      {/* Render project information from StateContext */}
-      <HStack justifyContent={"space-between"}>
-        <Text fontSize="2xl" fontWeight="bold">
-          {project.ceremonyName}
-        </Text>{" "}
-      </HStack>
+  /// @todo work on multiple circuits.
+  /// @todo uncomplete info for mocked fallback circuit data.
+  const circuit = validatedProjectData.circuits ? validatedProjectData.circuits[0] : {
+    data: {
+      fixedTimeWindow: 10,
+      template: {
+        source: "todo",
+        paramsConfiguration: [2, 3, 4]
+      },
+      compiler: {
+        version: "0.5.1",
+        commitHash: "0xabc"
+      },
+      avgTimings: {
+        fullContribution: 100
+      },
+      zKeySizeInBytes: 10,
+      waitingQueue: {
+        completedContributions: 0
+      }
+    }
+  }
 
-      <Text>{project.description}</Text>
+  return (
+    <VStack align="start" spacing={4} p={5} shadow="md" borderWidth="1px">
+      {/* Render project information */}
+      <Text fontSize="xl" fontWeight="bold">
+        {project.ceremony.data.title}
+      </Text>
+      <Text>{project.ceremony.data.description}</Text>
       <Divider />
       <HStack spacing={4}>
-        <Badge colorScheme={project.fixed ? "green" : "gray"}>
-          {project.fixed ? "Fixed" : "Flexible"}
+        <Badge colorScheme={project.ceremony.data.timeoutMechanismType ? "green" : "gray"}>
+          {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
         </Badge>
-        <Badge colorScheme="blue">Threshold: {project.threshold}</Badge>
-        <Badge colorScheme="blue">Timeout: {project.timeoutThreshold} seconds</Badge>
+        <Badge colorScheme="blue">Penalty: {project.ceremony.data.penalty}</Badge>
+        <Badge colorScheme="blue">Timeout: {circuit.data.fixedTimeWindow} seconds</Badge>
       </HStack>
       <Divider />
       <HStack>
         <Box as={FaGithub} w={6} h={6} />
-        <Link
-          href={`https://${project.githubCircomTemplate}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {project.githubCircomTemplate}
-        </Link>
+        <Text>{circuit.data.template.source}</Text>
+      </HStack>
+      <HStack>
+        <Text>Start: {project.ceremony.data.startDate}</Text>
+        <Text>End: {project.ceremony.data.endDate}</Text>
+      </HStack>
+      <HStack>
+        <Text>Circom Version: {circuit.data.compiler.version}</Text>
+        <Text>Commit Hash: {circuit.data.compiler.commitHash}</Text>
       </HStack>
       <Divider />
+      <Text fontSize="sm" fontWeight="bold">
+        Params:
+      </Text>
       <HStack align="start" spacing={1}>
-        {project.paramsArray.map((param, index) => (
+        {circuit.data.template.paramsConfiguration.map((param: any, index: any) => (
           <Tag key={index} size="sm" variant="solid" colorScheme="blue">
-            <TagLeftIcon boxSize="12px" as={FaTag} />
             {param}
           </Tag>
         ))}
@@ -124,7 +146,7 @@ const ProjectPage: React.FC = () => {
               onClick={copyContribute}
               fontWeight={"regular"}
             >
-              {copiedContribute ? "Copied" : `phase2cli contribute ${project.ceremonyName}`}
+              {copiedContribute ? "Copied" : `phase2cli contribute ${project.ceremony.data.title}`}
             </Button>
           </TabPanel>
           <TabPanel>
@@ -141,19 +163,19 @@ const ProjectPage: React.FC = () => {
               <Grid templateColumns="repeat(2, 1fr)" gap={6}>
                 <Stat>
                   <StatLabel>Start Date</StatLabel>
-                  <StatNumber>{project.startDate}</StatNumber>
+                  <StatNumber>{project.ceremony.data.startDate}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>End Date</StatLabel>
-                  <StatNumber>{project.endDate}</StatNumber>
+                  <StatNumber>{project.ceremony.data.endDate}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Circom Version</StatLabel>
-                  <StatNumber>{project.circomVersion}</StatNumber>
+                  <StatNumber>{circuit.data.compiler.version}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Commit Hash</StatLabel>
-                  <StatNumber>{project.commitHash}</StatNumber>
+                  <StatNumber>{circuit.data.compiler.commitHash}</StatNumber>
                 </Stat>
               </Grid>
             </VStack>
@@ -169,21 +191,21 @@ const ProjectPage: React.FC = () => {
               <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full">
                 <Stat>
                   <StatLabel>Average Contribution Time</StatLabel>
-                  <StatNumber>{validatedProjectData.avgContributionTime}</StatNumber>
+                  <StatNumber>{circuit.data.avgTimings?.fullContribution}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Disk Space Required</StatLabel>
                   <StatNumber>
-                    {validatedProjectData.diskSpaceRequired} {validatedProjectData.diskSpaceUnit}
+                    {circuit.data.zKeySizeInBytes} {"Bytes"}
                   </StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>Last Contributor ID</StatLabel>
-                  <StatNumber>{validatedProjectData.lastContributorId}</StatNumber>
+                  <StatNumber>{circuit.data.waitingQueue?.completedContributions! > 0 ? "do something on contribution to retrieve..." : "nobody"}</StatNumber>
                 </Stat>
                 <Stat>
                   <StatLabel>ZKey Index</StatLabel>
-                  <StatNumber>{validatedProjectData.zKeyIndex}</StatNumber>
+                  <StatNumber>{circuit.data.waitingQueue?.completedContributions! + 1}</StatNumber>
                 </Stat>
               </Grid>
             </VStack>

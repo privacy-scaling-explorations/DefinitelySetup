@@ -12,7 +12,7 @@ export default function SearchResults() {
 
   // console.log("search for", search)
   const results = projects.filter((project) =>
-    project.ceremonyName.toLowerCase().includes(search.toLowerCase())
+    project.ceremony.data.title.toLowerCase().includes(search.toLowerCase())
   );
 
   return (

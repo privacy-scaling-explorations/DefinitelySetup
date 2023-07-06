@@ -17,6 +17,7 @@ import { StateContext } from "./context/StateContext";
 import {ColorModeSwitch} from './components/ColorModeSwitch';
 import { FaGithub, FaHeart } from "react-icons/fa";
 
+// eslint-ignore-next-line no-empty-pattern
 const Layout: React.FC<React.PropsWithChildren> = ({}) => {
   const { search, setSearch,loading, setLoading } = useContext(StateContext);
 

@@ -1,19 +1,15 @@
 // useStateContext.tsx
 
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
+import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitDocumentReferenceAndData, ContributionDocumentReferenceAndData, ParticipantDocumentReferenceAndData } from "../helpers/interfaces";
+import { getAllCollectionDocs, initializeFirebaseCoreServices } from "../helpers/utils";
+import { DocumentData } from 'firebase/firestore'
 
 export interface Project {
-  ceremonyName: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  timeoutThreshold: number;
-  fixed: boolean;
-  threshold: number;
-  circomVersion: string;
-  githubCircomTemplate: string;
-  commitHash: string;
-  paramsArray: string[];
+  ceremony: CeremonyDocumentReferenceAndData
+  circuits?: CircuitDocumentReferenceAndData[] | null
+  participants?: ParticipantDocumentReferenceAndData[] | null
+  contributions?: ContributionDocumentReferenceAndData[] | null
 }
 
 export interface State {
@@ -29,17 +25,22 @@ export const StateContext = createContext<State>({
   projects: [
     // Initial project data
     {
-      ceremonyName: "example",
-      description: "This is an example ceremony",
-      startDate: "2023-07-01",
-      endDate: "2023-07-31",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 10,
-      circomVersion: "0.5.1",
-      githubCircomTemplate: "github.com/circom/template",
-      commitHash: "1234567890",
-      paramsArray: ["param1", "param2", "param3"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "example",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     }
   ],
   setProjects: () => null,
@@ -53,139 +54,211 @@ export const useInitialStateContext = () => {
   const [projects, setProjects] = useState<Project[]>([
     // Initial project data
     {
-      ceremonyName: "@semaphore-protocol-example",
-      description: "This is an example ceremony",
-      startDate: "2023-07-01",
-      endDate: "2023-07-31",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 10,
-      circomVersion: "0.5.1",
-      githubCircomTemplate: "github.com/circom/template",
-      commitHash: "1234567890",
-      paramsArray: ["param1", "param2", "param3"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "@semaphore-protocol-example",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "@maci-protocol-example",
-      description: "This is an example ceremony",
-      startDate: "2023-07-01",
-      endDate: "2023-07-31",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 10,
-      circomVersion: "0.5.1",
-      githubCircomTemplate: "github.com/circom/template",
-      commitHash: "1234567890",
-      paramsArray: ["param1", "param2", "param3"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "@maci-protocol-example",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "@rln-example",
-      description: "This is an example ceremony",
-      startDate: "2023-07-01",
-      endDate: "2023-07-31",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 10,
-      circomVersion: "0.5.1",
-      githubCircomTemplate: "github.com/circom/template",
-      commitHash: "1234567890",
-      paramsArray: ["param1", "param2", "param3"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "@rln-example",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "@zkecdsa-example",
-      description: "This is an example ceremony",
-      startDate: "2023-07-01",
-      endDate: "2023-07-31",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 10,
-      circomVersion: "0.5.1",
-      githubCircomTemplate: "github.com/circom/template",
-      commitHash: "1234567890",
-      paramsArray: ["param1", "param2", "param3"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "@zkecdsa-example",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "ShadowedChain",
-      description: "Enhanced privacy for blockchain transactions",
-      startDate: "2024-01-02",
-      endDate: "2024-02-02",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 30,
-      circomVersion: "1.3.0",
-      githubCircomTemplate: "github.com/ShadowedChain/circom",
-      commitHash: "d9e7f8a0b1c2",
-      paramsArray: ["zkSNARKS", "privacy", "blockchain"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "test1",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "SilentLedger",
-      description: "The silent, yet transparent ledger system",
-      startDate: "2024-02-03",
-      endDate: "2024-03-03",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 35,
-      circomVersion: "1.4.0",
-      githubCircomTemplate: "github.com/SilentLedger/circom",
-      commitHash: "e1f2a3b4c5d6",
-      paramsArray: ["cryptography", "zkSNARKs", "transparency"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "test2",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "InvisibleInk",
-      description: "Secure, hidden messages on blockchain",
-      startDate: "2024-03-04",
-      endDate: "2024-04-04",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 40,
-      circomVersion: "1.5.0",
-      githubCircomTemplate: "github.com/InvisibleInk/circom",
-      commitHash: "f1e2d3c4b5a6",
-      paramsArray: ["zkSNARKS", "security", "communication"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "test3",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "CovertContracts",
-      description: "Private smart contracts on blockchain",
-      startDate: "2024-04-05",
-      endDate: "2024-05-05",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 45,
-      circomVersion: "1.6.0",
-      githubCircomTemplate: "github.com/CovertContracts/circom",
-      commitHash: "a1b2c3d4e5f6",
-      paramsArray: ["smart contracts", "privacy", "zkSNARKS"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "test4",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "ObscureOps",
-      description: "Secure operations with zkSNARKs",
-      startDate: "2024-05-06",
-      endDate: "2024-06-06",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 50,
-      circomVersion: "1.7.0",
-      githubCircomTemplate: "github.com/ObscureOps/circom",
-      commitHash: "b1a2c3d4e5f6",
-      paramsArray: ["zkSNARKS", "operations", "security"]
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "test5",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
     },
     {
-      ceremonyName: "BlindBlocks",
-      description: "Creating blocks unseen, but fully verifiable",
-      startDate: "2024-06-07",
-      endDate: "2024-07-07",
-      timeoutThreshold: 3600,
-      fixed: true,
-      threshold: 55,
-      circomVersion: "1.8.0",
-      githubCircomTemplate: "github.com/BlindBlocks/circom",
-      commitHash: "c1a2b3d4e5f6",
-      paramsArray: ["zkSNARKS", "block creation", "verifiability"]
-    }
+      ceremony: {
+        uid: "z37Z6PiCNPACp4gY9EMy",
+        data: {
+          title: "test6",
+          prefix: "example",
+          description: "This is an example ceremony",
+          startDate: new Date("2023-07-01").getTime(),
+          endDate: new Date("2023-07-31").getTime(),
+          timeoutMechanismType: CeremonyTimeoutType.FIXED,
+          penalty: 3600,
+          state: CeremonyState.OPENED,
+          type: CeremonyType.PHASE2,
+          coordinatorId: "uKm6XEjOKoeZUKAf2goY4vamgHE4",
+          lastUpdated: Date.now()
+        }
+      }
+    },
+
   ]);
 
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
+
+  // Fetch ceremony data.
+  useEffect(() => {
+    const fetchData = async () => {
+      // 0. Prepare service.
+      const { firestoreDatabase } = await initializeFirebaseCoreServices()
+
+      // 1. Fetch data.
+      const docs = await getAllCollectionDocs(firestoreDatabase, `ceremonies`)
+
+      // 2. Post-process data.
+      const ceremonies: CeremonyDocumentReferenceAndData[] = docs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
+      const projects: Project[] = ceremonies.map((ceremony: CeremonyDocumentReferenceAndData) => { return { ceremony: ceremony } })
+
+      // 3. Store data.      
+      setProjects(projects)
+    }
+
+    fetchData()
+  })
 
   return { projects, setProjects, search, setSearch, loading, setLoading };
 };

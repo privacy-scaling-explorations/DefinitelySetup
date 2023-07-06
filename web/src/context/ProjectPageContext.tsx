@@ -78,11 +78,6 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // // Mock the response for now
-        // const response: any = await new Promise((resolve) =>
-        //   setTimeout(() => resolve({ json: () => defaultProjectData }), 800)
-        // );
-
         // 0. Prepare service.
         const { firestoreDatabase } = await initializeFirebaseCoreServices()
 
@@ -90,9 +85,8 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
         const circuitsDocs = await getCeremonyCircuits(firestoreDatabase, projectId)
         const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map((document: DocumentData) => { return { uid: document.id, data: document.data } })
 
-        console.log(circuits)
         const participantsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/participants`)
-        const participants: ParticipantDocumentReferenceAndData[] = participantsDocs.map((document: DocumentData) => { return { uid: document.id, data: document.data } })
+        const participants: ParticipantDocumentReferenceAndData[] = participantsDocs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
 
         // merge arrays of multiple circuits contributions in one array.
         let contributions: ContributionDocumentReferenceAndData[] = []
@@ -100,9 +94,14 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
         for (const circuit of circuits) {
           const contributionsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/circuits/${circuit.uid}/contributions`)
 
-          contributions.concat(contributionsDocs.map((document: DocumentData) => { return { uid: document.id, data: document.data } }))
+          contributions = contributions.concat(contributionsDocs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } }))
         }
 
+        // DEBUG ONLY.
+        console.log("circuits ", circuits)
+        console.log("participants ", participants)
+        console.log("contributions ", contributions)
+        
         // 3. Update project data.
         const updatedProjectData = {
           ...projectData,

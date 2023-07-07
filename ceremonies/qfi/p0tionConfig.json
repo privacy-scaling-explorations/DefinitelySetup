@@ -24,8 +24,8 @@
               "cfOrVm": "CF"
           },
           "artifacts": {
-              "r1csLocalFilePath": "./circuit.r1cs",
-              "wasmLocalFilePath": "./circuit.wasm"
+              "r1csLocalFilePath": "./qfi.r1cs",
+              "wasmLocalFilePath": "./qfi.wasm"
           },
           "name": "circuit",
           "dynamicThreshold": 0,

@@ -7,7 +7,6 @@ import {
   Text,
   Divider,
   Badge,
-  Link,
   Tabs,
   TabList,
   TabPanels,
@@ -15,20 +14,20 @@ import {
   TabPanel,
   Button,
   useClipboard,
-  Tag,
-  TagLeftIcon,
   Stat,
   StatLabel,
   StatNumber,
-  Grid
+  Grid,
+  Tag
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
-  useProjectPageContext,
   ProjectData,
-  ProjectDataSchema
+  ProjectDataSchema,
+  useProjectPageContext
 } from "../context/ProjectPageContext";
-import { FaGithub, FaTag, FaCloudDownloadAlt, FaClipboard } from "react-icons/fa";
+import { FaGithub, FaCloudDownloadAlt, FaClipboard } from "react-icons/fa";
+import { CeremonyState } from "../helpers/interfaces";
 
 type RouteParams = {
   ceremonyName: string | undefined;
@@ -43,7 +42,7 @@ const ProjectPage: React.FC = () => {
     return <Text>Loading...</Text>;
   }
 
-  const project = projects.find((p) => p.ceremonyName === ceremonyName);
+  const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
 
   if (!project || !projectData) {
     return <Text>Error loading project.</Text>;
@@ -52,160 +51,205 @@ const ProjectPage: React.FC = () => {
   // Validate the project data against the schema
   const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
 
-  // Commands
-  const contributeCommand = `phase2cli contribute ${project.ceremonyName}`;
-  const downloadCommand = `aws s3 cp s3://yourbucket/zkey/${project.ceremonyName}`; // replace with your S3 bucket and file path
+  /// @todo work on multiple circuits.
+  /// @todo uncomplete info for mocked fallback circuit data.
+  const circuit = validatedProjectData.circuits ? validatedProjectData.circuits[0] : {
+    data: {
+      fixedTimeWindow: 10,
+      template: {
+        source: "todo",
+        paramsConfiguration: [2, 3, 4]
+      },
+      compiler: {
+        version: "0.5.1",
+        commitHash: "0xabc"
+      },
+      avgTimings: {
+        fullContribution: 100
+      },
+      zKeySizeInBytes: 10,
+      waitingQueue: {
+        completedContributions: 0
+      }
+    }
+  }
 
-  // Hook for clipboard
+  // Commands
+  const contributeCommand = `phase2cli auth && phase2cli contribute -c ${project.ceremony.data.prefix} -e <YOUR-ENTROPY-HERE>`;
+  const zKeyFilename = `${circuit.data.prefix}_final.zkey`
+  const downloadLink = `https://${project.ceremony.data.prefix}${import.meta.env.VITE_CONFIG_CEREMONY_BUCKET_POSTFIX}.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/circuits/${circuit.data.prefix}/contributions/${zKeyFilename}`;
+  // Hook for clipboard   
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
-  const { onCopy: copyDownload, hasCopied: copiedDownload } = useClipboard(downloadCommand);
+
+  /// @todo with a bit of refactor, could be used everywhere for downloading files from S3.
+  // Download a file from AWS S3 bucket.
+  const downloadFileFromS3 = () => {
+    fetch(downloadLink).then(response => {
+      response.blob().then(blob => {
+        const fileURL = window.URL.createObjectURL(blob);
+
+        let alink = document.createElement('a');
+        alink.href = fileURL;
+        alink.download = zKeyFilename;
+        alink.click();
+      })
+    })
+  }
 
   return (
-    <VStack spacing={4} align="start" p={8}>
-      {/* Render project information from StateContext */}
-      <HStack w="100%" justifyContent={"space-between"}>
-        <Text fontSize="2xl" fontWeight="bold">
-          {project.ceremonyName}
-        </Text>{" "}
-      </HStack>
-
-      <Text>{project.description}</Text>
+    <VStack align="start" spacing={4} p={5} shadow="md" borderWidth="1px">
+      {/* Render project information */}
+      <Text fontSize="xl" fontWeight="bold">
+        {project.ceremony.data.title}
+      </Text>
+      <Text>{project.ceremony.data.description}</Text>
       <Divider />
       <HStack spacing={4}>
-        <Badge colorScheme={project.fixed ? "green" : "gray"}>
-          {project.fixed ? "Fixed" : "Flexible"}
+        <Badge colorScheme={project.ceremony.data.timeoutMechanismType ? "green" : "gray"}>
+          {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
         </Badge>
-        <Badge colorScheme="blue">Threshold: {project.threshold}</Badge>
-        <Badge colorScheme="blue">Timeout: {project.timeoutThreshold} seconds</Badge>
+        <Badge colorScheme="blue">Penalty: {project.ceremony.data.penalty}</Badge>
+        <Badge colorScheme="blue">Timeout: {circuit.data.fixedTimeWindow} seconds</Badge>
       </HStack>
       <Divider />
       <HStack>
         <Box as={FaGithub} w={6} h={6} />
-        <Link
-          href={`https://${project.githubCircomTemplate}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {project.githubCircomTemplate}
-        </Link>
+        <Text>{circuit.data.template.source}</Text>
+      </HStack>
+      <HStack>
+        <Text>Start: {project.ceremony.data.startDate}</Text>
+        <Text>End: {project.ceremony.data.endDate}</Text>
+      </HStack>
+      <HStack>
+        <Text>Circom Version: {circuit.data.compiler.version}</Text>
+        <Text>Commit Hash: {circuit.data.compiler.commitHash}</Text>
       </HStack>
       <Divider />
+      <Text fontSize="sm" fontWeight="bold">
+        Params:
+      </Text>
       <HStack align="start" spacing={1}>
-        {project.paramsArray.map((param, index) => (
+        {circuit.data.template.paramsConfiguration.map((param: any, index: any) => (
           <Tag key={index} size="sm" variant="solid" colorScheme="blue">
-            <TagLeftIcon boxSize="12px" as={FaTag} />
             {param}
           </Tag>
         ))}
       </HStack>
-      <Tabs>
-        <TabList>
-          <Tab>Contribute</Tab>
-          <Tab>Ceremony Configuration</Tab>
-          <Tab>Live Data</Tab>
+      <VStack maxW="700px" w="100%" marginX={"auto"}>
 
-          <Tab>Download ZKey</Tab>
-        </TabList>
+        <Tabs>
+          <TabList>
+            <Tab>Contribute</Tab>
+            <Tab>Ceremony Configuration</Tab>
+            <Tab>Live Data</Tab>
 
-        <TabPanels>
-          <TabPanel>
-            <Text fontSize="lg" fontWeight="bold">
-              Contribute:
-            </Text>
-            <Text color="gray.500">
-              You can contribute to this project by running the command below.
-            </Text>
-            <Button
-              leftIcon={<Box as={FaClipboard} w={3} h={3} />}
-              variant="outline"
-              onClick={copyContribute}
-              fontWeight={"regular"}
-            >
-              {copiedContribute ? "Copied" : `phase2cli contribute ${project.ceremonyName}`}
-            </Button>
-          </TabPanel>
-          <TabPanel>
-            <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-              <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-                <Text fontSize="lg" fontWeight="bold">
-                  Ceremony Configuration:
-                </Text>
-                <Text color="gray.500">
-                  These are the main configuration parameters for the ceremony.
-                </Text>
+            <Tab>Download ZKey</Tab>
+          </TabList>
+
+          <TabPanels >
+            <TabPanel>
+              <Text fontSize="lg" fontWeight="bold">
+                Contribute:
+              </Text>
+              <Text color="gray.500">
+                You can contribute to this project by running the CLI command below.
+              </Text>
+              {/* @todo right now, the user have to delete the the <YOUR-ENTROPY-HERE> and insert the entropy on the CLI.
+              Maybe we could make the user able to input the entropy in different ways in the frontend? (e.g., kzg)
+               and then overwrite the <YOUR-ENTROPY-HERE> option to have a one-copy command ready to run. */}
+              <Button
+                leftIcon={<Box as={FaClipboard} w={3} h={3} />}
+                variant="outline"
+                onClick={copyContribute}
+                fontWeight={"regular"}
+              >
+                {copiedContribute ? "Copied" : `phase2cli auth && phase2cli contribute -c ${project.ceremony.data.prefix} -e <YOUR-ENTROPY-HERE>`}
+              </Button>
+            </TabPanel>
+            <TabPanel>
+              <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
+                <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
+                  <Text fontSize="lg" fontWeight="bold">
+                    Ceremony Configuration:
+                  </Text>
+                  <Text color="gray.500">
+                    These are the main configuration parameters for the ceremony.
+                  </Text>
+                </VStack>
+
+                <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                  <Stat>
+                    <StatLabel>Start Date</StatLabel>
+                    <StatNumber>{project.ceremony.data.startDate}</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>End Date</StatLabel>
+                    <StatNumber>{project.ceremony.data.endDate}</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>Circom Version</StatLabel>
+                    <StatNumber>{circuit.data.compiler.version}</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>Commit Hash</StatLabel>
+                    <StatNumber>{circuit.data.compiler.commitHash}</StatNumber>
+                  </Stat>
+                </Grid>
               </VStack>
-
-              <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-                <Stat>
-                  <StatLabel>Start Date</StatLabel>
-                  <StatNumber>{project.startDate}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>End Date</StatLabel>
-                  <StatNumber>{project.endDate}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>Circom Version</StatLabel>
-                  <StatNumber>{project.circomVersion}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>Commit Hash</StatLabel>
-                  <StatNumber>{project.commitHash}</StatNumber>
-                </Stat>
-              </Grid>
-            </VStack>
-          </TabPanel>
-          <TabPanel>
-            <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-              <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-                <Text fontSize="lg" fontWeight="bold">
-                  Live Data:
-                </Text>
-                <Text color="gray.500">Real-time data related to the project.</Text>
+            </TabPanel>
+            <TabPanel>
+              <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
+                <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
+                  <Text fontSize="lg" fontWeight="bold">
+                    Live Data:
+                  </Text>
+                  <Text color="gray.500">Real-time data related to the project.</Text>
+                </VStack>
+                <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full">
+                  <Stat>
+                    <StatLabel>Average Contribution Time</StatLabel>
+                    <StatNumber>{circuit.data.avgTimings?.fullContribution}</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>Disk Space Required</StatLabel>
+                    <StatNumber>
+                      {circuit.data.zKeySizeInBytes} {"Bytes"}
+                    </StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>Last Contributor ID</StatLabel>
+                    <StatNumber>{circuit.data.waitingQueue?.completedContributions! > 0 ? "do something on contribution to retrieve..." : "nobody"}</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel>ZKey Index</StatLabel>
+                    <StatNumber>{circuit.data.waitingQueue?.completedContributions! + 1}</StatNumber>
+                  </Stat>
+                </Grid>
               </VStack>
-              <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full">
-                <Stat>
-                  <StatLabel>Average Contribution Time</StatLabel>
-                  <StatNumber>{validatedProjectData.avgContributionTime}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>Disk Space Required</StatLabel>
-                  <StatNumber>
-                    {validatedProjectData.diskSpaceRequired} {validatedProjectData.diskSpaceUnit}
-                  </StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>Last Contributor ID</StatLabel>
-                  <StatNumber>{validatedProjectData.lastContributorId}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>ZKey Index</StatLabel>
-                  <StatNumber>{validatedProjectData.zKeyIndex}</StatNumber>
-                </Stat>
-              </Grid>
-            </VStack>
-          </TabPanel>
+            </TabPanel>
 
-          <TabPanel>
-            <Text fontSize="lg" fontWeight="bold">
-              Download ZKey:
-            </Text>
-            <Text color="gray.500">
-              Use the command below to download the ZKey files from the S3 bucket.
-            </Text>
-            <Button
-              leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
-              variant="outline"
-              onClick={copyDownload}
-              fontWeight={"regular"}
-            >
-              {copiedDownload ? "Copied" : ` ${downloadCommand}`}
-            </Button>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+            <TabPanel>
+              <Text fontSize="lg" fontWeight="bold">
+                Download Final ZKey:
+              </Text>
+              <Text color="gray.500">
+                Use the command below to download the final ZKey file from the S3 bucket.
+              </Text>
+              <Button
+                leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                variant="outline"
+                onClick={downloadFileFromS3}
+                fontWeight={"regular"}
+                isDisabled={project.ceremony.data.state !== CeremonyState.FINALIZED ? true : false}
+              >
+                Download From S3
+              </Button>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </VStack>
     </VStack>
   );
 };
 
-export default ProjectPage;
+export default ProjectPage

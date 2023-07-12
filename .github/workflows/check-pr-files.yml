@@ -1,0 +1,66 @@
+# check that a PR modified the correct files and nothing more
+name: Check PR Files
+
+on:
+  pull_request:
+    paths:
+      - 'ceremonies/**'
+
+jobs:
+  check-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get PR number
+        run: echo "PR_NUMBER=$(jq --raw-output .number $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
+
+      - name: Get changed files
+        id: get-changed-files
+        uses: jitterbit/get-changed-files@v1
+        with:
+          format: 'csv'
+
+      - name: Validate files
+        run: |
+          changed_files="${{ steps.get-changed-files.outputs.all }}"
+          IFS=', ' read -r -a files <<< "$changed_files"
+
+          echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//'
+          
+          if [[ ${#files[@]} -ne 3 ]]; then
+            echo "The PR should have 3 files changed only"
+            exit 1
+          fi
+
+          r1cs_files=()
+          wasm_files=()
+          json_files=()
+
+          for file in "${files[@]}"; do
+            if [[ $file == *.r1cs ]]; then r1cs_files+=("$file")
+            elif [[ $file == *.wasm ]]; then wasm_files+=("$file")
+            elif [[ $file == *p0tionConfig.json ]]; then json_files+=("$file")
+            fi
+          done
+          
+          if [[ ${#r1cs_files[@]} -ne 1 || ${#wasm_files[@]} -ne 1 || ${#json_files[@]} -ne 1 ]]; then
+            echo "Invalid or missing circuit artifacts"
+            exit 1
+          fi
+
+          echo "Ceremony artifacts are present"
+
+          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')"
+
+          echo "Checking that all files are inside $directory_name"
+          for file in "${files[@]}"; do
+            if [[ ! $file =~ ^$directory_name/ ]]; then
+              echo "Files must be inside the $directory_name directory"
+              exit 1
+            fi
+          done
+
+          echo "All checks passed"

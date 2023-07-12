@@ -5,7 +5,6 @@ import {
   Progress,
   HStack,
   Box,
-  Text,
   Input,
   Button,
   Image,
@@ -50,7 +49,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
       <VStack minHeight="100vh">
         {/* Show a loading progress bar if isLoading is true */}
 
-        <HStack borderBottom={1} alignSelf="stretch" justifyContent="space-between" minH={"42px"} my={2} px={8}>
+        <HStack pb={2} pt={3} borderBottomWidth={1} borderColor={"gray.100"} alignSelf="stretch" justifyContent="space-between" minH={"42px"} alignItems={"center"} px={8}>
           <HStack as={Link} to="/" spacing="24px">
             <Box as={FaHeart} w={4} h={4} />
             <Heading fontWeight={"normal"} fontSize={16}>
@@ -67,12 +66,16 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
         <HStack
           alignSelf="stretch"
           justifyContent="space-between"
-          minH={"42px"}
+        
           my={2}
-          px={8}
+          px={4}
           alignItems={"center"}
+          pb={5}
+          pt={1}
+          shadow="md"
+          // borderBottomWidth={1} borderColor={"gray.100"} 
         >
-          <AspectRatio w="40px" maxH="40px" ratio={1 / 1}>
+          <AspectRatio w="50px" maxH="50px" ratio={1 / 1} mx={4}>
             <Image
               boxSize="35px"
               objectFit="cover"

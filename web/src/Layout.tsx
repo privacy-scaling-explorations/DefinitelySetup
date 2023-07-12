@@ -9,17 +9,21 @@ import {
   Input,
   Button,
   Image,
-  AspectRatio
+  AspectRatio,
+  InputGroup,
+  InputLeftAddon,
+  InputLeftElement,
+  InputRightElement
 } from "@chakra-ui/react";
-import React, {  useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { StateContext } from "./context/StateContext";
-import {ColorModeSwitch} from './components/ColorModeSwitch';
-import { FaGithub, FaHeart } from "react-icons/fa";
+import { ColorModeSwitch } from "./components/ColorModeSwitch";
+import { FaGithub, FaHeart, FaSearch } from "react-icons/fa";
 
 // eslint-ignore-next-line no-empty-pattern
 const Layout: React.FC<React.PropsWithChildren> = ({}) => {
-  const { search, setSearch,loading, setLoading } = useContext(StateContext);
+  const { search, setSearch, loading, setLoading } = useContext(StateContext);
 
   useEffect(() => console.log("searchL", search), [search]);
 
@@ -46,16 +50,18 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
       <VStack minHeight="100vh">
         {/* Show a loading progress bar if isLoading is true */}
 
-        <HStack alignSelf="stretch" justifyContent="space-between" minH={"42px"} my={2} px={8}>
+        <HStack borderBottom={1} alignSelf="stretch" justifyContent="space-between" minH={"42px"} my={2} px={8}>
           <HStack as={Link} to="/" spacing="24px">
-            <Box as={FaHeart} w={6} h={6} /> {/* Replace with your logo */}
-            <Text>DefinitelySetup</Text>
+            <Box as={FaHeart} w={4} h={4} />
+            <Text fontWeight={"normal"} fontSize={16}>
+              DefinitelySetup
+            </Text>
           </HStack>
-          <HStack spacing="24px">
+          <HStack spacing="24px" fontSize={16}>
             {/* Navigation links */}
-            <Link to="/page2">About</Link>
-            <Link to="/page3">Documentation</Link>
-            <ColorModeSwitch />  {/* Add ColorModeSwitcher here */}
+            <Text as={Link} fontSize={16} to="/page2">About</Text>
+            <Text as={Link} fontSize={16} to="/page3">Documentation</Text>
+            <ColorModeSwitch />
           </HStack>
         </HStack>
         <HStack
@@ -66,21 +72,38 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           px={8}
           alignItems={"center"}
         >
-          {/* <Box>❤️</Box> Replace with your logo */}
-          <AspectRatio w="40px" maxH="35px" ratio={1 / 2} >
+          <AspectRatio w="40px" maxH="40px" ratio={1 / 1}>
             <Image
               boxSize="35px"
               objectFit="cover"
-              src="https://media.tenor.com/ETVOuJOuNYIAAAAC/health-potion.gif"
+              src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1689199218/logo_l7p9hr.gif"
               alt="Dan Abramov"
             />
           </AspectRatio>
-          {/* Search input field */}
-          <Input placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
-          <Button>Search</Button>
-          <Button leftIcon={<Box as={FaGithub} w={4} h={4} />} variant="outline">
+         {/* Search input field */}
+         <InputGroup minH="50px">
+            <InputLeftElement pointerEvents="none" minH="50px" >
+              <Box as={FaSearch} w={4} h={4} color={"gray.600"} />
+            </InputLeftElement>
+            <Input minH="50px"
+              borderColor={"transparent"}
+              bg={"gray.100"}
+              placeholder="Search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              borderRadius={0}
+              fontSize={14}
+              color={"gray.600"}
+            />
+            <InputRightElement width="6.5rem" minH="50px">
+              <Button  fontSize={14} width="6.5rem" variant="outline" borderRadius={0} borderColor={"transparent"} bg={"gray.800"} color={"gray.100"} minH="50px">Search</Button>
+            </InputRightElement>
+          </InputGroup>
+
+          <Button leftIcon={<Box as={FaGithub} w={4} h={4} />} minWidth="6.5rem" minH="51.5px" borderRadius={0}  variant="outline" fontSize={14}>
             Login
           </Button>
+        
         </HStack>
         <Outlet />
       </VStack>

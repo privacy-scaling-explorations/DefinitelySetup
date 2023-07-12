@@ -11,7 +11,6 @@ import {
   Image,
   AspectRatio,
   InputGroup,
-  InputLeftAddon,
   InputLeftElement,
   InputRightElement
 } from "@chakra-ui/react";
@@ -76,7 +75,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
             <Image
               boxSize="35px"
               objectFit="cover"
-              src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1689199218/logo_l7p9hr.gif"
+              src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1689199506/logo-slow_vxtmkc.gif"
               alt="Dan Abramov"
             />
           </AspectRatio>

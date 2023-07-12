@@ -12,7 +12,8 @@ import {
   AspectRatio,
   InputGroup,
   InputLeftElement,
-  InputRightElement
+  InputRightElement,
+  Heading
 } from "@chakra-ui/react";
 import React, { useEffect, useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
@@ -52,14 +53,14 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
         <HStack borderBottom={1} alignSelf="stretch" justifyContent="space-between" minH={"42px"} my={2} px={8}>
           <HStack as={Link} to="/" spacing="24px">
             <Box as={FaHeart} w={4} h={4} />
-            <Text fontWeight={"normal"} fontSize={16}>
+            <Heading fontWeight={"normal"} fontSize={16}>
               DefinitelySetup
-            </Text>
+            </Heading>
           </HStack>
           <HStack spacing="24px" fontSize={16}>
             {/* Navigation links */}
-            <Text as={Link} fontSize={16} to="/page2">About</Text>
-            <Text as={Link} fontSize={16} to="/page3">Documentation</Text>
+            <Heading as={Link} fontSize={16}  fontWeight={"normal"}  to="/page2">About</Heading>
+            <Heading as={Link} fontSize={16} fontWeight={"normal"}   to="/page3">Documentation</Heading>
             <ColorModeSwitch />
           </HStack>
         </HStack>

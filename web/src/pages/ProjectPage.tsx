@@ -18,7 +18,8 @@ import {
   StatLabel,
   StatNumber,
   Grid,
-  Tag
+  Tag,
+  Heading
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
@@ -113,11 +114,12 @@ console.log("validatedProjectData",validatedProjectData)
   }
 
   return (
-    <VStack minW="375px" align="start" spacing={4} p={5} mx={8} shadow="md" borderWidth="1px">
+ 
+    <VStack  fontSize={12}minW="375px" align="start" spacing={4} p={5} mx={8} shadow="md" borderWidth="1px">
       {/* Render project information */}
-      <Text fontSize="xl" fontWeight="bold">
+      <Heading fontSize={14} fontWeight="bold">
         {project.ceremony.data.title}
-      </Text>
+      </Heading>
       <Text>{project.ceremony.data.description}</Text>
       <Divider />
       <HStack spacing={4}>
@@ -141,7 +143,7 @@ console.log("validatedProjectData",validatedProjectData)
         <Text>Commit Hash: {truncateString(circuit.data.compiler.commitHash)}</Text>
       </HStack>
       <Divider />
-      <Text fontSize="sm" fontWeight="bold">
+      <Text fontSize={12} fontWeight="bold">
         Params:
       </Text>
       <HStack align="start" spacing={1}>
@@ -153,18 +155,18 @@ console.log("validatedProjectData",validatedProjectData)
       </HStack>
       <VStack maxW="700px" w="100%" marginX={"auto"}>
 
-        <Tabs>
-          <TabList>
-            <Tab>Contribute</Tab>
-            <Tab>Ceremony Configuration</Tab>
-            <Tab>Live Data</Tab>
+        <Tabs >
+          <TabList >
+            <Tab fontSize={12}  >Contribute</Tab>
+            <Tab fontSize={12} >Ceremony Configuration</Tab>
+            <Tab fontSize={12} >Live Data</Tab>
 
-            <Tab>Download ZKey</Tab>
+            <Tab fontSize={12} >Download ZKey</Tab>
           </TabList>
 
           <TabPanels >
             <TabPanel>
-              <Text fontSize="lg" fontWeight="bold">
+              <Text fontSize={12} fontWeight="bold">
                 Contribute:
               </Text>
               <Text color="gray.500">
@@ -177,6 +179,7 @@ console.log("validatedProjectData",validatedProjectData)
                 leftIcon={<Box as={FaClipboard} w={3} h={3} />}
                 variant="outline"
                 onClick={copyContribute}
+                fontSize={12} 
                 fontWeight={"regular"}
               >
                 {copiedContribute ? "Copied" : `phase2cli auth && phase2cli contribute ...`}
@@ -185,7 +188,7 @@ console.log("validatedProjectData",validatedProjectData)
             <TabPanel>
               <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
                 <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-                  <Text fontSize="lg" fontWeight="bold">
+                  <Text fontSize={12} fontWeight="bold">
                     Ceremony Configuration:
                   </Text>
                   <Text color="gray.500">
@@ -193,22 +196,22 @@ console.log("validatedProjectData",validatedProjectData)
                   </Text>
                 </VStack>
 
-                <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                <Grid templateColumns="repeat(2, 1fr)" gap={6} >
                   <Stat>
-                    <StatLabel>Start Date</StatLabel>
-                    <StatNumber>{parseDate(project.ceremony.data.startDate)}</StatNumber>
+                    <StatLabel fontSize={12} >Start Date</StatLabel>
+                    <StatNumber fontSize={16} >{parseDate(project.ceremony.data.startDate)}</StatNumber>
                   </Stat>
                   <Stat>
-                    <StatLabel>End Date</StatLabel>
-                    <StatNumber>{ parseDate(project.ceremony.data.endDate)}</StatNumber>
+                    <StatLabel fontSize={12}>End Date</StatLabel>
+                    <StatNumber fontSize={16}>{ parseDate(project.ceremony.data.endDate)}</StatNumber>
                   </Stat>
                   <Stat>
-                    <StatLabel>Circom Version</StatLabel>
-                    <StatNumber>{circuit.data.compiler.version}</StatNumber>
+                    <StatLabel fontSize={12}>Circom Version</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.data.compiler.version}</StatNumber>
                   </Stat>
                   <Stat>
-                    <StatLabel>Commit Hash</StatLabel>
-                    <StatNumber>{truncateString(circuit.data.compiler.commitHash)}</StatNumber>
+                    <StatLabel fontSize={12}>Commit Hash</StatLabel>
+                    <StatNumber fontSize={16}>{truncateString(circuit.data.compiler.commitHash)}</StatNumber>
                   </Stat>
                 </Grid>
               </VStack>
@@ -216,36 +219,36 @@ console.log("validatedProjectData",validatedProjectData)
             <TabPanel>
               <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
                 <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-                  <Text fontSize="lg" fontWeight="bold">
+                  <Text fontSize={12}  fontWeight="bold">
                     Live Data:
                   </Text>
                   <Text color="gray.500">Real-time data related to the project.</Text>
                 </VStack>
                 <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full">
                   <Stat>
-                    <StatLabel>Average Contribution Time</StatLabel>
-                    <StatNumber>{circuit.data.avgTimings?.fullContribution}</StatNumber>
+                    <StatLabel fontSize={12}>Average Contribution Time</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.data.avgTimings?.fullContribution}</StatNumber>
                   </Stat>
                   <Stat>
-                    <StatLabel>Disk Space Required</StatLabel>
-                    <StatNumber>
+                    <StatLabel fontSize={12}>Disk Space Required</StatLabel>
+                    <StatNumber fontSize={16}>
                       {circuit.data.zKeySizeInBytes} {"Bytes"}
                     </StatNumber>
                   </Stat>
                   <Stat>
-                    <StatLabel>Last Contributor ID</StatLabel>
-                    <StatNumber>{circuit.data.waitingQueue?.completedContributions! > 0 ? "do something on contribution to retrieve..." : "nobody"}</StatNumber>
+                    <StatLabel fontSize={12}>Last Contributor ID</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.data.waitingQueue?.completedContributions! > 0 ? "do something on contribution to retrieve..." : "nobody"}</StatNumber>
                   </Stat>
                   <Stat>
-                    <StatLabel>ZKey Index</StatLabel>
-                    <StatNumber>{circuit.data.waitingQueue?.completedContributions! + 1}</StatNumber>
+                    <StatLabel fontSize={12} >ZKey Index</StatLabel>
+                    <StatNumber fontSize={16} >{circuit.data.waitingQueue?.completedContributions! + 1}</StatNumber>
                   </Stat>
                 </Grid>
               </VStack>
             </TabPanel>
 
             <TabPanel>
-              <Text fontSize="lg" fontWeight="bold">
+              <Text fontSize={12}  fontWeight="bold">
                 Download Final ZKey:
               </Text>
               <Text color="gray.500">
@@ -253,6 +256,8 @@ console.log("validatedProjectData",validatedProjectData)
               </Text>
               <Button
                 leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+
+                fontSize={12} 
                 variant="outline"
                 onClick={downloadFileFromS3}
                 fontWeight={"regular"}

@@ -9,6 +9,7 @@ on:
 jobs:
   check-files:
     runs-on: ubuntu-latest
+    if: endsWith(github.head_ref, '-ceremony') 
 
     steps:
       - name: Checkout code

@@ -7,6 +7,7 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    if: endsWith(github.head_ref, '-ceremony') 
 
     steps:
     - uses: actions/checkout@v2

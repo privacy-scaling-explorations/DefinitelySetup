@@ -5,14 +5,14 @@ import {
   Progress,
   HStack,
   Box,
-  Text,
   Input,
   Button,
   Image,
   AspectRatio,
   InputGroup,
   InputLeftElement,
-  InputRightElement
+  InputRightElement,
+  Heading
 } from "@chakra-ui/react";
 import React, { useEffect, useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
@@ -49,29 +49,33 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
       <VStack minHeight="100vh">
         {/* Show a loading progress bar if isLoading is true */}
 
-        <HStack borderBottom={1} alignSelf="stretch" justifyContent="space-between" minH={"42px"} my={2} px={8}>
+        <HStack pb={2} pt={3} borderBottomWidth={1} borderColor={"gray.100"} alignSelf="stretch" justifyContent="space-between" minH={"42px"} alignItems={"center"} px={8}>
           <HStack as={Link} to="/" spacing="24px">
             <Box as={FaHeart} w={4} h={4} />
-            <Text fontWeight={"normal"} fontSize={16}>
+            <Heading fontWeight={"normal"} fontSize={16}>
               DefinitelySetup
-            </Text>
+            </Heading>
           </HStack>
           <HStack spacing="24px" fontSize={16}>
             {/* Navigation links */}
-            <Text as={Link} fontSize={16} to="/page2">About</Text>
-            <Text as={Link} fontSize={16} to="/page3">Documentation</Text>
+            <Heading as={Link} fontSize={16}  fontWeight={"normal"}  to="/page2">About</Heading>
+            <Heading as={Link} fontSize={16} fontWeight={"normal"}   to="/page3">Documentation</Heading>
             <ColorModeSwitch />
           </HStack>
         </HStack>
         <HStack
           alignSelf="stretch"
           justifyContent="space-between"
-          minH={"42px"}
+        
           my={2}
-          px={8}
+          px={4}
           alignItems={"center"}
+          pb={5}
+          pt={1}
+          shadow="md"
+          // borderBottomWidth={1} borderColor={"gray.100"} 
         >
-          <AspectRatio w="40px" maxH="40px" ratio={1 / 1}>
+          <AspectRatio w="50px" maxH="50px" ratio={1 / 1} mx={4}>
             <Image
               boxSize="35px"
               objectFit="cover"

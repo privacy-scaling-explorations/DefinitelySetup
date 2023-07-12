@@ -3,7 +3,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { ChakraProvider, extendTheme,ColorModeScript  } from "@chakra-ui/react";
-
+import '@fontsource/poppins/400.css'
+import '@fontsource/poppins/200.css'
 
 const colors = {
   brand: {
@@ -15,7 +16,7 @@ const colors = {
 
 const theme = extendTheme({
   fonts: {
-    body: "Sofia Sans",
+    body: "Poppins",
     heading: "Sofia Sans"
   },
   colors,

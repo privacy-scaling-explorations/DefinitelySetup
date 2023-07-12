@@ -15,8 +15,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Get PR number
-        run: echo "PR_NUMBER=$(jq --raw-output .number $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
+      - name: Install jq
+        run: sudo apt-get install jq
 
       - name: Get changed files
         id: get-changed-files
@@ -24,22 +24,27 @@ jobs:
         with:
           format: 'csv'
 
+      - name: Parse p0tionConfig.json
+        id: parse-config
+        run: |
+          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')"
+          config_file="${directory_name}/p0tionConfig.json"
+          num_circuits=$(jq '.circuits | length' $config_file)
+          echo "NUM_CIRCUITS=$num_circuits" >> $GITHUB_ENV
+
       - name: Validate files
         run: |
           changed_files="${{ steps.get-changed-files.outputs.all }}"
           IFS=', ' read -r -a files <<< "$changed_files"
-
-          echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//'
+          expected_files=$((NUM_CIRCUITS * 2 + 1))
           
-          if [[ ${#files[@]} -ne 3 ]]; then
-            echo "The PR should have 3 files changed only"
+          if [[ ${#files[@]} -ne $expected_files ]]; then
+            echo "The PR should have $expected_files files changed only"
             exit 1
           fi
-
           r1cs_files=()
           wasm_files=()
           json_files=()
-
           for file in "${files[@]}"; do
             if [[ $file == *.r1cs ]]; then r1cs_files+=("$file")
             elif [[ $file == *.wasm ]]; then wasm_files+=("$file")
@@ -47,15 +52,12 @@ jobs:
             fi
           done
           
-          if [[ ${#r1cs_files[@]} -ne 1 || ${#wasm_files[@]} -ne 1 || ${#json_files[@]} -ne 1 ]]; then
+          if [[ ${#r1cs_files[@]} -ne $NUM_CIRCUITS || ${#wasm_files[@]} -ne $NUM_CIRCUITS || ${#json_files[@]} -ne 1 ]]; then
             echo "Invalid or missing circuit artifacts"
             exit 1
           fi
-
           echo "Ceremony artifacts are present"
-
           directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')"
-
           echo "Checking that all files are inside $directory_name"
           for file in "${files[@]}"; do
             if [[ ! $file =~ ^$directory_name/ ]]; then
@@ -63,5 +65,4 @@ jobs:
               exit 1
             fi
           done
-
           echo "All checks passed"

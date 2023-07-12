@@ -6,6 +6,9 @@ on:
 
 jobs:
   build_and_preview_prod:
+    defaults:
+      run:
+        working-directory: ./web
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

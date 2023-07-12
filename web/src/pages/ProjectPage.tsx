@@ -133,8 +133,8 @@ console.log("validatedProjectData",validatedProjectData)
         <Text>{truncateString(circuit.data.template.source,25)}</Text>
       </HStack>
       <HStack>
-        <Text>Start: {project.ceremony.data.startDate}</Text>
-        <Text>End: {project.ceremony.data.endDate}</Text>
+        <Text>Start: {parseDate(project.ceremony.data.startDate)}</Text>
+        <Text>End: {parseDate(project.ceremony.data.endDate)}</Text>
       </HStack>
       <HStack>
         <Text>Circom Version: {circuit.data.compiler.version}</Text>

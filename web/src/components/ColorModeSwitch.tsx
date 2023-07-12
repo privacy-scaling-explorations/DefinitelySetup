@@ -5,8 +5,10 @@ export const ColorModeSwitch: React.FC = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
     <IconButton
+    bg= "transparent"
+    borderRadius={0}
       aria-label="Toggle color mode"
-      icon={colorMode === "light" ? <FaMoon /> : <FaSun />}
+      icon={colorMode === "light" ? <FaMoon/> : <FaSun />}
       onClick={toggleColorMode}
     />
   );

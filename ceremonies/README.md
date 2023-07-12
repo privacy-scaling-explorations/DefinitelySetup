@@ -12,7 +12,7 @@ To request a new ceremony to be setup, you will need to submit a PR with a folde
 
 ## Guidelines
 
-### Process
+### Process
 
 - open the PR from a branch named $YOUR_PROJECT_NAME-ceremony
 - fill the *p0tionConfig.json* file accordingly:

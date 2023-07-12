@@ -43,7 +43,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           colorScheme="pink"
         />
       </VStack>
-      <VStack height="100vh">
+      <VStack minHeight="100vh">
         {/* Show a loading progress bar if isLoading is true */}
 
         <HStack alignSelf="stretch" justifyContent="space-between" minH={"42px"} my={2} px={8}>
@@ -67,7 +67,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           alignItems={"center"}
         >
           {/* <Box>❤️</Box> Replace with your logo */}
-          <AspectRatio w="40px" maxH="35px" ratio={1 / 2} borderRadius={"10px"} border={"4px"}>
+          <AspectRatio w="40px" maxH="35px" ratio={1 / 2} >
             <Image
               boxSize="35px"
               objectFit="cover"

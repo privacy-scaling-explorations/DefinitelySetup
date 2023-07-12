@@ -33,6 +33,22 @@ type RouteParams = {
   ceremonyName: string | undefined;
 };
 
+
+function truncateString(str: string, numCharacters = 5): string {
+  if (str.length <= numCharacters * 2) {
+    return str;
+  }
+
+  const firstPart = str.substr(0, numCharacters);
+  const lastPart = str.substr(-numCharacters);
+
+  return `${firstPart}...${lastPart}`;
+}
+
+function parseDate(dateString: number): string {
+  const parsedDate = new Date(dateString);
+  return parsedDate.toDateString();
+}
 const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { projects } = useContext(StateContext);
@@ -50,7 +66,7 @@ const ProjectPage: React.FC = () => {
 
   // Validate the project data against the schema
   const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
-
+console.log("validatedProjectData",validatedProjectData)
   /// @todo work on multiple circuits.
   /// @todo uncomplete info for mocked fallback circuit data.
   const circuit = validatedProjectData.circuits ? validatedProjectData.circuits[0] : {
@@ -75,7 +91,7 @@ const ProjectPage: React.FC = () => {
   }
 
   // Commands
-  const contributeCommand = `phase2cli auth && phase2cli contribute -c ${project.ceremony.data.prefix} -e <YOUR-ENTROPY-HERE>`;
+  const contributeCommand = `phase2cli auth && phase2cli contribute -c ${project.ceremony.data.prefix}`;
   const zKeyFilename = `${circuit.data.prefix}_final.zkey`
   const downloadLink = `https://${project.ceremony.data.prefix}${import.meta.env.VITE_CONFIG_CEREMONY_BUCKET_POSTFIX}.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/circuits/${circuit.data.prefix}/contributions/${zKeyFilename}`;
   // Hook for clipboard   
@@ -97,7 +113,7 @@ const ProjectPage: React.FC = () => {
   }
 
   return (
-    <VStack align="start" spacing={4} p={5} shadow="md" borderWidth="1px">
+    <VStack minW="375px" align="start" spacing={4} p={5} mx={8} shadow="md" borderWidth="1px">
       {/* Render project information */}
       <Text fontSize="xl" fontWeight="bold">
         {project.ceremony.data.title}
@@ -114,7 +130,7 @@ const ProjectPage: React.FC = () => {
       <Divider />
       <HStack>
         <Box as={FaGithub} w={6} h={6} />
-        <Text>{circuit.data.template.source}</Text>
+        <Text>{truncateString(circuit.data.template.source,25)}</Text>
       </HStack>
       <HStack>
         <Text>Start: {project.ceremony.data.startDate}</Text>
@@ -122,14 +138,14 @@ const ProjectPage: React.FC = () => {
       </HStack>
       <HStack>
         <Text>Circom Version: {circuit.data.compiler.version}</Text>
-        <Text>Commit Hash: {circuit.data.compiler.commitHash}</Text>
+        <Text>Commit Hash: {truncateString(circuit.data.compiler.commitHash)}</Text>
       </HStack>
       <Divider />
       <Text fontSize="sm" fontWeight="bold">
         Params:
       </Text>
       <HStack align="start" spacing={1}>
-        {circuit.data.template.paramsConfiguration.map((param: any, index: any) => (
+        {circuit.data.template.paramsConfiguration?.map((param: any, index: any) => (
           <Tag key={index} size="sm" variant="solid" colorScheme="blue">
             {param}
           </Tag>
@@ -163,7 +179,7 @@ const ProjectPage: React.FC = () => {
                 onClick={copyContribute}
                 fontWeight={"regular"}
               >
-                {copiedContribute ? "Copied" : `phase2cli auth && phase2cli contribute -c ${project.ceremony.data.prefix} -e <YOUR-ENTROPY-HERE>`}
+                {copiedContribute ? "Copied" : `phase2cli auth && phase2cli contribute ...`}
               </Button>
             </TabPanel>
             <TabPanel>
@@ -180,11 +196,11 @@ const ProjectPage: React.FC = () => {
                 <Grid templateColumns="repeat(2, 1fr)" gap={6}>
                   <Stat>
                     <StatLabel>Start Date</StatLabel>
-                    <StatNumber>{project.ceremony.data.startDate}</StatNumber>
+                    <StatNumber>{parseDate(project.ceremony.data.startDate)}</StatNumber>
                   </Stat>
                   <Stat>
                     <StatLabel>End Date</StatLabel>
-                    <StatNumber>{project.ceremony.data.endDate}</StatNumber>
+                    <StatNumber>{ parseDate(project.ceremony.data.endDate)}</StatNumber>
                   </Stat>
                   <Stat>
                     <StatLabel>Circom Version</StatLabel>
@@ -192,7 +208,7 @@ const ProjectPage: React.FC = () => {
                   </Stat>
                   <Stat>
                     <StatLabel>Commit Hash</StatLabel>
-                    <StatNumber>{circuit.data.compiler.commitHash}</StatNumber>
+                    <StatNumber>{truncateString(circuit.data.compiler.commitHash)}</StatNumber>
                   </Stat>
                 </Grid>
               </VStack>

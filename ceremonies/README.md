@@ -1,19 +1,18 @@
-# DefinitelySetup Pull Request Template
-## Title
+<p align="center">
+    <h1 align="center">
+        Ceremonies 🌵
+    </h1>
+    <p align="center">A folder where projects wanting to do a trusted setup phase2 ceremony can add their artifacts.</p>
+</p>
 
-[Short description of the new ceremony]
+| This folder contains a collection of ceremony artifacts (r1cs, wasm) and setup configuration file which are used to setup a phase2 trusted setup ceremony using [p0tion](https://github.com/privacy-scaling-explorations/p0tion/). |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 
-## Description
+To request a new ceremony to be setup, you will need to submit a PR with a folder including your ceremony files.
 
-Please provide a detailed description of the ceremony you are proposing.
+## Guidelines
 
-## Uploads
-
- - [ ] R1CS file
- - [ ] wasm file
- - [ ] Ceremony config file
-
-**Process**
+### Process
 
 - open the PR from a branch named $YOUR_PROJECT_NAME-ceremony
 - fill the *p0tionConfig.json* file accordingly:
@@ -32,10 +31,8 @@ Please provide a detailed description of the ceremony you are proposing.
     + main (for production runs)
     + staging (for a test run)
     + development (for a test run using experimental features such as VM verification)
-    
-Failing to follow the above instructions, will result in the CI checks failing. If all is done accordingly, an administrator will approve and merge your PR and a ceremony will be setup for you. 
 
-## Ceremony Details
+### Template in details
 
 **p0tionConfig.json** template:
 
@@ -113,12 +110,3 @@ Failing to follow the above instructions, will result in the CI checks failing. 
     - fixedTimeWindow - if selected fixed timeout please enter the time window here as a number
     - sequencePosition - a number with the circuit sequence position. Each sequence must be different and it should start from 1. The circuit with the lowest sequence number will be the first one which users will contribute to.
 
-> Note: If the constraint size is less than 1M, your PR will be automatically approved and merged at the end of the week.
-
-## Additional Notes
-
-If there are any additional notes, requirements or special instructions related to this ceremony, please specify them here.
-
-Confirmation
- - [ ] I have read and understood the DefinitelySetup guidelines and requirements.
- - [ ] I confirm that all uploaded files are correctly configured and adhere to the guidelines.

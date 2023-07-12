@@ -1,6 +1,9 @@
-# DefinitelySetup Open BETA
-The repository for high quality Trusted setups for groth16 based SNARKS
-
+<p align="center">
+    <h1 align="center">
+        DefinitelySetup Open BETA
+    </h1>
+    <p align="center">The repository for high quality Trusted setups for groth16 based SNARKS.</p>
+</p>
 
 ## Introduction
 DefinitelySetup is a product designed to run Trusted Setup ceremonies for groth16 based snarks. This document provides step-by-step guide on how to utilize DefinitelySetup.

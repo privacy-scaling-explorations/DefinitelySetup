@@ -1,38 +1,47 @@
+# Deploy to Firebase hosting 
 name: Deploy to Firebase - deploy on push
 
+# only on selected branches
 on:
   push:
     branches: [main, dev, staging]
 
 jobs:
-  build_and_preview_prod:
+  build_and_deploy_to_firebase_hosting:
     defaults:
       run:
         working-directory: ./web
     runs-on: ubuntu-latest
+    environment: 
+      ${{ (github.ref == 'refs/heads/main' && 'p0tion-production') ||
+      (github.ref == 'refs/heads/staging' && 'p0tion-staging') ||
+      (github.ref == 'refs/heads/dev' && 'p0tion-development') }}
     steps:
       - uses: actions/checkout@v3
 
       - name: Install deps and build
         run: |
           echo "${{ secrets.ENV_FILE }}" > ./.env
+          npm install -g pnpm
+          npm install -g firebase-tools
           pnpm install
           pnpm build
-
-      - name: Write serviceAccountKey in a JSON file
+      
+      - name: Write serviceAccountKey to a JSON file
         uses: jsdaniell/create-json@v1.2.1
         with:
-          name: "serviceAccountKey.json"
+          name: "./web/serviceAccountKey.json"
           json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
+      # Conditional deployment based on the target branch
       - name: Deploy
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ./serviceAccountKey.json
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            pnpm deploy:ci --project prod
+            pnpm deploy:prod
           elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-            pnpm deploy:ci --project dev
+            pnpm deploy:dev
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-            pnpm deploy:ci --project staging
+            pnpm deploy:staging
           fi
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./serviceAccountKey.json

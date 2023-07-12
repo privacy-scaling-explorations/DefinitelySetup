@@ -3,6 +3,8 @@ name: Validate Directory name and prefix
 
 on: 
   pull_request:
+    paths:
+      - 'ceremonies/**'
 
 jobs:
   verify:

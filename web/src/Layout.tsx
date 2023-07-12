@@ -72,11 +72,11 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           px={8}
           alignItems={"center"}
         >
-          <AspectRatio w="40px" maxH="35px" ratio={1 / 2}>
+          <AspectRatio w="40px" maxH="40px" ratio={1 / 1}>
             <Image
               boxSize="35px"
               objectFit="cover"
-              src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1689188233/logo1_kt9pqn.png"
+              src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1689199218/logo_l7p9hr.gif"
               alt="Dan Abramov"
             />
           </AspectRatio>

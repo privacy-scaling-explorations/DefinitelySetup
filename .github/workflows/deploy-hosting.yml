@@ -1,0 +1,35 @@
+name: Deploy to Firebase - deploy on push
+
+on:
+  push:
+    branches: [main, dev, staging]
+
+jobs:
+  build_and_preview_prod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install deps and build
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > ./.env
+          pnpm install
+          pnpm build
+
+      - name: Write serviceAccountKey in a JSON file
+        uses: jsdaniell/create-json@v1.2.1
+        with:
+          name: "serviceAccountKey.json"
+          json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Deploy
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./serviceAccountKey.json
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            pnpm deploy:ci --project prod
+          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
+            pnpm deploy:ci --project dev
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            pnpm deploy:ci --project staging
+          fi

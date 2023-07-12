@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "dev": "p0tion-ci-environment",
+    "staging": "p0tion-staging-environment",
+    "prod": "p0tion-production-environment"
+  }
+}

@@ -6,6 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "deploy:dev": "firebase deploy --only hosting --project dev",
+    "deploy:staging": "firebase deploy --only hosting --project staging",
+    "deploy:prod": "firebase deploy --only hosting --project prod",
+    "deploy:ci": "firebase deploy --only hosting",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

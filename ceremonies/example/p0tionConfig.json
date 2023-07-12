@@ -1,13 +1,10 @@
 {
-  "title": "Example Ceremony",
+  "title": "Example",
   "description": "This is an example ceremony",
   "startDate": "2023-08-07T00:00:00",
   "endDate": "2023-09-10T00:00:00",
   "timeoutMechanismType": "FIXED",
   "penalty": 10,
-  "timeoutThreshold": 3600,
-  "fixed": true,
-  "threshold": 10,
   "circuits": [
       {
           "description": "description",
@@ -24,8 +21,8 @@
               "cfOrVm": "CF"
           },
           "artifacts": {
-              "r1csLocalFilePath": "./circuit.r1cs",
-              "wasmLocalFilePath": "./circuit.wasm"
+              "r1csLocalFilePath": "./ceremonies/example/circuit.r1cs",
+              "wasmLocalFilePath": "./ceremonies/examplecircuit.wasm"
           },
           "name": "circuit",
           "dynamicThreshold": 0,

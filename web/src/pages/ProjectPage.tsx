@@ -5,7 +5,6 @@ import {
   VStack,
   HStack,
   Text,
-  Divider,
   Badge,
   Tabs,
   TabList,
@@ -17,7 +16,6 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  Grid,
   Tag,
   Heading,
   Spacer,
@@ -40,7 +38,7 @@ import {
   ProjectDataSchema,
   useProjectPageContext
 } from "../context/ProjectPageContext";
-import { FaGithub, FaCloudDownloadAlt, FaClipboard, FaCopy } from "react-icons/fa";
+import { FaCloudDownloadAlt, FaCopy } from "react-icons/fa";
 import { CeremonyState } from "../helpers/interfaces";
 import { bytesToMegabytes } from "./LandingPage/truncateString";
 import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi";

@@ -20,11 +20,14 @@ type LandingPageProviderProps = {
 
 export const LandingPageProvider: React.FC<LandingPageProviderProps> = ({ children }) => {
   const projectId = "A8CVrp2MMx7KO512KFdv" // aka ceremonyId.
-  const { loading: isLoading, setLoading: setIsLoading } = useContext(StateContext);
+  const { loading: isLoading, setLoading: setIsLoading, projects } = useContext(StateContext);
 
-  console.log("landing page")
+  // console.log("landing page")
 
-  const [projectData, setProjectData] = useState<ProjectData | null>(defaultProjectData);
+  const cachedData = projects.find((project) => project.ceremony.uid == projectId)
+  const initialProjectData = (cachedData? cachedData.ceremony : defaultProjectData)as  ProjectData
+  // console.log("landing page", initialProjectData)
+  const [projectData, setProjectData] = useState<ProjectData | null>(initialProjectData);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,9 +53,9 @@ export const LandingPageProvider: React.FC<LandingPageProviderProps> = ({ childr
         }
 
         // DEBUG ONLY.
-        console.log("circuits ", circuits)
-        console.log("participants ", participants)
-        console.log("contributions ", contributions)
+        // console.log("circuits ", circuits)
+        // console.log("participants ", participants)
+        // console.log("contributions ", contributions)
         
         // 3. Update project data.
         const updatedProjectData = {

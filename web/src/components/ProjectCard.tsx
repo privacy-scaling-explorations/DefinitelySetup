@@ -1,5 +1,18 @@
 import { Link } from "react-router-dom";
-import { VStack, HStack, Text, Box, Badge, Divider, Tag, Heading } from "@chakra-ui/react";
+import {
+  VStack,
+  HStack,
+  Text,
+  Box,
+  Badge,
+  Divider,
+  Tag,
+  Heading,
+  SimpleGrid,
+  BreadcrumbSeparator,
+  Breadcrumb,
+  BreadcrumbItem
+} from "@chakra-ui/react";
 import { FaGithub } from "react-icons/fa";
 import { Project } from "../context/StateContext";
 
@@ -7,85 +20,141 @@ interface ProjectCardProps {
   project: Project;
 }
 
+function getTimeDifference(date: Date): string {
+  const currentDate = new Date();
+  const differenceInTime = date.getTime() - currentDate.getTime();
+  const differenceInDays = Math.round(differenceInTime / (1000 * 3600 * 24));
+
+  if (differenceInDays < 0) {
+    return `${Math.abs(differenceInDays)} days ago`;
+  } else if (differenceInDays > 0) {
+    return `${differenceInDays} days from now`;
+  } else {
+    return "Today";
+  }
+}
+
+function parseDate(dateString: number): Date {
+  const parsedDate = new Date(dateString);
+  return parsedDate;
+}
+
+function formatDate(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = String(date.getFullYear()).slice(-2);
+
+  return `${month}.${day}.${year}`;
+}
+function truncateString(str: string, numCharacters = 5): string {
+  if (str.length <= numCharacters * 2) {
+    return str;
+  }
+
+  const firstPart = str.substr(0, numCharacters);
+  const lastPart = str.substr(-numCharacters);
+
+  return `${firstPart}...${lastPart}`;
+}
 export function ProjectCard({ project }: ProjectCardProps) {
   /// @todo work on multiple circuits.
   /// @todo uncomplete info for mocked fallback circuit data.
-  const circuit = project.circuits ? project.circuits[0] : {
-    data: {
-      fixedTimeWindow: 10,
-      template: {
-        source: "todo",
-        paramsConfiguration: [2,3,4]
-      },
-      compiler: {
-        version: "0.5.1",
-        commitHash: "0xabc"
-      },
-      avgTimings: {
-        fullContribution: 100
-      },
-      zKeySizeInBytes: 10,
-      waitingQueue: {
-        completedContributions: 0
-      }
-    }
-  }
-/**
- * Necessary data to define a ceremony database document.
- * @dev The data is both entered by the coordinator and derived.
- * @property {string} title - the title/name of the ceremony.
- * @property {string} description - a brief description of the ceremony.
- * @property {number} startDate - the start (opening to contributions) date for the ceremony (in ms).
- * @property {number} endDate - the end (closing to contributions) date for the ceremony (in ms).
- * @property {CeremonyTimeoutType} timeoutMechanismType - the timeout mechanism type used for avoiding blocking contribution behaviours.
- * @property {number} penalty - the amount of time expressed in minutes that the blocking contributor has to wait before joining the waiting queue again.
- * @property {string} prefix - the prefix of the ceremony derived from the name.
- * @property {CeremonyState} state - the current state of the ceremony.
- * @property {CeremonyType} type - the type of the ceremony.
- * @property {string} coordinatorId - the unique identifier of the coordinator.
- * @property {number} lastUpdated - the timestamp where the last update of the Firestore document has happened.
- */
+  const circuit = project.circuits
+    ? project.circuits[0]
+    : {
+        data: {
+          fixedTimeWindow: 10,
+          template: {
+            source: "todo",
+            paramsConfiguration: [2, 3, 4]
+          },
+          compiler: {
+            version: "0.5.1",
+            commitHash: "0xabc"
+          },
+          avgTimings: {
+            fullContribution: 100
+          },
+          zKeySizeInBytes: 10,
+          waitingQueue: {
+            completedContributions: 0
+          }
+        }
+      };
+
   return (
     <Link to={`/projects/${project.ceremony.data.title}`}>
-      <VStack align="start" spacing={4} p={5} shadow="md" borderWidth="1px" fontSize={12}>
+      <VStack align="start" spacing={0} py={3} px={6}  borderBottomWidth="1px"  fontSize={12}>
         {/* Render project information */}
-        <Heading fontSize={14} fontWeight="bold">
-          {project.ceremony.data.title}
-        </Heading>
-        <Text  >{project.ceremony.data.description}</Text>
-        <Divider />
-        <HStack spacing={4}>
-          <Badge colorScheme={project.ceremony.data.timeoutMechanismType ? "green" : "gray"}>
-            {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
-          </Badge>
-          <Badge colorScheme="blue">Penalty: {project.ceremony.data.penalty}</Badge>
-          <Badge colorScheme="blue">Timeout: {circuit.data.fixedTimeWindow} seconds</Badge>
-        </HStack>
-        <Divider />
-        <HStack>
-          <Box as={FaGithub} w={6} h={6} />
-          <Text>{circuit.data.template.source}</Text>
-        </HStack>
-        <HStack>
-          <Text>Start: {project.ceremony.data.startDate}</Text>
-          <Text>End: {project.ceremony.data.endDate}</Text>
-        </HStack>
-        <HStack>
-          <Text>Circom Version: {circuit.data.compiler.version}</Text>
-          <Text>Commit Hash: {circuit.data.compiler.commitHash}</Text>
-        </HStack>
-        <Divider />
-        <Text fontSize="sm" fontWeight="bold">
+        <VStack align="start" spacing={2} py={2} alignSelf={"stretch"} >
+          <Heading fontSize={16} fontWeight="bold">
+            {project.ceremony.data.title}
+          </Heading>
+          <Text fontSize={12} fontWeight="regular" color={"gray.500"}>
+            {project.ceremony.data.description}
+          </Text>
+      
+        </VStack>
+
+        <VStack align="start" spacing={2} py={2} alignSelf={"stretch"}>
+          <HStack
+            spacing={1}
+            alignSelf={"stretch"}
+            alignItems={"flex-start"}
+            justifyContent={"flex-start"}
+            flexWrap={"wrap"}
+          >
+            <Badge
+              px={2}
+              py={1}
+              colorScheme={project.ceremony.data.timeoutMechanismType ? "green" : "gray"}
+            >
+              {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
+            </Badge>
+            <Badge px={2} py={1} colorScheme="blue">
+              Penalty: {project.ceremony.data.penalty}
+            </Badge>
+            <Badge px={2} py={1} colorScheme="green">
+              {project.ceremony.data.state}
+            </Badge>
+            <Badge px={2} py={1} colorScheme="red">
+              {" "}
+              {project.ceremony.data.type}
+            </Badge>
+            <Badge px={2} py={1} colorScheme="purple">
+              {" "}
+              {truncateString(project.ceremony.uid, 5)}
+            </Badge>
+          </HStack>
+
+          <Breadcrumb separator="•">
+            <BreadcrumbItem>
+              <Text fontSize={12} fontWeight="regular" color={"gray.500"}>
+                {" "}
+                 {formatDate(parseDate(project.ceremony.data.startDate))}
+              </Text>
+            </BreadcrumbItem>
+
+            <BreadcrumbItem>
+              <Text fontSize={12} fontWeight="regular" color={"gray.500"}>
+                {" "}
+                Deadline: {getTimeDifference(parseDate(project.ceremony.data.endDate))}
+              </Text>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        </VStack>
+
+        {/* <Text fontSize="sm" fontWeight="bold">
           Params:
-        </Text>
-        <HStack align="start" spacing={1}>
+        </Text> */}
+        {/* <HStack align="start" spacing={1}>
           {circuit.data.template.paramsConfiguration.map((param: any, index: any) => (
             <Tag key={index} size="sm" variant="solid" colorScheme="blue">
               {param}
             </Tag>
           ))}
-        </HStack>
-    </VStack>
-    </Link >
+        </HStack> */}
+      </VStack>
+    </Link>
   );
 }

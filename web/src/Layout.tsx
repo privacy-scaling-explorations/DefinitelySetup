@@ -46,7 +46,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           colorScheme="pink"
         />
       </VStack>
-      <VStack minHeight="100vh">
+      <VStack minHeight="100vh" spacing={0}>
         {/* Show a loading progress bar if isLoading is true */}
 
         <HStack pb={2} pt={3} borderBottomWidth={1} borderColor={"gray.100"} alignSelf="stretch" justifyContent="space-between" minH={"42px"} alignItems={"center"} px={8}>
@@ -67,11 +67,10 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           alignSelf="stretch"
           justifyContent="space-between"
         
-          my={2}
           px={4}
           alignItems={"center"}
           pb={5}
-          pt={1}
+          pt={5}
           shadow="md"
           // borderBottomWidth={1} borderColor={"gray.100"} 
         >
@@ -98,7 +97,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
               fontSize={14}
               color={"gray.600"}
             />
-            <InputRightElement width="6.5rem" minH="50px">
+            <InputRightElement width="6.5rem" minH="50px"  >
               <Button  fontSize={14} width="6.5rem" variant="outline" borderRadius={0} borderColor={"transparent"} bg={"gray.800"} color={"gray.100"} minH="50px">Search</Button>
             </InputRightElement>
           </InputGroup>

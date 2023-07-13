@@ -83,8 +83,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
   const columns = useBreakpointValue({ base: 1, md: 2, lg: 2 });
 
   return (
-    <VStack     alignSelf={"stretch"}
-    alignItems={"center"}   spacing={8}>
+    <VStack alignSelf={"stretch"} alignItems={"center"} spacing={8}>
       <VStack
         alignSelf={"stretch"}
         alignItems={"center"}
@@ -95,15 +94,25 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
         bgPosition="center"
         bgRepeat="no-repeat"
         pb={8}
-  
       >
-       
-        <VStack alignSelf={"stretch"} alignItems={"center"} justifyContent={"center"} spacing={8} py={16}> 
+        <VStack
+          alignSelf={"stretch"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          spacing={8}
+          py={16}
+        >
           <Text textAlign={"center"} fontWeight={"700"} fontSize={"3.5rem"} maxW="15ch">
             {" "}
-            How it works 
+            How it works
           </Text>
-          <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch" letterSpacing={"0.01rem"}>
+          <Text
+            textAlign={"center"}
+            fontWeight={"500"}
+            fontSize={"12px"}
+            maxW="50ch"
+            letterSpacing={"0.01rem"}
+          >
             {" "}
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium odio corrupti
             nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti cum, amet maxime
@@ -177,7 +186,6 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
           {projectClean.description}
         </Text>
 
-
         <Box alignItems="center" py={4}>
           <SimpleGrid columns={columns} spacing={6}>
             {circuitsClean.map((circuit, index) => (
@@ -235,39 +243,40 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
             ))}
           </SimpleGrid>
         </Box>
-
-        <HStack justifyContent={"space-between"} alignSelf={"stretch"}>
-          <Heading fontSize="18" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
-            Contributions
-          </Heading>
-          <Spacer />
-        </HStack>
-        <Box overflowX="auto">
-          <Table fontSize={12} variant="simple">
-            <Thead>
-              <Tr>
-                <Th>Doc</Th>
-                <Th>Contribution Date</Th>
-                {/* <Th>Contribution Time</Th> */}
-                <Th>Hashes</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {contributionsClean.map((contribution, index) => (
-                <Tr key={index}>
-                  <Td>{contribution.doc}</Td>
-                  <Td>{contribution.lastUpdated}</Td>
-                  {/* <Td>{contribution.verificationComputationTime}</Td> */}
-                  <Td>
-                    <Tooltip label={contribution.lastZkeyBlake2bHash} aria-label="Last Zkey Hash">
-                      <Tag fontSize={12}>{contribution.lastZkeyBlake2bHash}</Tag>
-                    </Tooltip>
-                  </Td>
+        <VStack maxW={"390px"}>
+          <HStack justifyContent={"space-between"} alignSelf={"stretch"} >
+            <Heading fontSize="18" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
+              Contributions
+            </Heading>
+            <Spacer />
+          </HStack>
+          <Box maxW={"320px"} overflowX={"scroll"}>
+            <Table fontSize={12} variant="simple">
+              <Thead>
+                <Tr>
+                  <Th>Doc</Th>
+                  <Th >Contribution Date</Th>
+                  {/* <Th>Contribution Time</Th> */}
+                  <Th>Hashes</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
+              </Thead>
+              <Tbody>
+                {contributionsClean.map((contribution, index) => (
+                  <Tr key={index}>
+                    <Td>{contribution.doc}</Td>
+                    <Td>{contribution.lastUpdated}</Td>
+                    {/* <Td>{contribution.verificationComputationTime}</Td> */}
+                    <Td>
+                      <Tooltip label={contribution.lastZkeyBlake2bHash} aria-label="Last Zkey Hash">
+                        <Tag fontSize={12}>{contribution.lastZkeyBlake2bHash}</Tag>
+                      </Tooltip>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </Box>
+        </VStack>
       </Box>
     </VStack>
   );

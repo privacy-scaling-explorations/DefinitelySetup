@@ -1,0 +1,404 @@
+{
+    "title": "RLN Trusted Setup Ceremony",
+    "description": "This is a trusted setup ceremony for the Rate-Limiting Nullifier protocol",
+    "startDate": "2023-07-14T00:00:00",
+    "endDate": "2023-08-14T00:00:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 10,
+    "timeoutThreshold": 3600,
+    "fixed": true,
+    "threshold": 10,
+    "circuits": [
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [16, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln16.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln16.wasm"
+            },
+            "name": "RLN-16-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        }, 
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [17, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln17.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln17.wasm"
+            },
+            "name": "RLN-17-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [18, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln18.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln18.wasm"
+            },
+            "name": "RLN-18-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [19, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln19.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln19.wasm"
+            },
+            "name": "RLN-19-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [20, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln20.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln20.wasm"
+            },
+            "name": "RLN-20-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [21, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln21.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln21.wasm"
+            },
+            "name": "RLN-21-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [22, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln22.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln22.wasm"
+            },
+            "name": "RLN-22-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [23, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln23.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln23.wasm"
+            },
+            "name": "RLN-23-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [24, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln24.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln24.wasm"
+            },
+            "name": "RLN-24-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [25, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln25.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln25.wasm"
+            },
+            "name": "RLN-25-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [26, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln26.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln26.wasm"
+            },
+            "name": "RLN-26-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [27, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln27.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln27.wasm"
+            },
+            "name": "RLN-27-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [28, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln28.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln28.wasm"
+            },
+            "name": "RLN-28-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [29, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln29.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln29.wasm"
+            },
+            "name": "RLN-29-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [30, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln30.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln30.wasm"
+            },
+            "name": "RLN-30-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [31, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln31.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln31.wasm"
+            },
+            "name": "RLN-31-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "description",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": [32, 16]
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/rln32.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/rln32.wasm"
+            },
+            "name": "RLN-32-Depth",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        }
+    ]
+}

@@ -135,6 +135,7 @@ const ProjectPage: React.FC = () => {
 
     transcriptBlake2bHash: truncateString(contribution.data.files.transcriptBlake2bHash, 10)
   })) ??[]
+
   const circuit = validatedProjectData.circuits
     ? validatedProjectData.circuits[0]
     : {
@@ -429,6 +430,7 @@ const ProjectPage: React.FC = () => {
                   corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti
                   cum, amet maxime nesciunt? Laudantium officia iste quo id.
                 </Text>
+
               </VStack>
             </TabPanel>
 

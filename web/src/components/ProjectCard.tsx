@@ -74,5 +74,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </VStack>
       </VStack>
     </Link>
+
   );
 }

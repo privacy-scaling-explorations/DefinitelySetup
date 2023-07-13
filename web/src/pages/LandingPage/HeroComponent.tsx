@@ -83,6 +83,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
   const columns = useBreakpointValue({ base: 1, md: 2, lg: 2 });
 
   return (
+
     <VStack alignSelf={"stretch"} alignItems={"center"} spacing={8}>
       <VStack
         alignSelf={"stretch"}
@@ -113,6 +114,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
             maxW="50ch"
             letterSpacing={"0.01rem"}
           >
+
             {" "}
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium odio corrupti
             nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti cum, amet maxime
@@ -243,7 +245,6 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
             ))}
           </SimpleGrid>
         </Box>
-
         <VStack maxW={"390px"}>
           <HStack justifyContent={"space-between"} alignSelf={"stretch"} >
             <Heading fontSize="18" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>

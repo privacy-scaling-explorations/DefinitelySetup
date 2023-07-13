@@ -19,7 +19,7 @@ import React, { useEffect, useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { StateContext } from "./context/StateContext";
 import { ColorModeSwitch } from "./components/ColorModeSwitch";
-import { FaGithub, FaHeart, FaSearch } from "react-icons/fa";
+import { FaHeart, FaSearch } from "react-icons/fa";
 
 // eslint-ignore-next-line no-empty-pattern
 const Layout: React.FC<React.PropsWithChildren> = ({}) => {

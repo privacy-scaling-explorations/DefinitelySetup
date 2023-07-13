@@ -3,17 +3,11 @@ import {
   VStack,
   HStack,
   Text,
-  Box,
   Badge,
-  Divider,
-  Tag,
   Heading,
-  SimpleGrid,
-  BreadcrumbSeparator,
   Breadcrumb,
   BreadcrumbItem
 } from "@chakra-ui/react";
-import { FaGithub } from "react-icons/fa";
 import { Project } from "../context/StateContext";
 
 interface ProjectCardProps {
@@ -59,28 +53,6 @@ function truncateString(str: string, numCharacters = 5): string {
 export function ProjectCard({ project }: ProjectCardProps) {
   /// @todo work on multiple circuits.
   /// @todo uncomplete info for mocked fallback circuit data.
-  const circuit = project.circuits
-    ? project.circuits[0]
-    : {
-        data: {
-          fixedTimeWindow: 10,
-          template: {
-            source: "todo",
-            paramsConfiguration: [2, 3, 4]
-          },
-          compiler: {
-            version: "0.5.1",
-            commitHash: "0xabc"
-          },
-          avgTimings: {
-            fullContribution: 100
-          },
-          zKeySizeInBytes: 10,
-          waitingQueue: {
-            completedContributions: 0
-          }
-        }
-      };
 
   return (
     <Link to={`/projects/${project.ceremony.data.title}`}>

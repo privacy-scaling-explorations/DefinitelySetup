@@ -3,9 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { StateContext, useStateContext } from "./StateContext";
 import {
-  CeremonyTimeoutType,
-  CeremonyState,
-  CeremonyType,
   CircuitDocumentReferenceAndData,
   ContributionDocumentReferenceAndData,
   ParticipantDocumentReferenceAndData

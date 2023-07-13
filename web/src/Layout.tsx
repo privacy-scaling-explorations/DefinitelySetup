@@ -1,4 +1,5 @@
-// Layout.tsx
+import React, { useEffect, useContext } from "react";
+import { Link, Outlet } from "react-router-dom";
 
 import {
   VStack,
@@ -15,14 +16,12 @@ import {
   Heading,
   Spacer
 } from "@chakra-ui/react";
-import React, { useEffect, useContext } from "react";
-import { Link, Outlet } from "react-router-dom";
+
+import { FaHeart, FaSearch } from "react-icons/fa";
 import { StateContext } from "./context/StateContext";
 import { ColorModeSwitch } from "./components/ColorModeSwitch";
-import { FaHeart, FaSearch } from "react-icons/fa";
 
-// eslint-ignore-next-line no-empty-pattern
-const Layout: React.FC<React.PropsWithChildren> = ({}) => {
+const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
   const { search, setSearch, loading, setLoading } = useContext(StateContext);
 
   useEffect(() => console.log("searchL", search), [search]);
@@ -34,7 +33,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
 
     return () => clearTimeout(timer);
   }, []);
-
+ 
   return (
     <>
       <VStack alignSelf="stretch" width={"100%"}>
@@ -43,13 +42,11 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
           hasStripe
           width={"100%"}
           isIndeterminate={loading}
-          bg={"linear-gradient(139deg, #fb8817, #ff4b01, #c12127, #e02aff)"}
+          bg={"radial-gradient(circle farthest-side, #fceabb, #f8b500)"}
           colorScheme="pink"
         />
       </VStack>
       <VStack minHeight="100vh" spacing={0}>
-        {/* Show a loading progress bar if isLoading is true */}
-
         <HStack pb={2} pt={3} borderBottomWidth="1px"  alignSelf="stretch" justifyContent="space-between" minH={"42px"} alignItems={"center"} px={8}>
           <HStack as={Link} to="/" spacing="24px">
             <Box as={FaHeart} w={4} h={4} />
@@ -58,7 +55,6 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
             </Heading>
           </HStack>
           <HStack spacing="24px" fontSize={14}>
-            {/* Navigation links */}
             <Heading as={Link} fontSize={14}  fontWeight={"normal"}  to="/page2">About</Heading>
             <Heading as={Link} fontSize={14} fontWeight={"normal"}   to="/page3">Documentation</Heading>
             <ColorModeSwitch />
@@ -67,24 +63,21 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
         <HStack
           alignSelf="stretch"
           justifyContent="space-between"
-        
           px={4}
           alignItems={"center"}
           pb={5}
           pt={5}
           shadow="md"
-          // borderBottomWidth={1} borderColor={"gray.100"} 
         >
           <AspectRatio w="50px" maxH="50px" ratio={1 / 1} mx={4}>
             <Image
               boxSize="35px"
               objectFit="cover"
               src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1689199506/logo-slow_vxtmkc.gif"
-              alt="Dan Abramov"
+              alt="Logo"
             />
           </AspectRatio>
-         {/* Search input field */}
-         <InputGroup minH="50px">
+          <InputGroup minH="50px">
             <InputLeftElement pointerEvents="none" minH="50px" >
               <Box as={FaSearch} w={4} h={4} color={"gray.600"} />
             </InputLeftElement>
@@ -102,11 +95,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
               <Button  fontSize={14} width="6.5rem" variant="outline" borderRadius={0} borderColor={"transparent"} bg={"gray.800"} color={"gray.100"} minH="50px">Search</Button>
             </InputRightElement>
           </InputGroup>
-    <Spacer minW={["15px","70px","70px"]} />
-          {/* <Button leftIcon={<Box as={FaGithub} w={4} h={4} />} minWidth="6.5rem" minH="51.5px" borderRadius={0}  variant="outline" fontSize={14}>
-            Login
-          </Button> */}
-        
+          <Spacer minW={["15px","70px","70px"]} />
         </HStack>
         <Outlet />
       </VStack>

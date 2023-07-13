@@ -1,168 +1,274 @@
-
 import {
   Box,
-  VStack,
-  HStack,
   Text,
-  Divider,
-  Badge,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel, Stat,
+  Stat,
   StatLabel,
   StatNumber,
-  Grid,
+  Heading,
+  SimpleGrid,
+  Badge,
+  Table,
   Tag,
-  Heading
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
+  Flex,
+  useBreakpointValue,
+  Icon,
+  VStack,
+  HStack,
+  Button,
+  Spacer
 } from "@chakra-ui/react";
 import { Project } from "../../context/StateContext";
-import { FaGithub } from "react-icons/fa";
-import { truncateString, parseDate } from "./truncateString";
+import {
+  CircuitDocumentReferenceAndData,
+  ContributionDocumentReferenceAndData
+} from "../../helpers/interfaces";
+import { bytesToMegabytes, parseDate, truncateString } from "./truncateString";
+import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi"; // you need to install `react-icons` for this.
+import { Link } from "react-router-dom";
 
+function toBackgroundImagefromSrc(src: string) {
+  return "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('" + src + "')";
+}
 interface HeroComponentProps {
-  project: Project, circuit: any
+  project: Project;
+  circuits: CircuitDocumentReferenceAndData[];
+  contributions: ContributionDocumentReferenceAndData[];
 }
 
-export function HeroComponent({ project, circuit }: HeroComponentProps) {
-  return <VStack
-    fontSize={12}
-    minW="375px"
-    align="start"
-    spacing={4}
-    p={5}
-    mx={8}
-    shadow="md"
-    borderWidth="1px"
-  >
-    {/* Render project information */}
-    <Heading fontSize={14} fontWeight="bold">
-      {project.ceremony.data.title}
-    </Heading>
-    <Text>{project.ceremony.data.description}</Text>
-    <Divider />
-    <HStack spacing={4}>
-      <Badge colorScheme={project.ceremony.data.timeoutMechanismType ? "green" : "gray"}>
-        {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
-      </Badge>
-      <Badge colorScheme="blue">Penalty: {project.ceremony.data.penalty}</Badge>
-      <Badge colorScheme="blue">Timeout: {circuit.data.fixedTimeWindow} seconds</Badge>
-    </HStack>
-    <Divider />
-    <HStack>
-      <Box as={FaGithub} w={6} h={6} />
-      <Text>{truncateString(circuit.data.template.source, 25)}</Text>
-    </HStack>
-    <HStack>
-      <Text>Start: {parseDate(project.ceremony.data.startDate)}</Text>
-      <Text>End: {parseDate(project.ceremony.data.endDate)}</Text>
-    </HStack>
-    <HStack>
-      <Text>Circom Version: {circuit.data.compiler.version}</Text>
-      <Text>Commit Hash: {truncateString(circuit.data.compiler.commitHash)}</Text>
-    </HStack>
-    <Divider />
-    <Text fontSize={12} fontWeight="bold">
-      Params:
-    </Text>
-    <HStack align="start" spacing={1}>
-      {circuit.data.template.paramsConfiguration?.map((param: any, index: any) => (
-        <Tag key={index} size="sm" variant="solid" colorScheme="blue">
-          {param}
-        </Tag>
-      ))}
-    </HStack>
-    <VStack maxW="700px" w="100%" marginX={"auto"}>
-      <Tabs>
-        <TabList>
+export function HeroComponent({ project, circuits, contributions }: HeroComponentProps) {
+  const projectClean = {
+    title: project.ceremony.data.title,
+    description: project.ceremony.data.description,
+    state: project.ceremony.data.state
+  };
 
-          <Tab fontSize={12}>Ceremony Configuration</Tab>
-          <Tab fontSize={12}>Live Data</Tab>
+  const circuitsClean = circuits.map((circuit) => ({
+    name: circuit.data.name,
+    description: circuit.data.description,
+    constraints: circuit.data.metadata?.constraints,
+    pot: circuit.data.metadata?.pot,
+    privateInputs: circuit.data.metadata?.privateInputs,
+    publicInputs: circuit.data.metadata?.publicInputs,
+    curve: circuit.data.metadata?.curve,
+    wires: circuit.data.metadata?.wires,
+    completedContributions: circuit.data.waitingQueue?.completedContributions,
+    currentContributor: circuit.data.waitingQueue?.currentContributor,
+    memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
+      .toString()
+      .substr(0, 5),
+    avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
+    maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
+  }));
 
-        </TabList>
+  const contributionsClean = contributions.map((contribution) => ({
+    doc: contribution.data.files.lastZkeyFilename,
 
-        <TabPanels>
+    verificationComputationTime: contribution.data.verificationComputationTime,
 
-          <TabPanel>
-            <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-              <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-                <Text fontSize={12} fontWeight="bold">
-                  Ceremony Configuration:
-                </Text>
-                <Text color="gray.500">
-                  These are the main configuration parameters for the ceremony.
-                </Text>
-              </VStack>
+    valid: contribution.data.valid,
 
-              <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-                <Stat>
-                  <StatLabel fontSize={12}>Start Date</StatLabel>
-                  <StatNumber fontSize={16}>
-                    {parseDate(project.ceremony.data.startDate)}
-                  </StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel fontSize={12}>End Date</StatLabel>
-                  <StatNumber fontSize={16}>
-                    {parseDate(project.ceremony.data.endDate)}
-                  </StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel fontSize={12}>Circom Version</StatLabel>
-                  <StatNumber fontSize={16}>{circuit.data.compiler.version}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel fontSize={12}>Commit Hash</StatLabel>
-                  <StatNumber fontSize={16}>
-                    {truncateString(circuit.data.compiler.commitHash)}
-                  </StatNumber>
-                </Stat>
-              </Grid>
-            </VStack>
-          </TabPanel>
-          <TabPanel>
-            <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-              <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-                <Text fontSize={12} fontWeight="bold">
-                  Live Data:
-                </Text>
-                <Text color="gray.500">Real-time data related to the project.</Text>
-              </VStack>
-              <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full">
-                <Stat>
-                  <StatLabel fontSize={12}>Average Contribution Time</StatLabel>
-                  <StatNumber fontSize={16}>
-                    {circuit.data.avgTimings?.fullContribution}
-                  </StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel fontSize={12}>Disk Space Required</StatLabel>
-                  <StatNumber fontSize={16}>
-                    {circuit.data.zKeySizeInBytes} {"Bytes"}
-                  </StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel fontSize={12}>Last Contributor ID</StatLabel>
-                  <StatNumber fontSize={16}>
-                    {circuit.data.waitingQueue?.completedContributions! > 0
-                      ? "do something on contribution to retrieve..."
-                      : "nobody"}
-                  </StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel fontSize={12}>ZKey Index</StatLabel>
-                  <StatNumber fontSize={16}>
-                    {circuit.data.waitingQueue?.completedContributions! + 1}
-                  </StatNumber>
-                </Stat>
-              </Grid>
-            </VStack>
-          </TabPanel>
+    lastUpdated: parseDate(contribution.data.lastUpdated),
+
+    lastZkeyBlake2bHash: truncateString(contribution.data.files.lastZkeyBlake2bHash, 10),
+
+    transcriptBlake2bHash: truncateString(contribution.data.files.transcriptBlake2bHash, 10)
+  }));
+
+  const columns = useBreakpointValue({ base: 1, md: 2, lg: 2 });
+
+  return (
+    <VStack     alignSelf={"stretch"}
+    alignItems={"center"}   spacing={8}>
+      <VStack
+        alignSelf={"stretch"}
+        alignItems={"center"}
+        bgImage={toBackgroundImagefromSrc(
+          "https://cdn.midjourney.com/7040b05f-3757-4cd5-80e6-21484ea03987/0_2.png"
+        )}
+        bgSize="cover"
+        bgPosition="center"
+        bgRepeat="no-repeat"
+        pb={8}
+  
+      >
+       
+        <VStack alignSelf={"stretch"} alignItems={"center"} justifyContent={"center"} spacing={8} py={16}> 
+          <Text textAlign={"center"} fontWeight={"700"} fontSize={"3.5rem"} maxW="15ch">
+            {" "}
+            How it works 
+          </Text>
+          <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch" letterSpacing={"0.01rem"}>
+            {" "}
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium odio corrupti
+            nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti cum, amet maxime
+            nesciunt? Laudantium officia iste quo id.
+          </Text>
+          <Text textAlign={"center"} fontWeight={"600"} fontSize={"18px"} maxW="30ch">
+            {" "}
+            Search for ceremonies, contribute your entropy to the system.
+          </Text>
+          <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch">
+            {" "}
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium odio corrupti
+            nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti cum, amet maxime
+            nesciunt? Laudantium officia iste quo id.
+          </Text>
+
+          <HStack>
+            <Button
+              as={Link}
+              to="/projects/ceremonysetup0123p0tion"
+              fontSize={14}
+              width="6.5rem"
+              variant="outline"
+              borderRadius={0}
+              borderColor={"transparent"}
+              bg={"gray.800"}
+              color={"gray.100"}
+              minH="50px"
+            >
+              Contribute
+            </Button>
+            <Button
+              as={Link}
+              to="/projects/ceremonysetup0123p0tion"
+              fontSize={14}
+              width="6.5rem"
+              variant="outline"
+              borderRadius={0}
+              borderColor={"transparent"}
+              bg={"gray.800"}
+              color={"gray.100"}
+              minH="50px"
+            >
+              Watch
+            </Button>
+          </HStack>
+        </VStack>
+      </VStack>
+      <Box alignItems="center" p={8} alignSelf={"stretch"} maxW={"container.sm"} mx="auto">
+        <HStack justifyContent={"space-between"} alignSelf={"stretch"}>
+          <Heading size="md" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
+            Live Look
+          </Heading>
+          <Spacer />
+        </HStack>
+        <VStack
+          alignSelf={"stretch"}
+          alignItems={"center"}
+          justifyContent={"center"}
+          spacing={8}
+        ></VStack>
+        <HStack justifyContent={"space-between"}>
+          <Heading fontSize={18} mb={6}>
+            {projectClean.title}
+          </Heading>
+          <Badge colorScheme="green" p="2" mb="4">
+            {projectClean.state}
+          </Badge>
+        </HStack>
+        <Text fontSize={14} mb={4}>
+          {projectClean.description}
+        </Text>
 
 
-        </TabPanels>
-      </Tabs>
+        <Box alignItems="center" py={4}>
+          <SimpleGrid columns={columns} spacing={6}>
+            {circuitsClean.map((circuit, index) => (
+              <Box key={index} borderWidth={1} borderRadius="lg" p={4}>
+                <Heading fontSize={16} size="md" mb={2}>
+                  {circuit.name} - {circuit.description}
+                </Heading>
+                <Flex wrap="wrap" mb={4}>
+                  <Tag fontSize={10} size="sm" colorScheme="purple" mr={2} mb={2}>
+                    <Icon as={FiTarget} mr={1} />
+                    Constraints: {circuit.constraints}
+                  </Tag>
+                  <Tag fontSize={10} size="sm" colorScheme="cyan" mr={2} mb={2}>
+                    <Icon as={FiZap} mr={1} />
+                    Pot: {circuit.pot}
+                  </Tag>
+                  <Tag fontSize={10} size="sm" colorScheme="yellow" mr={2} mb={2}>
+                    <Icon as={FiEye} mr={1} />
+                    Private Inputs: {circuit.privateInputs}
+                  </Tag>
+                  <Tag fontSize={10} size="sm" colorScheme="pink" mr={2} mb={2}>
+                    <Icon as={FiUser} mr={1} />
+                    Public Inputs: {circuit.publicInputs}
+                  </Tag>
+                  <Tag fontSize={10} size="sm" colorScheme="blue" mr={2} mb={2}>
+                    <Icon as={FiMapPin} mr={1} />
+                    Curve: {circuit.curve}
+                  </Tag>
+                  <Tag fontSize={10} size="sm" colorScheme="teal" mr={2} mb={2}>
+                    <Icon as={FiWifi} mr={1} />
+                    Wires: {circuit.wires}
+                  </Tag>
+                </Flex>
+                <SimpleGrid columns={[2, 2]} spacing={6}>
+                  <Flex justify="space-between" align="center">
+                    <Stat>
+                      <StatLabel fontSize={12}>Completed Contributions</StatLabel>
+                      <StatNumber fontSize={16}>{circuit.completedContributions}</StatNumber>
+                    </Stat>
+                  </Flex>
+                  <Stat>
+                    <StatLabel fontSize={12}>Memory Requirement</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.memoryRequirement} mb</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel fontSize={12}>Avg Contribution Time</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.avgTimingContribution}s</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel fontSize={12}>Max Contribution Time</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.maxTiming}s</StatNumber>
+                  </Stat>
+                </SimpleGrid>
+              </Box>
+            ))}
+          </SimpleGrid>
+        </Box>
+
+        <HStack justifyContent={"space-between"} alignSelf={"stretch"}>
+          <Heading fontSize="18" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
+            Contributions
+          </Heading>
+          <Spacer />
+        </HStack>
+        <Box overflowX="auto">
+          <Table fontSize={12} variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Doc</Th>
+                <Th>Contribution Date</Th>
+                {/* <Th>Contribution Time</Th> */}
+                <Th>Hashes</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {contributionsClean.map((contribution, index) => (
+                <Tr key={index}>
+                  <Td>{contribution.doc}</Td>
+                  <Td>{contribution.lastUpdated}</Td>
+                  {/* <Td>{contribution.verificationComputationTime}</Td> */}
+                  <Td>
+                    <Tooltip label={contribution.lastZkeyBlake2bHash} aria-label="Last Zkey Hash">
+                      <Tag fontSize={12}>{contribution.lastZkeyBlake2bHash}</Tag>
+                    </Tooltip>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      </Box>
     </VStack>
-  </VStack>;
+  );
 }

@@ -218,7 +218,7 @@ const ProjectPage: React.FC = () => {
                   </Text>
                 </VStack>
 
-                <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+                <Grid templateColumns="repeat(2, 1fr)" gap={6} >
                   <Stat>
                     <StatLabel fontSize={12}>Start Date</StatLabel>
                     <StatNumber fontSize={16}>

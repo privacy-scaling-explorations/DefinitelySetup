@@ -9,7 +9,6 @@ import {
   Breadcrumb,
   BreadcrumbItem
 } from "@chakra-ui/react";
-
 import { Project } from "../context/StateContext";
 
 
@@ -74,5 +73,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </VStack>
       </VStack>
     </Link>
+
   );
 }

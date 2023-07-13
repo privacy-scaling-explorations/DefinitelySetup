@@ -1,14 +1,32 @@
 import { createContext, useContext, useEffect, useState } from "react";
+
 import { StateContext } from "./StateContext";
-import {  CircuitDocumentReferenceAndData, ContributionDocumentReferenceAndData, ParticipantDocumentReferenceAndData } from "../helpers/interfaces";
-import { initializeFirebaseCoreServices, getAllCollectionDocs, getCeremonyCircuits } from "../helpers/utils";
+
+import {
+  initializeFirebaseCoreServices,
+  getAllCollectionDocs,
+  getCeremonyCircuits
+} from "../helpers/utils";
+import {
+  CircuitDocumentReferenceAndData,
+  ContributionDocumentReferenceAndData,
+  ParticipantDocumentReferenceAndData
+} from "../helpers/interfaces";
 import { DocumentData } from "firebase/firestore";
-import { ProjectData, ProjectDataSchema, ProjectPageContextProps, defaultProjectData } from "./ProjectPageContext";
+import {
+  defaultProjectData
+} from "./ProjectPageContext";
 
-
-
-const LandingPageContext = createContext<ProjectPageContextProps>({
-  projectData: defaultProjectData,
+export type LandingPageContextProps = {
+  projectData: {
+    circuits?: CircuitDocumentReferenceAndData[];
+    participants?: ParticipantDocumentReferenceAndData[];
+    contributions?: ContributionDocumentReferenceAndData[];
+  };
+  isLoading: boolean;
+};
+const LandingPageContext = createContext<LandingPageContextProps>({
+  projectData: {},
   isLoading: false
 });
 
@@ -19,56 +37,61 @@ type LandingPageProviderProps = {
 };
 
 export const LandingPageProvider: React.FC<LandingPageProviderProps> = ({ children }) => {
-  const projectId = "A8CVrp2MMx7KO512KFdv" // aka ceremonyId.
-  const { loading: isLoading, setLoading: setIsLoading } = useContext(StateContext);
+  const { loading: isLoading, setLoading: setIsLoading, projects } = useContext(StateContext);
 
-  console.log("landing page")
+  const projectId = "A8CVrp2MMx7KO512KFdv"; // aka ceremonyId.
 
-  const [projectData, setProjectData] = useState<ProjectData | null>(defaultProjectData);
+  const cachedData = projects.find((project) => project.ceremony.uid == projectId);
+  const initialProjectData = (cachedData ? cachedData.ceremony : defaultProjectData) as {
+    circuits: CircuitDocumentReferenceAndData[];
+    participants: ParticipantDocumentReferenceAndData[];
+    contributions: ContributionDocumentReferenceAndData[];
+  };
+  const [projectData, setProjectData] = useState<{
+    circuits: CircuitDocumentReferenceAndData[];
+    participants: ParticipantDocumentReferenceAndData[];
+    contributions: ContributionDocumentReferenceAndData[];
+  }>(initialProjectData);
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // 0. Prepare service.
-        const { firestoreDatabase } = await initializeFirebaseCoreServices()
+        const { firestoreDatabase } = await initializeFirebaseCoreServices();
+        const circuitsDocs = await getCeremonyCircuits(firestoreDatabase, projectId);
+        const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map(
+          (document: DocumentData) => ({ uid: document.id, data: document.data })
+        );
 
-        // 1. Fetch and prepare data.
-        const circuitsDocs = await getCeremonyCircuits(firestoreDatabase, projectId)
-        const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map((document: DocumentData) => { return { uid: document.id, data: document.data } })
+        const participantsDocs = await getAllCollectionDocs(
+          firestoreDatabase,
+          `ceremonies/${projectId}/participants`
+        );
+        const participants: ParticipantDocumentReferenceAndData[] = participantsDocs.map(
+          (document: DocumentData) => ({ uid: document.id, data: document.data() })
+        );
 
-        const participantsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/participants`)
-        const participants: ParticipantDocumentReferenceAndData[] = participantsDocs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
-
-        // merge arrays of multiple circuits contributions in one array.
-        let contributions: ContributionDocumentReferenceAndData[] = []
-
+        let contributions: ContributionDocumentReferenceAndData[] = [];
         for (const circuit of circuits) {
-          const contributionsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/circuits/${circuit.uid}/contributions`)
-
-          contributions = contributions.concat(contributionsDocs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } }))
+          const contributionsDocs = await getAllCollectionDocs(
+            firestoreDatabase,
+            `ceremonies/${projectId}/circuits/${circuit.uid}/contributions`
+          );
+          contributions = contributions.concat(
+            contributionsDocs.map((document: DocumentData) => ({
+              uid: document.id,
+              data: document.data()
+            }))
+          );
         }
 
-        // DEBUG ONLY.
-        console.log("circuits ", circuits)
-        console.log("participants ", participants)
-        console.log("contributions ", contributions)
-        
-        // 3. Update project data.
-        const updatedProjectData = {
-          ...projectData,
-          circuits,
-          participants,
-          contributions
-        }
-
-        const parsedData = ProjectDataSchema.parse(updatedProjectData);
-        setProjectData(parsedData);
-        setIsLoading(false);
+        const updatedProjectData = { ...projectData, circuits, participants, contributions };
+        console.log("LandingPage", updatedProjectData)
+        setProjectData(updatedProjectData);
       } catch (error) {
         console.error(error);
+      } finally {
         setIsLoading(false);
-      
       }
     };
 

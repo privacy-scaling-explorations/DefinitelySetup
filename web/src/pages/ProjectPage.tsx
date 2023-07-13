@@ -428,7 +428,6 @@ const ProjectPage: React.FC = () => {
                   corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti
                   cum, amet maxime nesciunt? Laudantium officia iste quo id.
                 </Text>
-
               </VStack>
             </TabPanel>
 

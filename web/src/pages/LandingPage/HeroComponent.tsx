@@ -83,7 +83,6 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
   const columns = useBreakpointValue({ base: 1, md: 2, lg: 2 });
 
   return (
-
     <VStack alignSelf={"stretch"} alignItems={"center"} spacing={8}>
       <VStack
         alignSelf={"stretch"}
@@ -114,7 +113,6 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
             maxW="50ch"
             letterSpacing={"0.01rem"}
           >
-
             {" "}
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium odio corrupti
             nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti cum, amet maxime

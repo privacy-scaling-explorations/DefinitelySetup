@@ -17,11 +17,12 @@ export default function SearchResults() {
 
   return (
     <VStack minH={"100vh"}>
-      <HStack p={4} minW={"100vw"} alignItems={"center"}  alignSelf={"stretch"}  bg="gray.100">
-        <Text >{results.length} results found</Text>
+      <HStack px={8} py={4} minW={"100vw"} alignItems={"center"}  alignSelf={"stretch"}  bg="gray.800">
+        <Text fontSize={"12px"} color={"gray.100"}>{results.length} results found</Text>
+        
       </HStack>
       <HStack  alignItems={"flex-start"} alignSelf={"stretch"}>
-        <VStack  minW={["0px", "150px"]} justifyContent={"flex-start"} alignSelf={"stretch"}></VStack>
+        <VStack  minW={["0px","70px", "150px"]} justifyContent={"flex-start"} alignSelf={"stretch"}></VStack>
         <Box width="100%" px={8} py={0}>
           {results.length > 0 ? (
             <SimpleGrid columns={[1, null, 1]} spacing={0}>

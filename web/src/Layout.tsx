@@ -12,7 +12,8 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  Heading
+  Heading,
+  Spacer
 } from "@chakra-ui/react";
 import React, { useEffect, useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
@@ -49,17 +50,17 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
       <VStack minHeight="100vh" spacing={0}>
         {/* Show a loading progress bar if isLoading is true */}
 
-        <HStack pb={2} pt={3} borderBottomWidth={1} borderColor={"gray.100"} alignSelf="stretch" justifyContent="space-between" minH={"42px"} alignItems={"center"} px={8}>
+        <HStack pb={2} pt={3} borderBottomWidth="1px"  alignSelf="stretch" justifyContent="space-between" minH={"42px"} alignItems={"center"} px={8}>
           <HStack as={Link} to="/" spacing="24px">
             <Box as={FaHeart} w={4} h={4} />
-            <Heading fontWeight={"normal"} fontSize={16}>
+            <Heading fontWeight={"normal"} fontSize={14}>
               DefinitelySetup
             </Heading>
           </HStack>
-          <HStack spacing="24px" fontSize={16}>
+          <HStack spacing="24px" fontSize={14}>
             {/* Navigation links */}
-            <Heading as={Link} fontSize={16}  fontWeight={"normal"}  to="/page2">About</Heading>
-            <Heading as={Link} fontSize={16} fontWeight={"normal"}   to="/page3">Documentation</Heading>
+            <Heading as={Link} fontSize={14}  fontWeight={"normal"}  to="/page2">About</Heading>
+            <Heading as={Link} fontSize={14} fontWeight={"normal"}   to="/page3">Documentation</Heading>
             <ColorModeSwitch />
           </HStack>
         </HStack>
@@ -101,10 +102,10 @@ const Layout: React.FC<React.PropsWithChildren> = ({}) => {
               <Button  fontSize={14} width="6.5rem" variant="outline" borderRadius={0} borderColor={"transparent"} bg={"gray.800"} color={"gray.100"} minH="50px">Search</Button>
             </InputRightElement>
           </InputGroup>
-
-          <Button leftIcon={<Box as={FaGithub} w={4} h={4} />} minWidth="6.5rem" minH="51.5px" borderRadius={0}  variant="outline" fontSize={14}>
+    <Spacer minW={["15px","70px","70px"]} />
+          {/* <Button leftIcon={<Box as={FaGithub} w={4} h={4} />} minWidth="6.5rem" minH="51.5px" borderRadius={0}  variant="outline" fontSize={14}>
             Login
-          </Button>
+          </Button> */}
         
         </HStack>
         <Outlet />

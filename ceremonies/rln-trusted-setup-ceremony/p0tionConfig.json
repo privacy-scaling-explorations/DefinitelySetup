@@ -10,7 +10,30 @@
     "threshold": 10,
     "circuits": [
         {
-            "description": "description",
+            "description": "RLN withdraw circuit",
+            "compiler": {
+                "version": "2.1.5",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+                "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+                "paramConfiguration": []
+            },
+            "verification": {
+                "cfOrVm": "CF"
+            },
+            "artifacts": {
+                "r1csLocalFilePath": "./ceremonies/rln/withdraw.r1cs",
+                "wasmLocalFilePath": "./ceremonies/rln/withdraw.wasm"
+            },
+            "name": "RLN-Withdraw",
+            "dynamicThreshold": 0,
+            "fixedTimeWindow": 3600,
+            "sequencePosition": 1
+        },
+        {
+            "description": "RLN circuit with depth = 16",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -30,10 +53,10 @@
             "name": "RLN-16-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 2
         }, 
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 17",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -53,10 +76,10 @@
             "name": "RLN-17-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 3
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 18",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -76,10 +99,10 @@
             "name": "RLN-18-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 4
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 19",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -99,10 +122,10 @@
             "name": "RLN-19-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 5
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 20",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -122,10 +145,10 @@
             "name": "RLN-20-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 6
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 21",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -145,10 +168,10 @@
             "name": "RLN-21-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 7
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 22",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -168,10 +191,10 @@
             "name": "RLN-22-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 8
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 23",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -189,12 +212,12 @@
                 "wasmLocalFilePath": "./ceremonies/rln/rln23.wasm"
             },
             "name": "RLN-23-Depth",
-            "dynamicThreshold": 0,
+            "dynamicThreshold": 9,
             "fixedTimeWindow": 3600,
             "sequencePosition": 1
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 24",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -214,10 +237,10 @@
             "name": "RLN-24-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 10
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 25",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -237,10 +260,10 @@
             "name": "RLN-25-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 11
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 26",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -260,10 +283,10 @@
             "name": "RLN-26-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 12
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 27",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -283,10 +306,10 @@
             "name": "RLN-27-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 13
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 28",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -306,10 +329,10 @@
             "name": "RLN-28-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 14
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 29",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -329,10 +352,10 @@
             "name": "RLN-29-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 15
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 30",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -352,10 +375,10 @@
             "name": "RLN-30-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 16
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 31",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -375,10 +398,10 @@
             "name": "RLN-31-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 17
         },
         {
-            "description": "description",
+            "description": "RLN circuit with depth = 32",
             "compiler": {
                 "version": "2.1.5",
                 "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
@@ -398,7 +421,7 @@
             "name": "RLN-32-Depth",
             "dynamicThreshold": 0,
             "fixedTimeWindow": 3600,
-            "sequencePosition": 1
+            "sequencePosition": 18
         }
     ]
 }

@@ -50,7 +50,7 @@ Failing to follow the above instructions, will result in the CI checks failing. 
   "startDate": "<START_DATE FORMAT: 2023-08-07T00:00:00>",
   "endDate": "<END_DATE FORMAT: 2023-09-10T00:00:00>",
   "timeoutMechanismType": "<TIMEOUT_MECHANISM FIXED/DYNAMIC>",
-  "penalty": "<YOUR_PENALTY_AS_A_NUMBER>",
+  "penalty": "<THE_PENALTY_APPLIED_TO_USERS (NUMBER)>",
   "circuits": [
       {
           "description": "<CIRCUIT_DESCRIPTION>",
@@ -71,9 +71,9 @@ Failing to follow the above instructions, will result in the CI checks failing. 
               "wasmLocalFilePath": "<PATH_TO_THE_CIRCUIT_WASM>"
           },
           "name": "<CIRCUIT_NAME>",
-          "dynamicThreshold": "<THE_DYNAMIC_THRESHOLD_NUMBER>",
-          "fixedTimeWindow": "<THE_FIXED_TIME_WINDOW_NUMBER>",
-          "sequencePosition": "<THE_SEQUENCE_POSITION_OF_THE_CIRCUIT_INSTANCE>"
+          "dynamicThreshold": "<THE_DYNAMIC_THRESHOLD (NUMBER)>",
+          "fixedTimeWindow": "<THE_FIXED_TIME_WINDOW_FOR_CONTRIBUTION (NUMBER)>",
+          "sequencePosition": "<THE_SEQUENCE_POSITION_OF_THE_CIRCUIT_INSTANCE (NUMBER)>"
       }
   ]
 }
@@ -131,5 +131,5 @@ Confirmation
     - [ ] The target branch is either dev/staging/main
     - [ ] I uploaded one r1cs and one wasm file for each of the parameters combinations I want users to contribute to
     - [ ] I named the directory following the ceremony prefix syntax (described in the sections above)
-    - [ ] I run `phase2cli verify --template $MY_TEMPLATE_PATH" and the output was **true**
+    - [ ] I run `phase2cli verify --template $MY_TEMPLATE_PATH` and the output was **true**
     - [ ] If more than one circuit instance, I have correctly set the *sequenceNumber* from 1 to n circuits

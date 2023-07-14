@@ -1,3 +1,5 @@
+import { Project } from "../context/StateContext";
+
 /**
  * Define different states of a ceremony.
  * @enum {string}
@@ -368,4 +370,11 @@ export interface ParticipantDocumentReferenceAndData {
 export interface ContributionDocumentReferenceAndData {
   uid: string
   data: ContributionDocument
+}
+
+
+export interface HeroComponentProps {
+  project: Project;
+  circuits: CircuitDocumentReferenceAndData[];
+  contributions: ContributionDocumentReferenceAndData[];
 }

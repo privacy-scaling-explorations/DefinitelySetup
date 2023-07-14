@@ -2,7 +2,7 @@
 
 import React, { useState, createContext, useEffect, useContext } from "react";
 import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitDocumentReferenceAndData, ContributionDocumentReferenceAndData, ParticipantDocumentReferenceAndData } from "../helpers/interfaces";
-import { getAllCollectionDocs, initializeFirebaseCoreServices } from "../helpers/utils";
+import { getAllCollectionDocs, initializeFirebaseCoreServices } from "../helpers/firebase";
 import { DocumentData } from 'firebase/firestore'
 
 export interface Project {
@@ -19,6 +19,8 @@ export interface State {
   setSearch: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  runTutorial: boolean;
+  setRunTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 
@@ -48,8 +50,11 @@ export const StateContext = createContext<State>({
   search: "",
   setSearch: () => null,
   loading: false,
-  setLoading: () => null
+  setLoading: () => null,
+  runTutorial: false,
+  setRunTutorial: () => null
 });
+
 
 export const useInitialStateContext = () => {
   const [projects, setProjects] = useState<Project[]>([
@@ -58,7 +63,7 @@ export const useInitialStateContext = () => {
 
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [runTutorial, setRunTutorial] = useState<boolean>(false);
 
   // Fetch ceremony data.
   useEffect(() => {
@@ -78,10 +83,12 @@ export const useInitialStateContext = () => {
       console.log(projects)
     }
 
+    setRunTutorial(true)
+
     fetchData()
   },[])
 
-  return { projects, setProjects, search, setSearch, loading, setLoading };
+  return { projects, setProjects, search, setSearch, loading, setLoading, runTutorial, setRunTutorial };
 };
 
 

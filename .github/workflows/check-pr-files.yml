@@ -27,7 +27,7 @@ jobs:
       - name: Parse p0tionConfig.json
         id: parse-config
         run: |
-          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')"
+          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')"
           config_file="${directory_name}/p0tionConfig.json"
           num_circuits=$(jq '.circuits | length' $config_file)
           echo "NUM_CIRCUITS=$num_circuits" >> $GITHUB_ENV
@@ -57,7 +57,7 @@ jobs:
             exit 1
           fi
           echo "Ceremony artifacts are present"
-          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')"
+          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')"
           echo "Checking that all files are inside $directory_name"
           for file in "${files[@]}"; do
             if [[ ! $file =~ ^$directory_name/ ]]; then

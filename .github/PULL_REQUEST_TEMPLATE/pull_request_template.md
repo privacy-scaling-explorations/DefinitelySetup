@@ -64,7 +64,7 @@ Failing to follow the above instructions, will result in the CI checks failing. 
               "paramConfiguration": ["<CIRCUIT_INSTANCE_PARAMETERS_ARRAY>"]
           },
           "verification": {
-              "cfOrVm": "CF"
+              "cfOrVm": "<DESIRED_VERIFICATION_MECHANISM (VM/CF)>"
           },
           "artifacts": {
               "r1csLocalFilePath": "<PATH_TO_THE_CIRCUIT_R1CS>",

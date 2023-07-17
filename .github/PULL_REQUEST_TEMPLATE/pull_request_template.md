@@ -9,11 +9,13 @@ Please provide a detailed description of the ceremony you are proposing.
 
 ## Uploads
 
- - [ ] R1CS file
- - [ ] wasm file
- - [ ] Ceremony config file
+ - [ ] R1CS files 
+ - [ ] wasm files 
+ - [ ] Ceremony config file (1 for all circuits)
 
 **Process**
+
+> Feel free to delete this section once submitting your PR. This is left here as guidelines. 
 
 - open the PR from a branch named $YOUR_PROJECT_NAME-ceremony
 - fill the *p0tionConfig.json* file accordingly:
@@ -24,14 +26,16 @@ Please provide a detailed description of the ceremony you are proposing.
     + *Note* that you can use [p0tion phase2cli](https://github.com/privacy-scaling-explorations/p0tion) as follows to verify that the config file is correct:
         * `phase2cli validate --template $PATH_TO_THE_TEMPLATE`
 - create a directory inside *./ceremonies* and name it with the *prefix* (detailed in the bullet point above). 
-- ensure that only these three files were added:
-    + r1cs
-    + wasm
+- ensure that only these files were added:
+    + r1cs for each circuit configuration
+    + wasm for each circuit configuration
     + p0tionConfig.json
 - the destination path of the PR should be either of:
     + main (for production runs)
     + staging (for a test run)
     + development (for a test run using experimental features such as VM verification)
+
+> Note. If your circuit accepts metaparameters, and you desire including multiple parameter combinations in a single ceremony, add one circuit object inside the circuits array (of p0tionConfig.json) for EACH parameters combinations. This way, contributors will be able to contribute to the zKeys for all of the required parameters combinations. 
     
 Failing to follow the above instructions, will result in the CI checks failing. If all is done accordingly, an administrator will approve and merge your PR and a ceremony will be setup for you. 
 
@@ -46,7 +50,7 @@ Failing to follow the above instructions, will result in the CI checks failing. 
   "startDate": "<START_DATE FORMAT: 2023-08-07T00:00:00>",
   "endDate": "<END_DATE FORMAT: 2023-09-10T00:00:00>",
   "timeoutMechanismType": "<TIMEOUT_MECHANISM FIXED/DYNAMIC>",
-  "penalty": 10,
+  "penalty": "<THE_PENALTY_APPLIED_TO_USERS (NUMBER)>",
   "circuits": [
       {
           "description": "<CIRCUIT_DESCRIPTION>",
@@ -57,19 +61,19 @@ Failing to follow the above instructions, will result in the CI checks failing. 
           "template": {
               "source": "<HTTPS_URL_OF_THE_CIRCOM_FILE>",
               "commitHash": "<TEMPLATE_COMMIT_HASH>",
-              "paramConfiguration": [6,8,3,2]
+              "paramConfiguration": ["<CIRCUIT_INSTANCE_PARAMETERS_ARRAY>"]
           },
           "verification": {
-              "cfOrVm": "CF"
+              "cfOrVm": "<DESIRED_VERIFICATION_MECHANISM (VM/CF)>"
           },
           "artifacts": {
               "r1csLocalFilePath": "<PATH_TO_THE_CIRCUIT_R1CS>",
               "wasmLocalFilePath": "<PATH_TO_THE_CIRCUIT_WASM>"
           },
           "name": "<CIRCUIT_NAME>",
-          "dynamicThreshold": 0,
-          "fixedTimeWindow": 3600,
-          "sequencePosition": 1
+          "dynamicThreshold": "<THE_DYNAMIC_THRESHOLD (NUMBER)>",
+          "fixedTimeWindow": "<THE_FIXED_TIME_WINDOW_FOR_CONTRIBUTION (NUMBER)>",
+          "sequencePosition": "<THE_SEQUENCE_POSITION_OF_THE_CIRCUIT_INSTANCE (NUMBER)>"
       }
   ]
 }
@@ -120,5 +124,12 @@ Failing to follow the above instructions, will result in the CI checks failing. 
 If there are any additional notes, requirements or special instructions related to this ceremony, please specify them here.
 
 Confirmation
+
  - [ ] I have read and understood the DefinitelySetup guidelines and requirements.
- - [ ] I confirm that all uploaded files are correctly configured and adhere to the guidelines.
+ - [ ] I confirm that all uploaded files are correctly configured and adhere to the guidelines:
+    - [ ] The origin branch of the ceremony has the postfix **-ceremony**
+    - [ ] The target branch is either dev/staging/main
+    - [ ] I uploaded one r1cs and one wasm file for each of the parameters combinations I want users to contribute to
+    - [ ] I named the directory following the ceremony prefix syntax (described in the sections above)
+    - [ ] I run `phase2cli verify --template $MY_TEMPLATE_PATH` and the output was **true**
+    - [ ] If more than one circuit instance, I have correctly set the *sequenceNumber* from 1 to n circuits

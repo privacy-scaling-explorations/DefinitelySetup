@@ -75,6 +75,7 @@ export const useInitialStateContext = () => {
 
       // 3. Store data.      
       setProjects(projects)
+      console.log(projects)
     }
 
     fetchData()

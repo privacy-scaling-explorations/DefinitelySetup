@@ -12,3 +12,7 @@ export function parseDate(dateString: number): string {
   const parsedDate = new Date(dateString);
   return parsedDate.toDateString();
 }
+
+export function bytesToMegabytes(bytes: number): number {
+  return bytes / Math.pow(1024, 2);
+}

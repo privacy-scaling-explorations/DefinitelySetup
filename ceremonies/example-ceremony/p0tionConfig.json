@@ -21,8 +21,10 @@
                 "cfOrVm": "CF"
             },
             "artifacts": {
-                "r1csLocalFilePath": "./ceremonies/example-ceremony/circuit.r1cs",
-                "wasmLocalFilePath": "./ceremonies/example-ceremony/circuit.wasm"
+                "bucket": "p0tion-test-definitely-setup",
+                "region": "us-east-1",
+                "r1csStoragePath": "circuit.r1cs",
+                "wasmStoragePath": "circuit.wasm"
             },
             "name": "circuit",
             "dynamicThreshold": 0,

@@ -58,7 +58,6 @@ To request a new ceremony to be setup, you will need to submit a PR with a folde
           },
           "artifacts": {
               "bucket": "<THE_BUCKET_NAME>",
-              "region": "<THE_AWS_REGION_OF_THE_BUCKET>",
               "r1csLocalFilePath": "<PATH_TO_THE_CIRCUIT_R1CS>",
               "wasmLocalFilePath": "<PATH_TO_THE_CIRCUIT_WASM>"
           },
@@ -103,7 +102,6 @@ To request a new ceremony to be setup, you will need to submit a PR with a folde
                 * "sc1"
     - artifacts - an object with the storage path to the r1cs and wasm on s3
         - bucket - a string with the bucket name
-        - region - a string with the AWS region
         - r1csStoragePath - a string with the r1cs storage path e.g. "test-ceremony/circuit.r1cs"
         - wasmStoragePath - a string with the wasm storage path e.g. "test-ceremony/circuit.wasm"
     - name - a string with the circuit name

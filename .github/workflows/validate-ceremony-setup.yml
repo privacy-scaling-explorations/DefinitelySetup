@@ -27,7 +27,7 @@ jobs:
       - name: Run npm script and check output
         run: |
           echo $GITHUB_HEAD_REF
-          result=$(phase2cli validate --template ./ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')/p0tionConfig.json)
+          result=$(phase2cli validate --template ./ceremonies/$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')/p0tionConfig.json)
           if [[ "$result" != "true" ]]; then
             echo "NPM script returned false."
             exit 1

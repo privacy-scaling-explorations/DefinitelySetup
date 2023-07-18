@@ -258,16 +258,53 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
                         <StatLabel fontSize={12}>Memory Requirement</StatLabel>
                         <StatNumber fontSize={16}>{circuit.memoryRequirement} mb</StatNumber>
                     </Stat>
-                    <Stat>
-                        <StatLabel fontSize={12}>Avg Contribution Time</StatLabel>
-                        <StatNumber fontSize={16}>{circuit.avgTimingContribution}s</StatNumber>
-                    </Stat>
-                    <Stat>
-                        <StatLabel fontSize={12}>Max Contribution Time</StatLabel>
-                        <StatNumber fontSize={16}>{circuit.maxTiming}s</StatNumber>
-                    </Stat>
-                    </SimpleGrid>
-                </Box>
+                  </Flex>
+                  <Stat>
+                    <StatLabel fontSize={12}>Memory Requirement</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.memoryRequirement} mb</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel fontSize={12}>Avg Contribution Time</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.avgTimingContribution}s</StatNumber>
+                  </Stat>
+                  <Stat>
+                    <StatLabel fontSize={12}>Max Contribution Time</StatLabel>
+                    <StatNumber fontSize={16}>{circuit.maxTiming}s</StatNumber>
+                  </Stat>
+                </SimpleGrid>
+              </Box>
+            ))}
+          </SimpleGrid>
+        </Box>
+        <VStack maxW={["390px", "390px","100%"]} >
+          <HStack justifyContent={"space-between"} alignSelf={"stretch"} >
+            <Heading fontSize="18" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
+              Contributions
+            </Heading>
+            <Spacer />
+          </HStack>
+          <Box maxW={["390px", "390px","100%"]} overflowX={"scroll"}>
+            <Table fontSize={12} variant="simple">
+              <Thead>
+                <Tr>
+                  <Th>Doc</Th>
+                  <Th >Contribution Date</Th>
+                  {/* <Th>Contribution Time</Th> */}
+                  <Th>Hashes</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {contributionsClean.map((contribution, index) => (
+                  <Tr key={index}>
+                    <Td>{contribution.doc}</Td>
+                    <Td>{contribution.lastUpdated}</Td>
+                    {/* <Td>{contribution.verificationComputationTime}</Td> */}
+                    <Td>
+                      <Tooltip label={contribution.lastZkeyBlake2bHash} aria-label="Last Zkey Hash">
+                        <Tag fontSize={12}>{contribution.lastZkeyBlake2bHash}</Tag>
+                      </Tooltip>
+                    </Td>
+                  </Tr>
                 ))}
             </SimpleGrid>
             </Box>

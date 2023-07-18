@@ -8,17 +8,17 @@ import { HeroComponent } from "./HeroComponent";
 import SearchResults from "../../components/SearchResults";
 
 const LandingPage: React.FC = () => {
-  const { projects, search } = useContext(StateContext);
+  const { projects, search, loading } = useContext(StateContext);
 
-  const { projectData, isLoading } = useLandingPageContext();
+  const { projectData, isLoading, index } = useLandingPageContext();
 
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <Text>Loading...</Text>;
   }
 
-  const projectId = "A8CVrp2MMx7KO512KFdv"; // aka ceremonyId.
-  const project = projects.find((project) => project.ceremony.uid == projectId);
+  // const projectId = "A8CVrp2MMx7KO512KFdv"; // aka ceremonyId.
+  const project = projects[index];
 
   if (!project || !projectData) {
     return <Text>Error loading project.</Text>;

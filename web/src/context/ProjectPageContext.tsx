@@ -1,15 +1,13 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { DocumentData } from "firebase/firestore";
 import { z } from "zod";
-
 import { StateContext, useStateContext } from "./StateContext";
 import {
   initializeFirebaseCoreServices,
   getAllCollectionDocs,
   getCeremonyCircuits
-} from "../helpers/utils";
+} from "../helpers/firebase";
 import {
   CircuitDocumentReferenceAndData,
   ContributionDocumentReferenceAndData,
@@ -28,6 +26,7 @@ export type ProjectData = z.infer<typeof ProjectDataSchema>;
 export type ProjectPageContextProps = {
   projectData: ProjectData | null;
   isLoading: boolean;
+  runTutorial: boolean;
 };
 
 export const defaultProjectData: ProjectData = {};
@@ -38,14 +37,15 @@ type ProjectPageProviderProps = {
 
 const ProjectPageContext = createContext<ProjectPageContextProps>({
   projectData: defaultProjectData,
-  isLoading: false
+  isLoading: false,
+  runTutorial: false 
 });
 
 export const useProjectPageContext = () => useContext(ProjectPageContext);
 
 export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ children }) => {
   const navigate = useNavigate();
-  const { loading: isLoading, setLoading: setIsLoading } = useContext(StateContext);
+  const { loading: isLoading, setLoading: setIsLoading, runTutorial } = useContext(StateContext);
   const [projectData, setProjectData] = useState<ProjectData | null>(defaultProjectData);
 
   const { projects } = useStateContext();
@@ -88,7 +88,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
   }, [navigate, projectId]);
 
   return (
-    <ProjectPageContext.Provider value={{ projectData, isLoading }}>
+    <ProjectPageContext.Provider value={{ projectData, isLoading, runTutorial }}>
       {children}
     </ProjectPageContext.Provider>
   );

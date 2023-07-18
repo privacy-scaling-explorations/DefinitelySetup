@@ -24,7 +24,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   // Return a truncated string with the start and end, and an ellipsis in the middle
   const truncateString = (str: string, numCharacters = 5): string => 
-    str.length <= numCharacters * 2 ? str : `${str.substr(0, numCharacters)}...${str.substr(-numCharacters)}`;
+    str.length <= numCharacters * 2 ? str : `${str.slice(0, numCharacters)}...${str.slice(-numCharacters)}`;
 
   // Get a human-readable string indicating how far in the future or past a date is
   const getTimeDifference = (date: Date): string => {

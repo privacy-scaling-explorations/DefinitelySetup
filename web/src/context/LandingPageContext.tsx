@@ -6,7 +6,7 @@ import {
   initializeFirebaseCoreServices,
   getAllCollectionDocs,
   getCeremonyCircuits
-} from "../helpers/utils";
+} from "../helpers/firebase";
 import {
   CircuitDocumentReferenceAndData,
   ContributionDocumentReferenceAndData,

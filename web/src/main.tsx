@@ -9,6 +9,10 @@ import '@fontsource/poppins/600.css'
 import '@fontsource/poppins/400.css'
 import '@fontsource/poppins/200.css'
 
+if (typeof global === 'undefined') {
+  window.global = window;
+}
+
 const colors = {
   brand: {
     900: "#000000",

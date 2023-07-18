@@ -64,6 +64,7 @@ export const useInitialStateContext = () => {
   useEffect(() => {
     const fetchData = async () => {
       // 0. Prepare service.
+      setLoading(true)
       const { firestoreDatabase } = await initializeFirebaseCoreServices()
 
       // 1. Fetch data.
@@ -76,9 +77,11 @@ export const useInitialStateContext = () => {
       // 3. Store data.      
       setProjects(projects)
       console.log(projects)
+      setLoading(false)
     }
 
     fetchData()
+   
   },[])
 
   return { projects, setProjects, search, setSearch, loading, setLoading };

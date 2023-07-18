@@ -243,14 +243,14 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
             ))}
           </SimpleGrid>
         </Box>
-        <VStack maxW={"390px"}>
+        <VStack maxW={["390px", "390px","100%"]} >
           <HStack justifyContent={"space-between"} alignSelf={"stretch"} >
             <Heading fontSize="18" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
               Contributions
             </Heading>
             <Spacer />
           </HStack>
-          <Box maxW={"320px"} overflowX={"scroll"}>
+          <Box maxW={["390px", "390px","100%"]} overflowX={"scroll"}>
             <Table fontSize={12} variant="simple">
               <Thead>
                 <Tr>

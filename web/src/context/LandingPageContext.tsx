@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 import { StateContext } from "./StateContext";
 
@@ -13,7 +13,6 @@ import {
   ParticipantDocumentReferenceAndData
 } from "../helpers/interfaces";
 import { DocumentData } from "firebase/firestore";
-import { defaultProjectData } from "./ProjectPageContext";
 
 export type LandingPageContextProps = {
   projectData: {

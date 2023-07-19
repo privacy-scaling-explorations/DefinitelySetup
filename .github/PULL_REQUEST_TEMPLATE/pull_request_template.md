@@ -67,6 +67,7 @@ Failing to follow the above instructions, will result in the CI checks failing. 
           },
           "artifacts": {
               "bucket": "<THE_BUCKET_NAME>",
+              "region": "<THE_AWS_REGION_WHERE_THE_BUCKET_LIVES>",
               "r1csLocalFilePath": "<PATH_TO_THE_CIRCUIT_R1CS>",
               "wasmLocalFilePath": "<PATH_TO_THE_CIRCUIT_WASM>"
           },
@@ -111,6 +112,7 @@ Failing to follow the above instructions, will result in the CI checks failing. 
                 * "sc1"
     - artifacts - an object with the storage path to the r1cs and wasm on s3
         - bucket - a string with the bucket name
+        - region - the AWS region where the bucket live
         - r1csStoragePath - a string with the r1cs storage path e.g. "test-ceremony/circuit.r1cs"
         - wasmStoragePath - a string with the wasm storage path e.g. "test-ceremony/circuit.wasm"
     - name - a string with the circuit name

@@ -22,6 +22,7 @@
             },
             "artifacts": {
                 "bucket": "p0tion-test-definitely-setup",
+                "region": "us-east-1",
                 "r1csStoragePath": "circuit.r1cs",
                 "wasmStoragePath": "circuit.wasm"
             },

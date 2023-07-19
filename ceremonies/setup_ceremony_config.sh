@@ -207,16 +207,13 @@ do
             }')
 
     # append to the circuits array
-    echo "Circuit JSON: $circuit"
     circuits_array+=("$circuit")
-    echo "Circuits array: $circuits_array"
 
     index=$((index+1))
 done
 
 # convert bash array to json array
 circuits_json=$(echo -e "${circuits_array[@]}" | tr ' ' '\n' | jq -s -c '.')
-echo "Circuits JSON: $circuits_json"
 
 # Create json object
 json=$(jq -n \
@@ -236,8 +233,6 @@ json=$(jq -n \
                 "penalty": $penalty|tonumber,
                 "circuits": $circuits
             }')
-
-echo "JSON: $json"
 
 echo "$json" > p0tionConfig.json
 

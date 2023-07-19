@@ -151,8 +151,6 @@ do
 
     echo "Enter circuit description:"
     read circuit_description
-    echo "Enter circuit name:"
-    read circuit_name
 
     fixed_time_window=()
     dynamic_threshold=()
@@ -189,7 +187,6 @@ do
             --arg vm_configuration_type "$vm_configuration_type" \
             --arg vm_disk_size "$vm_disk_size" \
             --arg vm_disk_type "$vm_disk_type" \
-            --arg circuit_name "$circuit_name" \
             --arg dynamic_threshold "$dynamic_threshold" \
             --arg fixed_time_window "$fixed_time_window" \
             --arg base_name "$base_name" \
@@ -200,7 +197,7 @@ do
                 "template": {"source": $template_source, "commitHash": $template_commit_hash, "paramConfiguration": $params},
                 "verification": ($verification_method | if . == "CF" then {"cfOrVm": "CF"} else {"cfOrVm": "VM", "vmConfigurationType": $vm_configuration_type, "vmDiskSize": $vm_disk_size|tonumber, "vmDiskType": $vm_disk_type} end),
                 "artifacts": {"bucket": $bucket, "region": $region, "r1csStoragePath": ($base_name + ".r1cs"), "wasmStoragePath": ($base_name + ".wasm")},
-                "name": $circuit_name,
+                "name": $base_name,
                 "dynamicThreshold": $dynamic_threshold|tonumber,
                 "fixedTimeWindow": $fixed_time_window|tonumber,
                 "sequencePosition": $index|tonumber

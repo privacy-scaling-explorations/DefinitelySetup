@@ -154,13 +154,12 @@ jobs:
   # do not set environment so there is no need to approve to stop the runner
   stop-runner:
     name: Stop self-hosted EC2 runner
-    if: github.ref != 'refs/heads/dev'
+    # run if previous failed and if not on dev branch
+    if: ${{ always() && github.ref != 'refs/heads/dev' }} 
     needs:
       - start-runner # required to get output from the start-runner job
       - setup-ceremonies # required to wait when the main job is done
     runs-on: ubuntu-latest
-    # required to stop the runner even if an error happened in the previous jobs
-    if: ${{ always() }} 
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2

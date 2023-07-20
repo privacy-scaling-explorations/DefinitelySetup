@@ -8,12 +8,12 @@ on:
 jobs:
   # first we start a custom runner
   start-runner:
+    if: github.ref != 'refs/heads/dev'
     name: Start self-hosted EC2 runner
     runs-on: ubuntu-latest
     environment: 
       ${{ (github.ref == 'refs/heads/main' && 'p0tion-production') ||
-      (github.ref == 'refs/heads/staging' && 'p0tion-staging') ||
-      (github.ref == 'refs/heads/dev' && 'p0tion-development') }}
+      (github.ref == 'refs/heads/staging' && 'p0tion-staging') }}
     outputs:
       label: ${{ steps.start-ec2-runner.outputs.label }}
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
@@ -45,11 +45,64 @@ jobs:
   setup-ceremonies:
     name: Setup ceremony using vm-runner
     needs: start-runner
+    if: github.ref != 'refs/heads/dev'
     runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
     environment: 
       ${{ (github.ref == 'refs/heads/main' && 'p0tion-production') ||
-      (github.ref == 'refs/heads/staging' && 'p0tion-staging') ||
-      (github.ref == 'refs/heads/dev' && 'p0tion-development') }}
+      (github.ref == 'refs/heads/staging' && 'p0tion-staging') }}
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    # install p0tion
+    - name: Install p0tion globally
+      run: npm install -g @p0tion/phase2cli
+
+    # write env to file
+    - name: Write env locally
+      run: |
+        echo "${{ secrets.PHASE2CLI_ENV_FILE }}" > ./.env
+
+    # List ceremonies that have already been created
+    - name: List existing ceremonies
+      id: list_ceremonies
+      run: |
+        echo "$(phase2cli list)" > existing_ceremonies.txt
+        cat existing_ceremonies.txt
+
+    # List all the ceremonies in ./ceremonies
+    - name: List all ceremonies
+      id: list_all_ceremonies
+      run: |
+        echo "$(ls -d ceremonies/* | grep -v 'README.md' | cut -d'/' -f2)" > dir_output.txt
+        cat dir_output.txt
+
+    # want to setup only ceremonies that have not been setup already
+    - name: Run p0tion and setup ceremony
+      run: |
+        IFS=',' read -ra EXISTING_CEREMONIES <<< $(cat existing_ceremonies.txt)
+        ALL_CEREMONIES=()
+        while IFS= read -r line; do
+            ALL_CEREMONIES+=("$line")
+        done < dir_output.txt
+
+        for ceremony in "${ALL_CEREMONIES[@]}"; do
+            if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
+                echo 'Setting up ceremony: ./ceremonies/$ceremony/p0tionConfig.json'
+                phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets.ACCESS_TOKEN }}"
+            fi
+        done
+
+  # on dev do not use runner
+  setup-ceremonies-dev:
+    name: Setup ceremony without vm-runner
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    environment: 'p0tion-development'
     steps:
     - uses: actions/checkout@v2
 
@@ -101,6 +154,7 @@ jobs:
   # do not set environment so there is no need to approve to stop the runner
   stop-runner:
     name: Stop self-hosted EC2 runner
+    if: github.ref != 'refs/heads/dev'
     needs:
       - start-runner # required to get output from the start-runner job
       - setup-ceremonies # required to wait when the main job is done

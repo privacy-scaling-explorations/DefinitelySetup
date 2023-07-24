@@ -31,7 +31,7 @@ export const StateContext = createContext<State>({
     // Initial project data
     {
       ceremony: {
-        uid: "A8CVrp2MMx7KO512KFdv",
+        uid: "i3kFOOUi8L42ooRWQh8N",
         data: {
           title: "example",
           prefix: "example",
@@ -138,7 +138,7 @@ export const useInitialStateContext = () => {
   useEffect(() => {
     const fetchData = async () => {
       /// @todo refactoring needed.
-      const ceremonyProjectId = "PhclifGIlx2z8tC3fDqT"
+      const ceremonyProjectId = "i3kFOOUi8L42ooRWQh8N"
 
       if (ceremonyProjectId) {
         try {

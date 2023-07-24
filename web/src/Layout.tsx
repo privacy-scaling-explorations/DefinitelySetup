@@ -15,15 +15,17 @@ import {
     Heading,
     Spacer
 } from "@chakra-ui/react";
-import { FaHeart, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { StateContext } from "./context/StateContext";
 import { ColorModeSwitch } from "./components/ColorModeSwitch";
 import Joyride, { STATUS } from "react-joyride";
 import { searchBarSteps } from "./helpers/utils";
+import { LogoIcon } from "./assets/LogoIcon";
 
 const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
     const { search, setSearch, loading, setLoading } = useContext(StateContext);
     const [runTutorial, setRunTutorial] = useState(false)
+    
 
     // handle the callback from joyride
     const handleJoyrideCallback = (data: any) => {
@@ -66,27 +68,35 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
                     }
                 }}
             />
-            <VStack alignSelf="stretch" width={"100%"}>
+            <VStack alignSelf="stretch" width={"100%"} >
                 <Progress
                     size="sm"
                     hasStripe
                     width={"100%"}
                     isIndeterminate={loading}
-                    bg={"radial-gradient(circle farthest-side, #fceabb, #f8b500)"}
+                    minH={3}
+                    bgImage={
+                        "https://res.cloudinary.com/pse-qf-maci/image/upload/v1690230945/Banner_qb6zlf.png"
+                      }
+                      bgSize="cover"
+                      bgPosition="center"
+                      bgRepeat="no-repeat"
+                    // bg={"radial-gradient(circle farthest-side, #fceabb, #f8b500)"}
                     colorScheme="pink"
                 />
             </VStack>
             <VStack minHeight="100vh" spacing={0}>
                 <HStack pb={2} pt={3} borderBottomWidth="1px" alignSelf="stretch" justifyContent="space-between" minH={"42px"} alignItems={"center"} px={8}>
                     <HStack as={Link} to="/" spacing="24px">
-                        <Box as={FaHeart} w={4} h={4} />
+                        <LogoIcon w={5} h={5} />
+                        
                         <Heading fontWeight={"normal"} fontSize={14}>
                             DefinitelySetup
                         </Heading>
                     </HStack>
                     <HStack spacing="24px" fontSize={14}>
-                        <Heading as={Link} fontSize={14} fontWeight={"normal"} to="/page2">About</Heading>
-                        <Heading as={Link} fontSize={14} fontWeight={"normal"} to="/page3">Documentation</Heading>
+                        {/* <Heading as={Link} fontSize={14} fontWeight={"normal"} to="/page2">About</Heading>
+                        <Heading as={Link} fontSize={14} fontWeight={"normal"} to="/page3">Documentation</Heading> */}
                         <ColorModeSwitch />
                     </HStack>
                 </HStack>
@@ -103,7 +113,7 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
                         <Image
                             boxSize="35px"
                             objectFit="cover"
-                            src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1689199506/logo-slow_vxtmkc.gif"
+                            src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1690235895/Logodark-clean_qllutd.gif"
                             alt="Logo"
                         />
                     </AspectRatio>

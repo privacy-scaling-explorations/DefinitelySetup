@@ -94,14 +94,19 @@ const ProjectPage: React.FC = () => {
     maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
   })) ?? []
 
-  const contributionsClean = validatedProjectData.contributions?.map((contribution) => ({
-    doc: contribution.data.files.lastZkeyFilename,
-    verificationComputationTime: contribution.data.verificationComputationTime,
-    valid: contribution.data.valid,
-    lastUpdated: parseDate(contribution.data.lastUpdated),
-    lastZkeyBlake2bHash: truncateString(contribution.data.files.lastZkeyBlake2bHash, 10),
-    transcriptBlake2bHash: truncateString(contribution.data.files.transcriptBlake2bHash, 10)
-  })) ?? []
+	const contributionsClean = validatedProjectData.contributions?.map((contribution) => ({
+		doc: contribution.data.files?.lastZkeyFilename??"",
+
+		verificationComputationTime: contribution.data.verificationComputationTime,
+
+		valid: contribution.data.valid,
+
+		lastUpdated: parseDate(contribution.data.lastUpdated),
+
+		lastZkeyBlake2bHash: truncateString(contribution.data.files.lastZkeyBlake2bHash, 10),
+
+		transcriptBlake2bHash: truncateString(contribution.data.files.transcriptBlake2bHash, 10)
+	})) ??[]
 
   const circuit = validatedProjectData.circuits
     ? validatedProjectData.circuits[0]

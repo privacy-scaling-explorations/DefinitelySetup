@@ -97,15 +97,15 @@ const ProjectPage: React.FC = () => {
 	const contributionsClean = validatedProjectData.contributions?.map((contribution) => ({
 		doc: contribution.data.files?.lastZkeyFilename??"",
 
-		verificationComputationTime: contribution.data.verificationComputationTime,
+		verificationComputationTime: contribution.data?.verificationComputationTime,
 
-		valid: contribution.data.valid,
+		valid: contribution.data?.valid,
 
-		lastUpdated: parseDate(contribution.data.lastUpdated),
+		lastUpdated: parseDate(contribution.data?.lastUpdated),
 
-		lastZkeyBlake2bHash: truncateString(contribution.data.files.lastZkeyBlake2bHash, 10),
+		lastZkeyBlake2bHash: truncateString(contribution.data.files?.lastZkeyBlake2bHash, 10),
 
-		transcriptBlake2bHash: truncateString(contribution.data.files.transcriptBlake2bHash, 10)
+		transcriptBlake2bHash: truncateString(contribution.data.files?.transcriptBlake2bHash, 10)
 	})) ??[]
 
   const circuit = validatedProjectData.circuits

@@ -253,6 +253,7 @@ export function HeroComponent({ projects, circuit }: HeroComponentProps) {
                         <StatNumber fontSize={16}>{circuit.completedContributions}</StatNumber>
                       </Stat>
                     </Flex>
+
                     <Stat>
                       <StatLabel fontSize={12}>Memory Requirement</StatLabel>
                       <StatNumber fontSize={16}>{circuit.memoryRequirement} mb</StatNumber>

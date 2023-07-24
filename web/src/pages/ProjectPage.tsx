@@ -88,6 +88,7 @@ const ProjectPage: React.FC = () => {
     currentContributor: circuit.data.waitingQueue?.currentContributor,
     memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
       .toString()
+
       .slice(0, 5),
     avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
     maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)

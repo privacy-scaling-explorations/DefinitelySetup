@@ -1,121 +1,105 @@
 import {
   Box,
   Text,
-  Stat,
-  StatLabel,
-  StatNumber,
+  // Stat,
+  // StatLabel,
+  // StatNumber,
   Heading,
-  SimpleGrid,
-  Badge,
-  Table,
-  Tag,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-  Flex,
-  useBreakpointValue,
-  Icon,
+  // SimpleGrid,
+  // Badge,
+  // Table,
+  // Tag,
+  // Tbody,
+  // Td,
+  // Th,
+  // Thead,
+  // Tooltip,
+  // Tr,
+  // Flex,
+  // useBreakpointValue,
+  // Icon,
   VStack,
   HStack,
-  Button,
-  Spacer
+  // Button,
+  Spacer,
+  SimpleGrid
 } from "@chakra-ui/react";
 import { HeroComponentProps } from "../../helpers/interfaces";
-import {
-  bytesToMegabytes,
-  parseDate,
-  truncateString,
-  toBackgroundImagefromSrc,
-  projectsPageSteps
-} from "../../helpers/utils";
-import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi"; // you need to install `react-icons` for this.
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Joyride, { STATUS } from "react-joyride";
+import { ProjectCard } from "../../components/ProjectCard";
+// import {
+//   bytesToMegabytes,
+//   parseDate,
+//   truncateString,
+//   toBackgroundImagefromSrc,
+//   projectsPageSteps
+// } from "../../helpers/utils";
+// import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi"; // you need to install `react-icons` for this.
+// import { Link } from "react-router-dom";
+// import { useEffect, useState } from "react";
+// import Joyride, { STATUS } from "react-joyride";
 
-export function HeroComponent({ project, circuits, contributions }: HeroComponentProps) {
-  const projectClean = {
-    title: project.ceremony.data.title,
-    description: project.ceremony.data.description,
-    state: project.ceremony.data.state
-  };
+export function HeroComponent({ projects, circuit }: HeroComponentProps) {
+  // const projectsClean = projects.map((project) => ({
+  //   title: project.ceremony.data.title,
+  //   description: project.ceremony.data.description,
+  //   state: project.ceremony.data.state
+  // }))
 
-  const [runTutorial, setRunTutorial] = useState(false);
+  /// @todo refactor tutorial.
+  // const [runTutorial, setRunTutorial] = useState(false);
 
   // handle the callback from joyride
-  const handleJoyrideCallback = (data: any) => {
-    const { status } = data;
-    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-      // Need to set our running state to false, so we can restart if we click start again.
-      setRunTutorial(false);
-    }
-  };
+  // const handleJoyrideCallback = (data: any) => {
+  //   const { status } = data;
+  //   if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+  //     // Need to set our running state to false, so we can restart if we click start again.
+  //     setRunTutorial(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    setRunTutorial(true);
-  }, []);
+  // useEffect(() => {
+  //   setRunTutorial(true);
+  // }, []);
 
-  const circuitsClean = circuits.map((circuit) => ({
-    name: circuit.data.name,
-    description: circuit.data.description,
-    constraints: circuit.data.metadata?.constraints,
-    pot: circuit.data.metadata?.pot,
-    privateInputs: circuit.data.metadata?.privateInputs,
-    publicInputs: circuit.data.metadata?.publicInputs,
-    curve: circuit.data.metadata?.curve,
-    wires: circuit.data.metadata?.wires,
-    completedContributions: circuit.data.waitingQueue?.completedContributions,
-    currentContributor: circuit.data.waitingQueue?.currentContributor,
-    memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
-      .toString()
-      .slice(0, 5),
-    avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
-    maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
-  }));
+  // const circuitsClean = circuits.map((circuit) => ({
+  //   name: circuit.data.name,
+  //   description: circuit.data.description,
+  //   constraints: circuit.data.metadata?.constraints,
+  //   pot: circuit.data.metadata?.pot,
+  //   privateInputs: circuit.data.metadata?.privateInputs,
+  //   publicInputs: circuit.data.metadata?.publicInputs,
+  //   curve: circuit.data.metadata?.curve,
+  //   wires: circuit.data.metadata?.wires,
+  //   completedContributions: circuit.data.waitingQueue?.completedContributions,
+  //   currentContributor: circuit.data.waitingQueue?.currentContributor,
+  //   memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
+  //     .toString()
+  //     .slice(0, 5),
+  //   avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
+  //   maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
+  // }));
 
-  const contributionsClean = contributions.map((contribution) => ({
-    doc: contribution.data.files.lastZkeyFilename,
+  // const contributionsClean = contributions.map((contribution) => ({
+  //   doc: contribution.data.files.lastZkeyFilename,
 
-    verificationComputationTime: contribution.data.verificationComputationTime,
+  //   verificationComputationTime: contribution.data.verificationComputationTime,
 
-    valid: contribution.data.valid,
+  //   valid: contribution.data.valid,
 
-    lastUpdated: parseDate(contribution.data.lastUpdated),
+  //   lastUpdated: parseDate(contribution.data.lastUpdated),
 
-    lastZkeyBlake2bHash: truncateString(contribution.data.files.lastZkeyBlake2bHash, 10),
+  //   lastZkeyBlake2bHash: truncateString(contribution.data.files.lastZkeyBlake2bHash, 10),
 
-    transcriptBlake2bHash: truncateString(contribution.data.files.transcriptBlake2bHash, 10)
-  }));
+  //   transcriptBlake2bHash: truncateString(contribution.data.files.transcriptBlake2bHash, 10)
+  // }));
 
-  const columns = useBreakpointValue({ base: 1, md: 2, lg: 2 });
+  // const columns = useBreakpointValue({ base: 1, md: 2, lg: 2 });
 
   return (
     <>
-      <Joyride
-        callback={handleJoyrideCallback}
-        continuous
-        run={runTutorial}
-        scrollToFirstStep
-        showProgress
-        showSkipButton
-        steps={projectsPageSteps}
-        styles={{
-          options: {
-            arrowColor: "red",
-            backgroundColor: "white",
-            overlayColor: "rgba(79, 26, 0, 0.4)",
-            primaryColor: "red",
-            textColor: "black",
-            width: "500px",
-            zIndex: 1000
-          }
-        }}
-      />
       <VStack alignSelf={"stretch"} alignItems={"center"} spacing={8}>
-        <VStack
+        {/* @todo move to about */}
+        {/* <VStack
           alignSelf={"stretch"}
           alignItems={"center"}
           bgImage={toBackgroundImagefromSrc(
@@ -192,7 +176,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
               </Button>
             </HStack>
           </VStack>
-        </VStack>
+        </VStack> */}
         <Box
           className="tutorialLiveLook"
           alignItems="center"
@@ -203,7 +187,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
         >
           <HStack justifyContent={"space-between"} alignSelf={"stretch"}>
             <Heading size="md" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
-              Live Look
+              Ceremonies
             </Heading>
             <Spacer />
           </HStack>
@@ -213,19 +197,23 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
             justifyContent={"center"}
             spacing={8}
           ></VStack>
-          <HStack justifyContent={"space-between"}>
-            <Heading fontSize={18} mb={6}>
-              {projectClean.title}
-            </Heading>
-            <Badge colorScheme="green" p="2" mb="4">
-              {projectClean.state}
-            </Badge>
-          </HStack>
-          <Text fontSize={14} mb={4}>
-            {projectClean.description}
-          </Text>
+        <Box width="100%" px={8} py={0}>
+          {projects.length > 0 ? (
+            <SimpleGrid columns={[1, null, 1]} spacing={0}>
+              {projects.map((project, index) => (
+                <ProjectCard key={index} project={project} />
+              ))}
+            </SimpleGrid>
+          ) : (
+            <Text>No ceremonies live yet!</Text>
+          )}
+        </Box>
 
-          <Box alignItems="center" py={4}>
+        <Text>{circuit?.data ? circuit.data.avgTimings?.fullContribution : "no circuits!"}</Text>
+
+
+          {/* CIRCUITS */}
+          {/* <Box alignItems="center" py={4}>
             <SimpleGrid columns={columns} spacing={6}>
               {circuitsClean.map((circuit, index) => (
                 <Box key={index} borderWidth={1} borderRadius="lg" p={4}>
@@ -281,7 +269,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
                 </Box>
               ))}
             </SimpleGrid>
-          </Box>
+          </Box> 
           <VStack maxW={["390px", "390px", "100%"]}>
             <HStack justifyContent={"space-between"} alignSelf={"stretch"}>
               <Heading fontSize="18" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
@@ -295,7 +283,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
                   <Tr>
                     <Th>Doc</Th>
                     <Th>Contribution Date</Th>
-                    {/* <Th>Contribution Time</Th> */}
+                    <Th>Contribution Time</Th> 
                     <Th>Hashes</Th>
                   </Tr>
                 </Thead>
@@ -304,7 +292,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
                     <Tr key={index}>
                       <Td>{contribution.doc}</Td>
                       <Td>{contribution.lastUpdated}</Td>
-                      {/* <Td>{contribution.verificationComputationTime}</Td> */}
+                      <Td>{contribution.verificationComputationTime}</Td>
                       <Td>
                         <Tooltip
                           label={contribution.lastZkeyBlake2bHash}
@@ -318,7 +306,7 @@ export function HeroComponent({ project, circuits, contributions }: HeroComponen
                 </Tbody>
               </Table>
             </Box>
-          </VStack>
+          </VStack>  */}
         </Box>
       </VStack>
     </>

@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import { StateProvider } from "./context/StateContext";
-import { LandingPageProvider } from "./context/LandingPageContext";
+// import { LandingPageProvider } from "./context/LandingPageContext";
 import { ProjectPageProvider } from "./context/ProjectPageContext";
 // import SearchResults from "./components/SearchResults";
 import ProjectPage from "./pages/ProjectPage";
@@ -11,7 +11,6 @@ function App() {
   return (
     <Router>
       <StateProvider>
-        <LandingPageProvider>
           <Routes>
             <Route path="/" element={<Layout />}>
               {/* Render the SearchResults component for the index route */}
@@ -24,10 +23,9 @@ function App() {
                     <ProjectPage />
                   </ProjectPageProvider>
                 }
-              />
+              /> 
             </Route>
           </Routes>
-        </LandingPageProvider>
       </StateProvider>
     </Router>
   );

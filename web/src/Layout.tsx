@@ -109,10 +109,13 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
                     pt={5}
                     shadow="md"
                 >
-                    <AspectRatio w="50px" maxH="50px" ratio={1 / 1} mx={4}>
+                    <AspectRatio w="50px" maxH="50px" ratio={1 / 1} mx={4} >
                         <Image
+                        filter="blur(0.2px)"
                             boxSize="35px"
                             objectFit="cover"
+                      
+                            borderRadius={"full"}
                             src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1690235895/Logodark-clean_qllutd.gif"
                             alt="Logo"
                         />

@@ -1,3 +1,5 @@
+import { Project } from "../context/StateContext";
+
 /**
  * Define different states of a ceremony.
  * @enum {string}
@@ -196,7 +198,7 @@ export interface CircuitDocument {
       vmConfigurationType?: string
       vmDiskType?: DiskTypeForVM
       vmDiskSize?: number
-      vmInstanceId?: string  
+      vmInstanceId?: string
     }
   },
   compilationArtifacts?: {
@@ -277,7 +279,7 @@ export interface ParticipantDocument {
     uploadId: string
     chunks: Array<{
       ETag: string | undefined
-      PartNumber: number  
+      PartNumber: number
     }>
   }
 }
@@ -368,4 +370,12 @@ export interface ParticipantDocumentReferenceAndData {
 export interface ContributionDocumentReferenceAndData {
   uid: string
   data: ContributionDocument
+}
+
+
+export interface HeroComponentProps {
+  projects: Project[];
+  circuit: CircuitDocumentReferenceAndData;
+  // circuits: CircuitDocumentReferenceAndData[];
+  // contributions: ContributionDocumentReferenceAndData[];
 }

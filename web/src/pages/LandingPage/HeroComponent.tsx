@@ -26,6 +26,7 @@ import {
 } from "@chakra-ui/react";
 import { HeroComponentProps } from "../../helpers/interfaces";
 import { ProjectCard } from "../../components/ProjectCard";
+import { ScrollBanner } from "./Banner";
 // import {
 //   bytesToMegabytes,
 //   parseDate,
@@ -93,9 +94,29 @@ export function HeroComponent({ projects, circuit }: HeroComponentProps) {
   // }));
 
   // const columns = useBreakpointValue({ base: 1, md: 2, lg: 2 });
+  const bannerImages = [
+    {
+      imageUrl: "https://res.cloudinary.com/pse-qf-maci/image/upload/v1690230945/Banner_qb6zlf.png",
+      altText: "RLN Phase2 Trusted Setup Ceremony",
+      bannerText: `RLN Phase2 Trusted Setup Ceremony Waiting Queue: ${
+        JSON.stringify(circuit?.data.waitingQueue?.contributors.length) ?? "no circuits!"
+      } `
+    },
+    {
+      imageUrl: "https://res.cloudinary.com/pse-qf-maci/image/upload/v1690230945/Banner_qb6zlf.png",
+      altText: "RLN Phase2 Trusted Setup Ceremony",
+      bannerText: `RLN Phase2 Trusted Setup Ceremony Waiting Queue: ${
+        JSON.stringify(circuit?.data.waitingQueue?.contributors.length) ?? "no circuits!"
+      } `
+    }
+    // ...add as many images as you need
+  ];
 
   return (
     <>
+      <VStack p={0} w="full">
+        <ScrollBanner imageArray={bannerImages} />
+      </VStack>
       <VStack alignSelf={"stretch"} alignItems={"center"} spacing={8}>
         {/* @todo move to about */}
         {/* <VStack
@@ -196,20 +217,17 @@ export function HeroComponent({ projects, circuit }: HeroComponentProps) {
             justifyContent={"center"}
             spacing={8}
           ></VStack>
-        <Box width="100%" px={8} py={0}>
-          {projects.length > 0 ? (
-            <SimpleGrid columns={[1, null, 1]} spacing={0}>
-              {projects.map((project, index) => (
-                <ProjectCard key={index} project={project} />
-              ))}
-            </SimpleGrid>
-          ) : (
-            <Text>No ceremonies live yet!</Text>
-          )}
-        </Box>
-
-        <Text>{circuit?.data ? circuit.data.avgTimings?.fullContribution : "no circuits!"}</Text>
-
+          <Box width="100%" px={8} py={0}>
+            {projects.length > 0 ? (
+              <SimpleGrid columns={[1, null, 1]} spacing={0}>
+                {projects.map((project, index) => (
+                  <ProjectCard key={index} project={project} />
+                ))}
+              </SimpleGrid>
+            ) : (
+              <Text>No ceremonies live yet!</Text>
+            )}
+          </Box>
 
           {/* CIRCUITS */}
           {/* <Box alignItems="center" py={4}>

@@ -47,7 +47,6 @@ export function HeroComponent({ projects, circuit }: HeroComponentProps) {
 
   /// @todo refactor tutorial.
   // const [runTutorial, setRunTutorial] = useState(false);
-
   // handle the callback from joyride
   // const handleJoyrideCallback = (data: any) => {
   //   const { status } = data;

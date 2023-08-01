@@ -74,8 +74,6 @@ const ScrollBanner: FC<ScrollBannerProps> = ({ imageArray }) => {
       }}
     >
 
-
-
         {loopArray.map((item, index) => (
           <BannerItem key={index} {...item} />
         ))}

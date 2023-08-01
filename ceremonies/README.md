@@ -32,6 +32,20 @@ To request a new ceremony to be setup, you will need to submit a PR with a folde
     + staging (for a test run)
     + development (for a test run using experimental features such as VM verification)
 
+### Use setup_ceremony_config.sh to generate the configuration file
+
+If your ceremony includes a large number of circuit instances, you might want to use the bash script included in this folder - **setup_ceremony_config.sh**.
+
+The script will upload your artifacts to a S3 bucket of your choice (must be owned by yourself) and autofill the **p0tionConfig.json** file. You only need to have installed the following:
+
+* **jq** 
+* **aws-cli** - please ensure that you set a profile with its credentials (access key id and secret access key). For more info please refer to [aws docs](https://aws.amazon.com/cli/)
+
+**Usage**:
+
+- `chmod +x setup_ceremony_config.sh`
+* `./setup_ceremony_config.sh`
+
 ### Template in details
 
 **p0tionConfig.json** template:

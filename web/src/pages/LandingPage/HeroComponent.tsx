@@ -26,7 +26,6 @@ import {
 } from "@chakra-ui/react";
 import { HeroComponentProps } from "../../helpers/interfaces";
 import { ProjectCard } from "../../components/ProjectCard";
-import { ScrollBanner } from "./Banner";
 // import {
 //   bytesToMegabytes,
 //   parseDate,
@@ -39,7 +38,6 @@ import { ScrollBanner } from "./Banner";
 // import { useEffect, useState } from "react";
 // import Joyride, { STATUS } from "react-joyride";
 
-
 export function HeroComponent({ projects, circuit }: HeroComponentProps) {
   // const projectsClean = projects.map((project) => ({
   //   title: project.ceremony.data.title,
@@ -49,7 +47,6 @@ export function HeroComponent({ projects, circuit }: HeroComponentProps) {
 
   /// @todo refactor tutorial.
   // const [runTutorial, setRunTutorial] = useState(false);
-
   // handle the callback from joyride
   // const handleJoyrideCallback = (data: any) => {
   //   const { status } = data;
@@ -97,29 +94,9 @@ export function HeroComponent({ projects, circuit }: HeroComponentProps) {
 
   // const columns = useBreakpointValue({ base: 1, md: 2, lg: 2 });
 
-  const bannerImages = [
-    {
-      imageUrl: 'https://res.cloudinary.com/pse-qf-maci/image/upload/v1690230945/Banner_qb6zlf.png',
-      altText: 'RLN Phase2 Trusted Setup Ceremony',
-      bannerText: `RLN Phase2 Trusted Setup Ceremony Waiting Queue: ${JSON.stringify( circuit?.data.waitingQueue?.contributors.length)?? "no circuits!"} `,
-    },
-    {
-      imageUrl: 'https://res.cloudinary.com/pse-qf-maci/image/upload/v1690230945/Banner_qb6zlf.png',
-      altText: 'RLN Phase2 Trusted Setup Ceremony',
-      bannerText: `RLN Phase2 Trusted Setup Ceremony Waiting Queue: ${JSON.stringify( circuit?.data.waitingQueue?.contributors.length)?? "no circuits!"} `,
-    },
-    // ...add as many images as you need
-  ];
-  
-
   return (
     <>
-         <VStack p={0}  w="full">
-         <ScrollBanner imageArray={bannerImages} />
-{/* <Text>RLN Phase2 Trusted Setup Ceremony Waiting Queue: {JSON.stringify( circuit?.data.waitingQueue?.contributors.length)?? "no circuits!" }</Text> */}
-    </VStack>
       <VStack alignSelf={"stretch"} alignItems={"center"} spacing={8}>
-        
         {/* @todo move to about */}
         {/* <VStack
           alignSelf={"stretch"}
@@ -231,7 +208,7 @@ export function HeroComponent({ projects, circuit }: HeroComponentProps) {
           )}
         </Box>
 
-       
+        <Text>{circuit?.data ? circuit.data.avgTimings?.fullContribution : "no circuits!"}</Text>
 
 
           {/* CIRCUITS */}

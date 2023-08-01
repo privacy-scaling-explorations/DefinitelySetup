@@ -13,6 +13,8 @@ Please provide a detailed description of the ceremony you are proposing.
  - [ ] wasm files 
  - [ ] Ceremony config file (1 for all circuits)
 
+ > Note: you can use the bash script **setup_cereremony_config.sh** to upload your artifacts to AWS S3 and fill the config file.
+
 **Process**
 
 > Feel free to delete this section once submitting your PR. This is left here as guidelines. 

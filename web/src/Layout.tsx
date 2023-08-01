@@ -36,15 +36,10 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
     }
   };
 
-    // handle the callback from joyride
-    const handleJoyrideCallback = (data: any) => {
-        const { status } = data;
-        console.log(status)
-        if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
-            // Need to set our running state to false, so we can restart if we click start again.
-            setRunTutorial(false)
-        }
-    };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
 
     setRunTutorial(true);
     return () => clearTimeout(timer);
@@ -100,7 +95,7 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
           px={8}
         >
           <HStack as={Link} to="/" spacing="24px">
-          <LogoIcon w={5} h={5} />
+            <LogoIcon w={5} h={5} />
             <Heading fontWeight={"normal"} fontSize={14}>
               DefinitelySetup
             </Heading>
@@ -126,8 +121,8 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
         >
           <AspectRatio w="50px" maxH="50px" ratio={1 / 1} mx={4}>
             <Image
-            filter="blur(0.2px)"
-            borderRadius={"full"}
+              filter="blur(0.2px)"
+              borderRadius={"full"}
               boxSize="35px"
               objectFit="cover"
               src="https://res.cloudinary.com/pse-qf-maci/image/upload/v1690235895/Logodark-clean_qllutd.gif"

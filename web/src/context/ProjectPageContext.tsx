@@ -1,22 +1,24 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { DocumentData } from "firebase/firestore";
 import { z } from "zod";
-import { StateContext } from "./StateContext";
+import { StateContext, useStateContext } from "./StateContext";
+import {
+  initializeFirebaseCoreServices,
+  getAllCollectionDocs,
+  getCeremonyCircuits
+} from "../helpers/firebase";
+import {
+  CircuitDocumentReferenceAndData,
+  ContributionDocumentReferenceAndData,
+  ParticipantDocumentReferenceAndData
+} from "../helpers/interfaces";
+
 
 export const ProjectDataSchema = z.object({
-  name: z.string(),
-  waitingQueue: z.number(),
-  failedContributions: z.number(),
-  completedContributions: z.number(),
-  avgContributionTime: z.number(),
-  diskSpaceRequired: z.string(),
-  diskSpaceUnit: z.string(),
-  lastContributorId: z.string(),
-  zKeyIndex: z.string(),
-  url: z.string(),
-  content: z.string(),
-  circuitName: z.string(),
-  contributionHash: z.string(),
+  circuits: z.optional(z.array(z.any())),
+  participants: z.optional(z.array(z.any())),
+  contributions: z.optional(z.array(z.any()))
 });
 
 export type ProjectData = z.infer<typeof ProjectDataSchema>;
@@ -24,71 +26,69 @@ export type ProjectData = z.infer<typeof ProjectDataSchema>;
 export type ProjectPageContextProps = {
   projectData: ProjectData | null;
   isLoading: boolean;
+  runTutorial: boolean;
 };
 
-const defaultProjectData: ProjectData = {
-  name: "Ongoing Ceremony",
-  waitingQueue: 5,
-  failedContributions: 10,
-  completedContributions: 15,
-  avgContributionTime: 30,
-  diskSpaceRequired: "10 GB",
-  diskSpaceUnit: "GB",
-  lastContributorId: "contributor123",
-  zKeyIndex: "zKey456",
-  url: "https://example.com",
-  content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  circuitName: "Circuit ABC",
-  contributionHash: "hash123",
-};
-
-
-const ProjectPageContext = createContext<ProjectPageContextProps>({
-  projectData: defaultProjectData,
-  isLoading: false,
-});
-
-export const useProjectPageContext = () => useContext(ProjectPageContext);
+export const defaultProjectData: ProjectData = {};
 
 type ProjectPageProviderProps = {
   children: React.ReactNode;
 };
 
-export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ children }) => {
-  // const { projectId } = useParams();
-  const navigate = useNavigate();
-  const { loading:isLoading, setLoading:setIsLoading } = useContext(StateContext);
+const ProjectPageContext = createContext<ProjectPageContextProps>({
+  projectData: defaultProjectData,
+  isLoading: false,
+  runTutorial: false 
+});
 
+export const useProjectPageContext = () => useContext(ProjectPageContext);
+
+export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ children }) => {
+  const navigate = useNavigate();
+  const { loading: isLoading, setLoading: setIsLoading, runTutorial } = useContext(StateContext);
   const [projectData, setProjectData] = useState<ProjectData | null>(defaultProjectData);
 
+  const { projects } = useStateContext();
+  const { ceremonyName } = useParams();
+
+  const project = projects.find((project) => project.ceremony.data.title === ceremonyName);
+  const projectId = project?.ceremony.uid || "HmLZ1vjZjhDPU0v3q8kD";
 
   useEffect(() => {
-
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        // Mock the response for now
-        const response = await new Promise((resolve) =>
-          setTimeout(() => resolve({ json: () => defaultProjectData }), 800)
-        );
-        //@ts-ignore
-        const data = await response.json();
-        console.log(data)
-        const parsedData = ProjectDataSchema.parse(data);
+        const { firestoreDatabase } = await initializeFirebaseCoreServices();
+
+        const circuitsDocs = await getCeremonyCircuits(firestoreDatabase, projectId);
+        const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data }));
+
+        const participantsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/participants`);
+        const participants: ParticipantDocumentReferenceAndData[] = participantsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() }));
+
+        let contributions: ContributionDocumentReferenceAndData[] = [];
+        for (const circuit of circuits) {
+          const contributionsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/circuits/${circuit.uid}/contributions`);
+          contributions = contributions.concat(contributionsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() })));
+        }
+
+        const updatedProjectData = { circuits, participants, contributions };
+        const parsedData = ProjectDataSchema.parse(updatedProjectData);
+
         setProjectData(parsedData);
-        setIsLoading(false);
       } catch (error) {
         console.error(error);
-        setIsLoading(false);
         navigate("/error");
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, projectId]);
 
   return (
-    <ProjectPageContext.Provider value={{ projectData, isLoading }}>
+    <ProjectPageContext.Provider value={{ projectData, isLoading, runTutorial }}>
       {children}
     </ProjectPageContext.Provider>
   );

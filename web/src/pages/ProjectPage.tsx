@@ -5,30 +5,55 @@ import {
   VStack,
   HStack,
   Text,
-  Divider,
   Badge,
-  Link,
   Tabs,
   TabList,
   TabPanels,
   Tab,
   TabPanel,
   Button,
-  useClipboard,
-  Tag,
-  TagLeftIcon,
   Stat,
   StatLabel,
   StatNumber,
-  Grid
+  Tag,
+  Heading,
+  Spacer,
+  Breadcrumb,
+  BreadcrumbItem,
+  Flex,
+  Icon,
+  SimpleGrid,
+  SkeletonText,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tooltip,
+  Tr,
+  Skeleton,
+  Stack,
+  SkeletonCircle,
+  useClipboard
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
-  useProjectPageContext,
   ProjectData,
-  ProjectDataSchema
+  ProjectDataSchema,
+  useProjectPageContext
 } from "../context/ProjectPageContext";
-import { FaGithub, FaTag, FaCloudDownloadAlt, FaClipboard } from "react-icons/fa";
+import { FaCloudDownloadAlt, FaCopy } from "react-icons/fa";
+import { CeremonyState } from "../helpers/interfaces";
+import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi";
+import {
+  bytesToMegabytes,
+  formatDate,
+  getTimeDifference,
+  parseDate,
+  singleProjectPageSteps,
+  truncateString
+} from "../helpers/utils";
+import Joyride, { STATUS } from "react-joyride";
 
 type RouteParams = {
   ceremonyName: string | undefined;
@@ -36,176 +61,445 @@ type RouteParams = {
 
 const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
-  const { projects } = useContext(StateContext);
+  const { projects, setRunTutorial, runTutorial } = useContext(StateContext);
   const { projectData, isLoading } = useProjectPageContext();
 
-  if (isLoading) {
-    return <Text>Loading...</Text>;
-  }
+  // handle the callback from joyride
+  const handleJoyrideCallback = (data: any) => {
+    const { status } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      // Need to set our running state to false, so we can restart if we click start again.
+      setRunTutorial(false);
+    }
+  };
 
-  const project = projects.find((p) => p.ceremonyName === ceremonyName);
-
-  if (!project || !projectData) {
-    return <Text>Error loading project.</Text>;
-  }
+  // find a project with the given ceremony name
+  const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
 
   // Validate the project data against the schema
   const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
 
-  // Commands
-  const contributeCommand = `phase2cli contribute ${project.ceremonyName}`;
-  const downloadCommand = `aws s3 cp s3://yourbucket/zkey/${project.ceremonyName}`; // replace with your S3 bucket and file path
+  /// @todo work on multiple circuits.
+  /// @todo uncomplete info for mocked fallback circuit data.
 
+  const circuitsClean =
+    validatedProjectData.circuits?.map((circuit) => ({
+      name: circuit.data.name,
+      description: circuit.data.description,
+      constraints: circuit.data.metadata?.constraints,
+      pot: circuit.data.metadata?.pot,
+      privateInputs: circuit.data.metadata?.privateInputs,
+      publicInputs: circuit.data.metadata?.publicInputs,
+      curve: circuit.data.metadata?.curve,
+      wires: circuit.data.metadata?.wires,
+      completedContributions: circuit.data.waitingQueue?.completedContributions,
+      currentContributor: circuit.data.waitingQueue?.currentContributor,
+      memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
+        .toString()
+
+        .slice(0, 5),
+      avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
+      maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
+    })) ?? [];
+
+  const contributionsClean =
+    validatedProjectData.contributions?.map((contribution) => ({
+      doc: contribution.data.files?.lastZkeyFilename ?? "",
+      verificationComputationTime: contribution.data?.verificationComputationTime ?? "",
+      valid: contribution.data?.valid ?? false,
+      lastUpdated: parseDate(contribution.data?.lastUpdated ?? ""),
+      lastZkeyBlake2bHash: truncateString(contribution.data?.files?.lastZkeyBlake2bHash ?? "", 10),
+      transcriptBlake2bHash: truncateString(
+        contribution.data?.files?.transcriptBlake2bHash ?? "",
+        10
+      )
+    })) ?? [];
+
+  const circuit = validatedProjectData.circuits
+    ? validatedProjectData.circuits[0]
+    : {
+        data: {
+          fixedTimeWindow: 10,
+          template: {
+            source: "todo",
+            paramsConfiguration: [2, 3, 4]
+          },
+          compiler: {
+            version: "0.5.1",
+            commitHash: "0xabc"
+          },
+          avgTimings: {
+            fullContribution: 100
+          },
+          zKeySizeInBytes: 10,
+          waitingQueue: {
+            completedContributions: 0
+          }
+        }
+      };
+
+  // Commands
+  const contributeCommand =
+    !project || isLoading
+      ? ""
+      : `phase2cli auth && phase2cli contribute -c ${project?.ceremony.data.prefix}`;
+  const zKeyFilename = !circuit || isLoading ? "" : `${circuit.data.prefix}_final.zkey`;
+  const downloadLink =
+    !project || !circuit || isLoading
+      ? ""
+      : `https://${project?.ceremony.data.prefix}${
+          import.meta.env.VITE_CONFIG_CEREMONY_BUCKET_POSTFIX
+        }.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/circuits/${
+          circuit.data.prefix
+        }/contributions/${zKeyFilename}`;
   // Hook for clipboard
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
-  const { onCopy: copyDownload, hasCopied: copiedDownload } = useClipboard(downloadCommand);
+
+  /// @todo with a bit of refactor, could be used everywhere for downloading files from S3.
+  // Download a file from AWS S3 bucket.
+  const downloadFileFromS3 = () => {
+    fetch(downloadLink).then((response) => {
+      response.blob().then((blob) => {
+        const fileURL = window.URL.createObjectURL(blob);
+
+        let alink = document.createElement("a");
+        alink.href = fileURL;
+        alink.download = zKeyFilename;
+        alink.click();
+      });
+    });
+  };
 
   return (
-    <VStack spacing={4} align="start" p={8}>
-      {/* Render project information from StateContext */}
-      <HStack w="100%" justifyContent={"space-between"}>
-        <Text fontSize="2xl" fontWeight="bold">
-          {project.ceremonyName}
-        </Text>{" "}
-      </HStack>
-
-      <Text>{project.description}</Text>
-      <Divider />
-      <HStack spacing={4}>
-        <Badge colorScheme={project.fixed ? "green" : "gray"}>
-          {project.fixed ? "Fixed" : "Flexible"}
-        </Badge>
-        <Badge colorScheme="blue">Threshold: {project.threshold}</Badge>
-        <Badge colorScheme="blue">Timeout: {project.timeoutThreshold} seconds</Badge>
-      </HStack>
-      <Divider />
-      <HStack>
-        <Box as={FaGithub} w={6} h={6} />
-        <Link
-          href={`https://${project.githubCircomTemplate}`}
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <HStack
+        fontSize={12}
+        minW="375px"
+        minH={[null, null, "100vh"]}
+        w="100%"
+        alignItems="flex-start"
+        alignSelf={"stretch"}
+        justifyContent={"flex-start"}
+        flexWrap={"wrap"}
+        spacing={0}
+        py={5}
+      >
+        <VStack
+          minH={[null, null, "100vh"]}
+          margin="auto"
+          maxW={["100vw", null, null]}
+          alignSelf={"stretch"}
+          alignItems="flex-start"
+          p={8}
         >
-          {project.githubCircomTemplate}
-        </Link>
-      </HStack>
-      <Divider />
-      <HStack align="start" spacing={1}>
-        {project.paramsArray.map((param, index) => (
-          <Tag key={index} size="sm" variant="solid" colorScheme="blue">
-            <TagLeftIcon boxSize="12px" as={FaTag} />
-            {param}
-          </Tag>
-        ))}
-      </HStack>
-      <Tabs>
-        <TabList>
-          <Tab>Contribute</Tab>
-          <Tab>Ceremony Configuration</Tab>
-          <Tab>Live Data</Tab>
+          <VStack align="start" spacing={2} py={2} alignSelf={"stretch"}>
+            {!project?.ceremony.data || isLoading ? (
+              <Box padding="6" boxShadow="lg" bg="white">
+                <SkeletonCircle size="10" />
+                <SkeletonText mt="4" noOfLines={4} spacing="4" skeletonHeight="2" />
+              </Box>
+            ) : (
+              <>
+                <Joyride
+                  callback={handleJoyrideCallback}
+                  continuous
+                  run={runTutorial}
+                  scrollToFirstStep
+                  showProgress
+                  showSkipButton
+                  steps={singleProjectPageSteps}
+                  styles={{
+                    options: {
+                      arrowColor: "red",
+                      backgroundColor: "white",
+                      overlayColor: "rgba(79, 26, 0, 0.4)",
+                      primaryColor: "red",
+                      textColor: "black",
+                      width: "500px",
+                      zIndex: 1000
+                    }
+                  }}
+                />
+                <Heading fontSize={16} fontWeight="bold">
+                  {project?.ceremony.data.title}
+                </Heading>
+                <Breadcrumb separator="•">
+                  <BreadcrumbItem>
+                    <Text fontSize={12} fontWeight="regular" color={"gray.500"}>
+                      {formatDate(new Date(project.ceremony.data.startDate))}
+                    </Text>
+                  </BreadcrumbItem>
 
-          <Tab>Download ZKey</Tab>
-        </TabList>
-
-        <TabPanels>
-          <TabPanel>
-            <Text fontSize="lg" fontWeight="bold">
-              Contribute:
-            </Text>
-            <Text color="gray.500">
-              You can contribute to this project by running the command below.
-            </Text>
-            <Button
-              leftIcon={<Box as={FaClipboard} w={3} h={3} />}
-              variant="outline"
-              onClick={copyContribute}
-              fontWeight={"regular"}
-            >
-              {copiedContribute ? "Copied" : `phase2cli contribute ${project.ceremonyName}`}
-            </Button>
-          </TabPanel>
-          <TabPanel>
-          <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-              <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-              <Text fontSize="lg" fontWeight="bold">
-              Ceremony Configuration:
-            </Text>
-            <Text color="gray.500">
-              These are the main configuration parameters for the ceremony.
-            </Text>
-              </VStack>
-           
-            <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-              <Stat>
-                <StatLabel>Start Date</StatLabel>
-                <StatNumber>{project.startDate}</StatNumber>
-              </Stat>
-              <Stat>
-                <StatLabel>End Date</StatLabel>
-                <StatNumber>{project.endDate}</StatNumber>
-              </Stat>
-              <Stat>
-                <StatLabel>Circom Version</StatLabel>
-                <StatNumber>{project.circomVersion}</StatNumber>
-              </Stat>
-              <Stat>
-                <StatLabel>Commit Hash</StatLabel>
-                <StatNumber>{project.commitHash}</StatNumber>
-              </Stat>
-            </Grid>
-            </VStack>
-          </TabPanel>
-          <TabPanel>
-            <VStack spacing={4} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-              <VStack spacing={0} w="full" alignItems={"flex-start"} alignSelf={"stretch"}>
-                <Text fontSize="lg" fontWeight="bold">
-                  Live Data:
+                  <BreadcrumbItem>
+                    <Text fontSize={12} fontWeight="regular" color={"gray.500"}>
+                      Deadline: {getTimeDifference(new Date(project.ceremony.data.endDate))}
+                    </Text>
+                  </BreadcrumbItem>
+                </Breadcrumb>
+                <Text fontSize={12} fontWeight="regular" color={"gray.500"}>
+                  {project.ceremony.data.description}
                 </Text>
-                <Text color="gray.500">Real-time data related to the project.</Text>
-              </VStack>
-              <Grid templateColumns="repeat(2, 1fr)" gap={8} w="full">
-                <Stat>
-                  <StatLabel>Average Contribution Time</StatLabel>
-                  <StatNumber>{validatedProjectData.avgContributionTime}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>Disk Space Required</StatLabel>
-                  <StatNumber>
-                    {validatedProjectData.diskSpaceRequired} {validatedProjectData.diskSpaceUnit}
-                  </StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>Last Contributor ID</StatLabel>
-                  <StatNumber>{validatedProjectData.lastContributorId}</StatNumber>
-                </Stat>
-                <Stat>
-                  <StatLabel>ZKey Index</StatLabel>
-                  <StatNumber>{validatedProjectData.zKeyIndex}</StatNumber>
-                </Stat>
-              </Grid>
-            </VStack>
-          </TabPanel>
-
-          <TabPanel>
-            <Text fontSize="lg" fontWeight="bold">
-              Download ZKey:
-            </Text>
-            <Text color="gray.500">
-              Use the command below to download the ZKey files from the S3 bucket.
-            </Text>
-            <Button
-              leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
-              variant="outline"
-              onClick={copyDownload}
-              fontWeight={"regular"}
+                <VStack
+                  className="contributeCopyButton"
+                  align="start"
+                  spacing={2}
+                  py={2}
+                  alignSelf={"stretch"}
+                >
+                  <Text fontSize={12} fontWeight="bold">
+                    Contribute:
+                  </Text>
+                  <Text color="gray.500">
+                    You can contribute to this project by running the CLI command below.
+                  </Text>
+                  <Button
+                    leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                    variant="outline"
+                    onClick={copyContribute}
+                    fontSize={12}
+                    fontWeight={"regular"}
+                  >
+                    {copiedContribute
+                      ? "Copied"
+                      : `> phase2cli contribute 
+              `}
+                  </Button>
+                </VStack>
+                <VStack align="start" spacing={2} py={2} alignSelf={"stretch"}>
+                  <HStack
+                    spacing={1}
+                    alignSelf={"stretch"}
+                    alignItems={"flex-start"}
+                    justifyContent={"flex-start"}
+                    flexWrap={"wrap"}
+                  >
+                    <Badge
+                      px={2}
+                      py={1}
+                      colorScheme={project.ceremony.data.timeoutMechanismType ? "green" : "gray"}
+                    >
+                      {project.ceremony.data.timeoutMechanismType ? "Fixed" : "Flexible"}
+                    </Badge>
+                    <Badge px={2} py={1} colorScheme="blue">
+                      Penalty: {project.ceremony.data.penalty}
+                    </Badge>
+                    <Badge px={2} py={1} colorScheme="green">
+                      {project.ceremony.data.state}
+                    </Badge>
+                    <Badge px={2} py={1} colorScheme="red">
+                      {project.ceremony.data.type}
+                    </Badge>
+                    <Badge px={2} py={1} colorScheme="purple">
+                      {truncateString(project.ceremony.uid, 5)}
+                    </Badge>
+                  </HStack>
+                </VStack>
+              </>
+            )}
+            <VStack
+              minH={[null, null, "100vh"]}
+              margin="auto"
+              maxW={["390px", "390px", "100%"]}
+              minW={["390px", "390px", null]}
+              p={8}
+              alignSelf={"stretch"}
+              flexGrow={1}
+              justifyContent={"flex-start"}
             >
-              {copiedDownload ? "Copied" : ` ${downloadCommand}`}
-            </Button>
-           
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </VStack>
+              <Tabs alignSelf={"stretch"}>
+                <TabList alignSelf={"stretch"} justifyContent={"space-evenly"}>
+                  <Tab className="circuitsView" fontSize={12}>
+                    Live Stats
+                  </Tab>
+                  <Tab className="contributionsButton" fontSize={12}>
+                    Contributions
+                  </Tab>
+                  <Tab className="detailsButton" fontSize={12}>
+                    Details
+                  </Tab>
+                  <Tab className="zKeyNavigationButton" fontSize={12}>
+                    Download ZKey
+                  </Tab>
+                </TabList>
+
+                <TabPanels py={4}>
+                  <TabPanel>
+                    <Box alignItems="center" alignSelf={"stretch"} w="full">
+                      <SimpleGrid
+                        alignSelf={"stretch"}
+                        maxW={["392px", "390px", "100%"]}
+                        columns={1}
+                        spacing={6}
+                      >
+                        {circuitsClean.map((circuit, index) => (
+                          <Box key={index} borderWidth={1} borderRadius="lg" p={4}>
+                            <Heading fontSize={16} size="md" mb={2}>
+                              {circuit.name} - {circuit.description}
+                            </Heading>
+                            <Flex wrap="wrap" mb={4}>
+                              <Tag fontSize={10} size="sm" colorScheme="purple" mr={2} mb={2}>
+                                <Icon as={FiTarget} mr={1} />
+                                Constraints: {circuit.constraints}
+                              </Tag>
+                              <Tag fontSize={10} size="sm" colorScheme="cyan" mr={2} mb={2}>
+                                <Icon as={FiZap} mr={1} />
+                                Pot: {circuit.pot}
+                              </Tag>
+                              <Tag fontSize={10} size="sm" colorScheme="yellow" mr={2} mb={2}>
+                                <Icon as={FiEye} mr={1} />
+                                Private Inputs: {circuit.privateInputs}
+                              </Tag>
+                              <Tag fontSize={10} size="sm" colorScheme="pink" mr={2} mb={2}>
+                                <Icon as={FiUser} mr={1} />
+                                Public Inputs: {circuit.publicInputs}
+                              </Tag>
+                              <Tag fontSize={10} size="sm" colorScheme="blue" mr={2} mb={2}>
+                                <Icon as={FiMapPin} mr={1} />
+                                Curve: {circuit.curve}
+                              </Tag>
+                              <Tag fontSize={10} size="sm" colorScheme="teal" mr={2} mb={2}>
+                                <Icon as={FiWifi} mr={1} />
+                                Wires: {circuit.wires}
+                              </Tag>
+                            </Flex>
+                            <SimpleGrid columns={[2, 2]} spacing={6}>
+                              <Flex justify="space-between" align="center">
+                                <Stat>
+                                  <StatLabel fontSize={12}>Completed Contributions</StatLabel>
+                                  <StatNumber fontSize={16}>
+                                    {circuit.completedContributions}
+                                  </StatNumber>
+                                </Stat>
+                              </Flex>
+                              <Stat>
+                                <StatLabel fontSize={12}>Memory Requirement</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  {circuit.memoryRequirement} mb
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel fontSize={12}>Avg Contribution Time</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  {circuit.avgTimingContribution}s
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel fontSize={12}>Max Contribution Time</StatLabel>
+                                <StatNumber fontSize={16}>{circuit.maxTiming}s</StatNumber>
+                              </Stat>
+                            </SimpleGrid>
+                          </Box>
+                        ))}
+                      </SimpleGrid>
+                    </Box>
+                  </TabPanel>
+                  <TabPanel alignSelf={"stretch"}>
+                    <HStack justifyContent={"space-between"} alignSelf={"stretch"}>
+                      <Heading fontSize="18" mb={6} fontWeight={"bold"} letterSpacing={"3%"}>
+                        Contributions
+                      </Heading>
+                      <Spacer />
+                    </HStack>
+                    <Box overflowX="auto">
+                      {!contributionsClean || isLoading ? (
+                        <Stack>
+                          <Skeleton height="20px" />
+                          <Skeleton height="20px" />
+                          <Skeleton height="20px" />
+                        </Stack>
+                      ) : (
+                        <Table fontSize={12} variant="simple">
+                          <Thead>
+                            <Tr>
+                              <Th>Doc</Th>
+                              <Th>Contribution Date</Th>
+                              <Th>Hashes</Th>
+                            </Tr>
+                          </Thead>
+                          <Tbody>
+                            {contributionsClean.map((contribution, index) => (
+                              <Tr key={index}>
+                                <Td>{contribution.doc}</Td>
+                                <Td>{contribution.lastUpdated}</Td>
+                                <Td>
+                                  <Tooltip
+                                    label={contribution.lastZkeyBlake2bHash}
+                                    aria-label="Last Zkey Hash"
+                                  >
+                                    <Tag fontSize={12}>{contribution.lastZkeyBlake2bHash}</Tag>
+                                  </Tooltip>
+                                </Td>
+                              </Tr>
+                            ))}
+                          </Tbody>
+                        </Table>
+                      )}
+                    </Box>
+                  </TabPanel>
+                  <TabPanel>
+                    <VStack
+                      alignSelf={"stretch"}
+                      alignItems={"center"}
+                      justifyContent={"center"}
+                      spacing={8}
+                      py={0}
+                    >
+                      <Text textAlign={"center"} fontWeight={"700"} fontSize={"3.5rem"} maxW="15ch">
+                        {" "}
+                        How it works
+                      </Text>
+                      <Text
+                        textAlign={"center"}
+                        fontWeight={"500"}
+                        fontSize={"12px"}
+                        maxW="50ch"
+                        letterSpacing={"0.01rem"}
+                      >
+                        {" "}
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium
+                        odio corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam
+                        corrupti cum, amet maxime nesciunt? Laudantium officia iste quo id.
+                      </Text>
+                      <Text textAlign={"center"} fontWeight={"600"} fontSize={"18px"} maxW="30ch">
+                        {" "}
+                        Search for ceremonies, contribute your entropy to the system.
+                      </Text>
+                      <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch">
+                        {" "}
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium
+                        odio corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam
+                        corrupti cum, amet maxime nesciunt? Laudantium officia iste quo id.
+                      </Text>
+                    </VStack>
+                  </TabPanel>
+
+                  <TabPanel>
+                    <Text fontSize={12} fontWeight="bold">
+                      Download Final ZKey:
+                    </Text>
+                    <Text color="gray.500">
+                      Use the command below to download the final ZKey file from the S3 bucket.
+                    </Text>
+                    <Button
+                      leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                      fontSize={12}
+                      variant="outline"
+                      onClick={downloadFileFromS3}
+                      fontWeight={"regular"}
+                      isDisabled={
+                        project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                      }
+                    >
+                      Download From S3
+                    </Button>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            </VStack>
+          </VStack>
+        </VStack>
+      </HStack>
+    </>
   );
 };
 

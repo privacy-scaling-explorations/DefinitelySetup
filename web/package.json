@@ -6,14 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "deploy:dev": "firebase deploy --only hosting --project dev",
+    "deploy:staging": "firebase deploy --only hosting --project staging",
+    "deploy:prod": "firebase deploy --only hosting --project prod",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.7.1",
+    "@fontsource/poppins": "^5.0.5",
+    "firebase": "^9.23.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
+    "react-joyride": "^2.5.4",
     "react-router-dom": "^6.14.1",
     "zod": "^3.21.4"
   },

@@ -45,7 +45,14 @@ import {
 import { FaCloudDownloadAlt, FaCopy } from "react-icons/fa";
 import { CeremonyState } from "../helpers/interfaces";
 import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi";
-import { bytesToMegabytes, formatDate, getTimeDifference, parseDate, singleProjectPageSteps, truncateString } from "../helpers/utils";
+import {
+  bytesToMegabytes,
+  formatDate,
+  getTimeDifference,
+  parseDate,
+  singleProjectPageSteps,
+  truncateString
+} from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
 
 type RouteParams = {
@@ -62,7 +69,7 @@ const ProjectPage: React.FC = () => {
     const { status } = data;
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
-      setRunTutorial(false)
+      setRunTutorial(false);
     }
   };
 
@@ -75,63 +82,76 @@ const ProjectPage: React.FC = () => {
   /// @todo work on multiple circuits.
   /// @todo uncomplete info for mocked fallback circuit data.
 
-  const circuitsClean = validatedProjectData.circuits?.map((circuit) => ({
-    name: circuit.data.name,
-    description: circuit.data.description,
-    constraints: circuit.data.metadata?.constraints,
-    pot: circuit.data.metadata?.pot,
-    privateInputs: circuit.data.metadata?.privateInputs,
-    publicInputs: circuit.data.metadata?.publicInputs,
-    curve: circuit.data.metadata?.curve,
-    wires: circuit.data.metadata?.wires,
-    completedContributions: circuit.data.waitingQueue?.completedContributions,
-    currentContributor: circuit.data.waitingQueue?.currentContributor,
-    memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
-      .toString()
+  const circuitsClean =
+    validatedProjectData.circuits?.map((circuit) => ({
+      name: circuit.data.name,
+      description: circuit.data.description,
+      constraints: circuit.data.metadata?.constraints,
+      pot: circuit.data.metadata?.pot,
+      privateInputs: circuit.data.metadata?.privateInputs,
+      publicInputs: circuit.data.metadata?.publicInputs,
+      curve: circuit.data.metadata?.curve,
+      wires: circuit.data.metadata?.wires,
+      completedContributions: circuit.data.waitingQueue?.completedContributions,
+      currentContributor: circuit.data.waitingQueue?.currentContributor,
+      memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
+        .toString()
 
-      .slice(0, 5),
-    avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
-    maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
-  })) ?? []
+        .slice(0, 5),
+      avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
+      maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
+    })) ?? [];
 
-  const contributionsClean = validatedProjectData.contributions?.map((contribution) => ({
-    doc: contribution.data.files.lastZkeyFilename,
-    verificationComputationTime: contribution.data.verificationComputationTime,
-    valid: contribution.data.valid,
-    lastUpdated: parseDate(contribution.data.lastUpdated),
-    lastZkeyBlake2bHash: truncateString(contribution.data.files.lastZkeyBlake2bHash, 10),
-    transcriptBlake2bHash: truncateString(contribution.data.files.transcriptBlake2bHash, 10)
-  })) ?? []
+  const contributionsClean =
+    validatedProjectData.contributions?.map((contribution) => ({
+      doc: contribution.data.files?.lastZkeyFilename ?? "",
+      verificationComputationTime: contribution.data?.verificationComputationTime ?? "",
+      valid: contribution.data?.valid ?? false,
+      lastUpdated: parseDate(contribution.data?.lastUpdated ?? ""),
+      lastZkeyBlake2bHash: truncateString(contribution.data?.files?.lastZkeyBlake2bHash ?? "", 10),
+      transcriptBlake2bHash: truncateString(
+        contribution.data?.files?.transcriptBlake2bHash ?? "",
+        10
+      )
+    })) ?? [];
 
   const circuit = validatedProjectData.circuits
     ? validatedProjectData.circuits[0]
     : {
-      data: {
-        fixedTimeWindow: 10,
-        template: {
-          source: "todo",
-          paramsConfiguration: [2, 3, 4]
-        },
-        compiler: {
-          version: "0.5.1",
-          commitHash: "0xabc"
-        },
-        avgTimings: {
-          fullContribution: 100
-        },
-        zKeySizeInBytes: 10,
-        waitingQueue: {
-          completedContributions: 0
+        data: {
+          fixedTimeWindow: 10,
+          template: {
+            source: "todo",
+            paramsConfiguration: [2, 3, 4]
+          },
+          compiler: {
+            version: "0.5.1",
+            commitHash: "0xabc"
+          },
+          avgTimings: {
+            fullContribution: 100
+          },
+          zKeySizeInBytes: 10,
+          waitingQueue: {
+            completedContributions: 0
+          }
         }
-      }
-    };
+      };
 
   // Commands
-  const contributeCommand = !project || isLoading ? "" : `phase2cli auth && phase2cli contribute -c ${project?.ceremony.data.prefix}`;
+  const contributeCommand =
+    !project || isLoading
+      ? ""
+      : `phase2cli auth && phase2cli contribute -c ${project?.ceremony.data.prefix}`;
   const zKeyFilename = !circuit || isLoading ? "" : `${circuit.data.prefix}_final.zkey`;
-  const downloadLink = !project || !circuit || isLoading ? "" : `https://${project?.ceremony.data.prefix}${import.meta.env.VITE_CONFIG_CEREMONY_BUCKET_POSTFIX
-    }.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/circuits/${circuit.data.prefix
-    }/contributions/${zKeyFilename}`;
+  const downloadLink =
+    !project || !circuit || isLoading
+      ? ""
+      : `https://${project?.ceremony.data.prefix}${
+          import.meta.env.VITE_CONFIG_CEREMONY_BUCKET_POSTFIX
+        }.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/circuits/${
+          circuit.data.prefix
+        }/contributions/${zKeyFilename}`;
   // Hook for clipboard
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
 
@@ -173,12 +193,12 @@ const ProjectPage: React.FC = () => {
           p={8}
         >
           <VStack align="start" spacing={2} py={2} alignSelf={"stretch"}>
-            {!project?.ceremony.data || isLoading ?
-              <Box padding='6' boxShadow='lg' bg='white'>
-                <SkeletonCircle size='10' />
-                <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+            {!project?.ceremony.data || isLoading ? (
+              <Box padding="6" boxShadow="lg" bg="white">
+                <SkeletonCircle size="10" />
+                <SkeletonText mt="4" noOfLines={4} spacing="4" skeletonHeight="2" />
               </Box>
-              :
+            ) : (
               <>
                 <Joyride
                   callback={handleJoyrideCallback}
@@ -190,13 +210,13 @@ const ProjectPage: React.FC = () => {
                   steps={singleProjectPageSteps}
                   styles={{
                     options: {
-                      arrowColor: 'red',
-                      backgroundColor: 'white',
-                      overlayColor: 'rgba(79, 26, 0, 0.4)',
-                      primaryColor: 'red',
-                      textColor: 'black',
-                      width: '500px',
-                      zIndex: 1000,
+                      arrowColor: "red",
+                      backgroundColor: "white",
+                      overlayColor: "rgba(79, 26, 0, 0.4)",
+                      primaryColor: "red",
+                      textColor: "black",
+                      width: "500px",
+                      zIndex: 1000
                     }
                   }}
                 />
@@ -216,8 +236,16 @@ const ProjectPage: React.FC = () => {
                     </Text>
                   </BreadcrumbItem>
                 </Breadcrumb>
-                <Text fontSize={12} fontWeight="regular" color={"gray.500"}>{project.ceremony.data.description}</Text>
-                <VStack className="contributeCopyButton" align="start" spacing={2} py={2} alignSelf={"stretch"}>
+                <Text fontSize={12} fontWeight="regular" color={"gray.500"}>
+                  {project.ceremony.data.description}
+                </Text>
+                <VStack
+                  className="contributeCopyButton"
+                  align="start"
+                  spacing={2}
+                  py={2}
+                  alignSelf={"stretch"}
+                >
                   <Text fontSize={12} fontWeight="bold">
                     Contribute:
                   </Text>
@@ -267,7 +295,7 @@ const ProjectPage: React.FC = () => {
                   </HStack>
                 </VStack>
               </>
-            }
+            )}
             <VStack
               minH={[null, null, "100vh"]}
               margin="auto"
@@ -280,16 +308,29 @@ const ProjectPage: React.FC = () => {
             >
               <Tabs alignSelf={"stretch"}>
                 <TabList alignSelf={"stretch"} justifyContent={"space-evenly"}>
-                  <Tab className="circuitsView" fontSize={12}>Live Stats</Tab>
-                  <Tab className="contributionsButton" fontSize={12}>Contributions</Tab>
-                  <Tab className="detailsButton" fontSize={12}>Details</Tab>
-                  <Tab className="zKeyNavigationButton" fontSize={12}>Download ZKey</Tab>
+                  <Tab className="circuitsView" fontSize={12}>
+                    Live Stats
+                  </Tab>
+                  <Tab className="contributionsButton" fontSize={12}>
+                    Contributions
+                  </Tab>
+                  <Tab className="detailsButton" fontSize={12}>
+                    Details
+                  </Tab>
+                  <Tab className="zKeyNavigationButton" fontSize={12}>
+                    Download ZKey
+                  </Tab>
                 </TabList>
 
                 <TabPanels py={4}>
                   <TabPanel>
                     <Box alignItems="center" alignSelf={"stretch"} w="full">
-                      <SimpleGrid alignSelf={"stretch"} maxW={["392px", "390px", "100%"]} columns={1} spacing={6}>
+                      <SimpleGrid
+                        alignSelf={"stretch"}
+                        maxW={["392px", "390px", "100%"]}
+                        columns={1}
+                        spacing={6}
+                      >
                         {circuitsClean.map((circuit, index) => (
                           <Box key={index} borderWidth={1} borderRadius="lg" p={4}>
                             <Heading fontSize={16} size="md" mb={2}>
@@ -325,16 +366,22 @@ const ProjectPage: React.FC = () => {
                               <Flex justify="space-between" align="center">
                                 <Stat>
                                   <StatLabel fontSize={12}>Completed Contributions</StatLabel>
-                                  <StatNumber fontSize={16}>{circuit.completedContributions}</StatNumber>
+                                  <StatNumber fontSize={16}>
+                                    {circuit.completedContributions}
+                                  </StatNumber>
                                 </Stat>
                               </Flex>
                               <Stat>
                                 <StatLabel fontSize={12}>Memory Requirement</StatLabel>
-                                <StatNumber fontSize={16}>{circuit.memoryRequirement} mb</StatNumber>
+                                <StatNumber fontSize={16}>
+                                  {circuit.memoryRequirement} mb
+                                </StatNumber>
                               </Stat>
                               <Stat>
                                 <StatLabel fontSize={12}>Avg Contribution Time</StatLabel>
-                                <StatNumber fontSize={16}>{circuit.avgTimingContribution}s</StatNumber>
+                                <StatNumber fontSize={16}>
+                                  {circuit.avgTimingContribution}s
+                                </StatNumber>
                               </Stat>
                               <Stat>
                                 <StatLabel fontSize={12}>Max Contribution Time</StatLabel>
@@ -354,13 +401,13 @@ const ProjectPage: React.FC = () => {
                       <Spacer />
                     </HStack>
                     <Box overflowX="auto">
-                      {!contributionsClean || isLoading ?
+                      {!contributionsClean || isLoading ? (
                         <Stack>
-                          <Skeleton height='20px' />
-                          <Skeleton height='20px' />
-                          <Skeleton height='20px' />
+                          <Skeleton height="20px" />
+                          <Skeleton height="20px" />
+                          <Skeleton height="20px" />
                         </Stack>
-                        :
+                      ) : (
                         <Table fontSize={12} variant="simple">
                           <Thead>
                             <Tr>
@@ -386,7 +433,7 @@ const ProjectPage: React.FC = () => {
                             ))}
                           </Tbody>
                         </Table>
-                      }
+                      )}
                     </Box>
                   </TabPanel>
                   <TabPanel>
@@ -409,9 +456,9 @@ const ProjectPage: React.FC = () => {
                         letterSpacing={"0.01rem"}
                       >
                         {" "}
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium odio
-                        corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti
-                        cum, amet maxime nesciunt? Laudantium officia iste quo id.
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium
+                        odio corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam
+                        corrupti cum, amet maxime nesciunt? Laudantium officia iste quo id.
                       </Text>
                       <Text textAlign={"center"} fontWeight={"600"} fontSize={"18px"} maxW="30ch">
                         {" "}
@@ -419,9 +466,9 @@ const ProjectPage: React.FC = () => {
                       </Text>
                       <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch">
                         {" "}
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium odio
-                        corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam corrupti
-                        cum, amet maxime nesciunt? Laudantium officia iste quo id.
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium
+                        odio corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam
+                        corrupti cum, amet maxime nesciunt? Laudantium officia iste quo id.
                       </Text>
                     </VStack>
                   </TabPanel>
@@ -439,7 +486,9 @@ const ProjectPage: React.FC = () => {
                       variant="outline"
                       onClick={downloadFileFromS3}
                       fontWeight={"regular"}
-                      isDisabled={project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false}
+                      isDisabled={
+                        project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                      }
                     >
                       Download From S3
                     </Button>

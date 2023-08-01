@@ -3,6 +3,8 @@ name: Validate Directory name and prefix
 
 on: 
   pull_request:
+    paths:
+      - 'ceremonies/**'
 
 jobs:
   verify:
@@ -22,7 +24,7 @@ jobs:
 
     - name: Read JSON and get title
       run: |
-        title=$(jq -r '.title' ./ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')/p0tionConfig.json)
+        title=$(jq -r '.title' ./ceremonies/$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')/p0tionConfig.json)
         echo "Title: $title"
         echo "TITLE=$title" >> $GITHUB_ENV
 
@@ -30,7 +32,7 @@ jobs:
       run: |
         prefix=$(echo "${TITLE}" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -dc '[:alnum:]-\n\r')
         echo "Converted Prefix: $prefix"
-        DIR_NAME="$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')"
+        DIR_NAME="$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')"
         echo "Dir name: $DIR_NAME"
         if [ "$prefix" != $DIR_NAME ]; then
           echo "Error: The ceremony artifacts directory name and ceremony prefix do not match!"

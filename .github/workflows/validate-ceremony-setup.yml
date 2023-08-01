@@ -22,12 +22,36 @@ jobs:
 
       - name: Install p0tion
         run: npm install -g @p0tion/phase2cli
+# Run for each PR that changes files in the ceremonies directory
+name: Check PR with new ceremony files
+
+on:
+  pull_request:
+    paths:
+      - 'ceremonies/**'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    if: endsWith(github.head_ref, '-ceremony') 
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install p0tion
+        run: npm install -g @p0tion/phase2cli
 
       # we want to validate that the p0tionConfig.json file is valid
       - name: Run npm script and check output
         run: |
           echo $GITHUB_HEAD_REF
-          result=$(phase2cli validate --template ./ceremonies/$(echo $GITHUB_HEAD_REF | sed -r 's/-ceremony$//')/p0tionConfig.json)
+          result=$(phase2cli validate --template ./ceremonies/$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')/p0tionConfig.json)
           if [[ "$result" != "true" ]]; then
             echo "NPM script returned false."
             exit 1

@@ -1,133 +1,92 @@
-import {
-    collection as collectionRef,
-    doc,
-    DocumentData,
-    DocumentSnapshot,
-    Firestore,
-    getDoc,
-    getDocs,
-    QueryDocumentSnapshot,
-    getFirestore
-} from "firebase/firestore"
-import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app" // ref https://firebase.google.com/docs/web/setup#access-firebase.
-import { Functions, getFunctions } from "firebase/functions"
-
-/**
- * This method initialize a Firebase app if no other app has already been initialized.
- * @param options <FirebaseOptions> - an object w/ every necessary Firebase option to init app.
- * @returns <FirebaseApp> - the initialized Firebase app object.
- */
-const initializeFirebaseApp = (options: FirebaseOptions): FirebaseApp => initializeApp(options)
-
-/**
- * This method returns the Firestore database instance associated to the given Firebase application.
- * @param app <FirebaseApp> - the Firebase application.
- * @returns <Firestore> - the Firebase Firestore associated to the application.
- */
-const getFirestoreDatabase = (app: FirebaseApp): Firestore => getFirestore(app)
-
-/**
- * This method returns the Cloud Functions instance associated to the given Firebase application.
- * @param app <FirebaseApp> - the Firebase application.
- * @returns <Functions> - the Cloud Functions associated to the application.
- */
-const getFirebaseFunctions = (app: FirebaseApp): Functions => getFunctions(app)
-
-/**
- * Get circuits collection path for database reference.
- * @notice all circuits related documents are store under `ceremonies/<ceremonyId>/circuits` collection path.
- * nb. This is a rule that must be satisfied. This is NOT an optional convention.
- * @param ceremonyId <string> - the unique identifier of the ceremony.
- * @returns <string> - the participants collection path.
- */
-export const getCircuitsCollectionPath = (ceremonyId: string): string =>
-    `ceremonies/${ceremonyId}/circuits`
-
-/**
- * Return the core Firebase services instances (App, Database, Functions).
- * @param apiKey <string> - the API key specified in the application config.
- * @param authDomain <string> - the authDomain string specified in the application config.
- * @param projectId <string> - the projectId specified in the application config.
- * @param messagingSenderId <string> - the messagingSenderId specified in the application config.
- * @param appId <string> - the appId specified in the application config.
- * @returns <Promise<FirebaseServices>>
- */
-export const initializeFirebaseCoreServices = async (): Promise<{
-    firebaseApp: FirebaseApp
-    firestoreDatabase: Firestore
-    firebaseFunctions: Functions
-}> => {
-    const firebaseApp = initializeFirebaseApp({
-        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.VITE_FIREBASE_APP_ID
-    })
-    const firestoreDatabase = getFirestoreDatabase(firebaseApp)
-    const firebaseFunctions = getFirebaseFunctions(firebaseApp)
-
-    return {
-        firebaseApp,
-        firestoreDatabase,
-        firebaseFunctions
+export function truncateString(str: string, numCharacters = 5): string {
+    if (str.length <= numCharacters * 2) {
+        return str;
     }
+    
+    const firstPart = str.slice(0, numCharacters);
+    const lastPart = str.slice(-numCharacters);
+    
+    return `${firstPart}...${lastPart}`;
+}
+    
+export function parseDate(dateString: number): string {
+    const parsedDate = new Date(dateString);
+    return parsedDate.toDateString();
+}
+    
+export const formatDate = (date: Date): string =>
+    `${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(
+        2,
+        "0"
+    )}.${String(date.getFullYear()).slice(-2)}`;
+    
+export function bytesToMegabytes(bytes: number): number {
+    return bytes / Math.pow(1024, 2);
 }
 
-/**
- * Fetch for all documents in a collection.
- * @param firestoreDatabase <Firestore> - the Firestore service instance associated to the current Firebase application.
- * @param collection <string> - the name of the collection.
- * @returns <Promise<Array<QueryDocumentSnapshot<DocumentData>>>> - return all documents (if any).
- */
-export const getAllCollectionDocs = async (
-    firestoreDatabase: Firestore,
-    collection: string
-): Promise<Array<QueryDocumentSnapshot<DocumentData>>> =>
-    (await getDocs(collectionRef(firestoreDatabase, collection))).docs
-
-/**
- * Get a specific document from database.
- * @param firestoreDatabase <Firestore> - the Firestore service instance associated to the current Firebase application.
- * @param collection <string> - the name of the collection.
- * @param documentId <string> - the unique identifier of the document in the collection.
- * @returns <Promise<DocumentSnapshot<DocumentData>>> - return the document from Firestore.
- */
-export const getDocumentById = async (
-    firestoreDatabase: Firestore,
-    collection: string,
-    documentId: string
-): Promise<DocumentSnapshot<DocumentData>> => {
-    const docRef = doc(firestoreDatabase, collection, documentId)
-
-    return getDoc(docRef)
+export function toBackgroundImagefromSrc(src: string) {
+    return "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('" + src + "')";
 }
 
-/**
- * Helper for obtaining uid and data for query document snapshots.
- * @param queryDocSnap <Array<QueryDocumentSnapshot>> - the array of query document snapshot to be converted.
- * @returns Array<FirebaseDocumentInfo>
- */
-export const fromQueryToFirebaseDocumentInfo = (
-    queryDocSnap: Array<QueryDocumentSnapshot>
-): Array<any> =>
-    queryDocSnap.map((document: QueryDocumentSnapshot<DocumentData>) => ({
-        id: document.id,
-        ref: document.ref,
-        data: document.data()
-    }))
+// Get a human-readable string indicating how far in the future or past a date is
+export const getTimeDifference = (date: Date): string => {
+    const currentDate = new Date();
+    const differenceInTime = date.getTime() - currentDate.getTime();
+    const differenceInDays = Math.round(differenceInTime / (1000 * 3600 * 24));
+  
+    if (differenceInDays < 0) return `${Math.abs(differenceInDays)} days ago`;
+    if (differenceInDays > 0) return `${differenceInDays} days from now`;
+    return "Today";
+  };
 
-/**
- * Query for ceremony circuits.
- * @notice the order by sequence position is fundamental to maintain parallelism among contributions for different circuits.
- * @param firestoreDatabase <Firestore> - the Firestore service instance associated to the current Firebase application.
- * @param ceremonyId <string> - the ceremony unique identifier.
- * @returns Promise<Array<FirebaseDocumentInfo>> - the ceremony' circuits documents ordered by sequence position.
- */
-export const getCeremonyCircuits = async (
-    firestoreDatabase: Firestore,
-    ceremonyId: string
-): Promise<Array<any>> =>
-    fromQueryToFirebaseDocumentInfo(
-        await getAllCollectionDocs(firestoreDatabase, getCircuitsCollectionPath(ceremonyId))
-    ).sort((a: any, b: any) => a.data.sequencePosition - b.data.sequencePosition)
+// steps for the tutorial on the search bar
+export const searchBarSteps =  [
+    {
+        target: ".tutorialSearchBar",
+        content: "Search for your favorite setup",
+    }
+]
+
+// steps for the tutorial on the projects page
+export const projectsPageSteps =  [
+    {
+        target: ".tutorialDescription",
+        content: "Here you can find a description of the project",
+    },
+    {
+        target: ".tutorialButtons",
+        content: "Click here to read the instructions on how to contribute or watch a live ceremony",
+    },
+    {
+        target: ".tutorialLiveLook",
+        content: "Here you can see the live status of a ceremony",
+    },
+    {
+        target: ".tutorialContributionsList",
+        content: "Here you can see the list of contributions to this ceremony",
+    }
+]
+
+// steps for the tutorial on the single project details page
+export const singleProjectPageSteps = [
+    {
+        target: ".contributeCopyButton",
+        content: "Here you can copy the command needed to contribute to this ceremony",
+    },
+    {
+        target: ".circuitsView",
+        content: "Here you can see the circuits for this ceremony and their live statistics",
+    },
+    {
+        target: ".contributionsButton",
+        content: "Click here to view the completed contributions",
+    },
+    {
+        target: ".detailsButton",
+        content: "Click here to view the details of this circuit",
+    },
+    {
+        target: ".zKeyNavigationButton",
+        content: "Click here to download the final zKey for this circuit (only if the ceremony has been finalized)",
+    }
+]

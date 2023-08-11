@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -47,6 +47,7 @@ import { CeremonyState } from "../helpers/interfaces";
 import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi";
 import { bytesToMegabytes, formatDate, getTimeDifference, parseDate, singleProjectPageSteps, truncateString } from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
+import { getParticipantsAvatar, initializeFirebaseCoreServices } from "../helpers/firebase";
 
 type RouteParams = {
   ceremonyName: string | undefined;

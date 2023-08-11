@@ -14,6 +14,8 @@ import {
 } from "firebase/firestore"
 import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app" // ref https://firebase.google.com/docs/web/setup#access-firebase.
 import { Functions, getFunctions } from "firebase/functions"
+import { processItems } from "./utils"
+import { Item } from "./interfaces"
 
 /**
  * This method initialize a Firebase app if no other app has already been initialized.
@@ -154,25 +156,47 @@ export const getParticipantsAvatar = async (
     const participantIds = participantsData.map(participant => participant.id)
 
     // Chunk the IDs into groups of 10 or fewer due to Firestore's limitation
-    const chunks = []
+    const chunks: Item[] = []
     while (participantIds.length) {
         chunks.push(participantIds.splice(0, 10))
     }
 
-    const avatarURLs = []
-
-    // For each chunk, fetch avatars in batch
-    for (const chunk of chunks) {
+    // This function fetches avatars for a given chunk
+    const fetchAvatarsForChunk = async (chunk: string[]): Promise<string[]> => {
         const q = query(
             collection(firestoreDatabase, 'avatars'),
-            where('__name__', 'in', chunk)
-        )
+            where('__name__', 'in', [chunk])
+        );
 
         const avatarDocs = await getDocs(q)
-        for (const doc of avatarDocs.docs) {
-            if (doc.exists()) avatarURLs.push(doc.data().avatarUrl)
-        }
-    }
+        return avatarDocs.docs
+            .filter(doc => doc.exists())
+            .map(doc => doc.data().avatarUrl)
+    };
+
+    // Process all the chunks concurrently
+    // @todo do something with the errors - for now ignore them
+    const { results } = await processItems(chunks, fetchAvatarsForChunk)
+
+    // Flattening the list of lists of avatar URLs
+    const avatarURLs = results.flat()
 
     return avatarURLs
+}
+
+
+/**
+ * Function to get contributions for each circuit
+ * @param {Firestore} firestoreDatabase - the Firestore service instance associated to the current Firebase application.
+ * @param {string} circuitId - the circuit unique identifier.
+ * @param {string} ceremonyId - the ceremony unique identifier.
+ * @returns {Array<any>} - An array of contributions for the circuit.
+*/ 
+export const getContributions = async (
+    firestoreDatabase: Firestore, 
+    circuitId: string, 
+    ceremonyId: string
+): Promise<any[]> => {
+    const contributionsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${ceremonyId}/circuits/${circuitId}/contributions`);
+    return contributionsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() }));
 }

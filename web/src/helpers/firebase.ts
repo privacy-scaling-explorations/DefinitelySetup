@@ -7,7 +7,10 @@ import {
     getDoc,
     getDocs,
     QueryDocumentSnapshot,
-    getFirestore
+    getFirestore,
+    query,
+    collection,
+    where
 } from "firebase/firestore"
 import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app" // ref https://firebase.google.com/docs/web/setup#access-firebase.
 import { Functions, getFunctions } from "firebase/functions"
@@ -132,3 +135,44 @@ export const getCeremonyCircuits = async (
         await getAllCollectionDocs(firestoreDatabase, getCircuitsCollectionPath(ceremonyId))
     ).sort((a: any, b: any) => a.data.sequencePosition - b.data.sequencePosition)
 
+
+/**
+ * Fetch all avatars for participants of a ceremony.
+ * @param firestoreDatabase {Firestore} - the Firestore service instance associated to the current Firebase application.
+ * @param ceremonyId {string} - the ceremony unique identifier.
+ * @returns {string[]} - An array of avatarURLs. 
+ */
+export const getParticipantsAvatar = async (
+    firestoreDatabase: Firestore,
+    ceremonyId: string,
+): Promise<any> => {
+    // Get all participants of the ceremony
+    const participantsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${ceremonyId}/participants`)
+    const participantsData = fromQueryToFirebaseDocumentInfo(participantsDocs)
+
+    // Get the IDs of the participants
+    const participantIds = participantsData.map(participant => participant.id)
+
+    // Chunk the IDs into groups of 10 or fewer due to Firestore's limitation
+    const chunks = []
+    while (participantIds.length) {
+        chunks.push(participantIds.splice(0, 10))
+    }
+
+    const avatarURLs = []
+
+    // For each chunk, fetch avatars in batch
+    for (const chunk of chunks) {
+        const q = query(
+            collection(firestoreDatabase, 'avatars'),
+            where('__name__', 'in', chunk)
+        )
+
+        const avatarDocs = await getDocs(q)
+        for (const doc of avatarDocs.docs) {
+            if (doc.exists()) avatarURLs.push(doc.data().avatarUrl)
+        }
+    }
+
+    return avatarURLs
+}

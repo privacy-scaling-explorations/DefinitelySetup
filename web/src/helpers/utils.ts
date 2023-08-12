@@ -125,10 +125,9 @@ export const processItems = async (items: (any[] | any)[], process: any): Promis
     }
 
     // create workers
-    const workers = Array.from( { length: Math.min(items.length, 25) }, exec)
+    const workers = Array.from( { length: Math.min(items.length, 50) }, exec)
 
     // run all workers
     await Promise.all(workers)
-
     return { results, errors }
 }

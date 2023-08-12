@@ -15,7 +15,9 @@ import {
 import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app" // ref https://firebase.google.com/docs/web/setup#access-firebase.
 import { Functions, getFunctions } from "firebase/functions"
 import { processItems } from "./utils"
-import { Item } from "./interfaces"
+
+// we init this here so we can use it throughout the functions below
+let firestoreDatabase: Firestore
 
 /**
  * This method initialize a Firebase app if no other app has already been initialized.
@@ -79,6 +81,13 @@ export const initializeFirebaseCoreServices = async (): Promise<{
     }
 }
 
+// Init the Firestore database instance.
+(async () => {
+    const { firestoreDatabase: db } = await initializeFirebaseCoreServices()
+
+    firestoreDatabase = db
+})()
+
 /**
  * Fetch for all documents in a collection.
  * @param firestoreDatabase <Firestore> - the Firestore service instance associated to the current Firebase application.
@@ -86,7 +95,6 @@ export const initializeFirebaseCoreServices = async (): Promise<{
  * @returns <Promise<Array<QueryDocumentSnapshot<DocumentData>>>> - return all documents (if any).
  */
 export const getAllCollectionDocs = async (
-    firestoreDatabase: Firestore,
     collection: string
 ): Promise<Array<QueryDocumentSnapshot<DocumentData>>> =>
     (await getDocs(collectionRef(firestoreDatabase, collection))).docs
@@ -99,7 +107,6 @@ export const getAllCollectionDocs = async (
  * @returns <Promise<DocumentSnapshot<DocumentData>>> - return the document from Firestore.
  */
 export const getDocumentById = async (
-    firestoreDatabase: Firestore,
     collection: string,
     documentId: string
 ): Promise<DocumentSnapshot<DocumentData>> => {
@@ -130,33 +137,30 @@ export const fromQueryToFirebaseDocumentInfo = (
  * @returns Promise<Array<FirebaseDocumentInfo>> - the ceremony' circuits documents ordered by sequence position.
  */
 export const getCeremonyCircuits = async (
-    firestoreDatabase: Firestore,
     ceremonyId: string
 ): Promise<Array<any>> =>
     fromQueryToFirebaseDocumentInfo(
-        await getAllCollectionDocs(firestoreDatabase, getCircuitsCollectionPath(ceremonyId))
+        await getAllCollectionDocs(getCircuitsCollectionPath(ceremonyId))
     ).sort((a: any, b: any) => a.data.sequencePosition - b.data.sequencePosition)
 
 
 /**
  * Fetch all avatars for participants of a ceremony.
- * @param firestoreDatabase {Firestore} - the Firestore service instance associated to the current Firebase application.
  * @param ceremonyId {string} - the ceremony unique identifier.
  * @returns {string[]} - An array of avatarURLs. 
  */
 export const getParticipantsAvatar = async (
-    firestoreDatabase: Firestore,
     ceremonyId: string,
 ): Promise<any> => {
     // Get all participants of the ceremony
-    const participantsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${ceremonyId}/participants`)
+    const participantsDocs = await getAllCollectionDocs(`ceremonies/${ceremonyId}/participants`)
     const participantsData = fromQueryToFirebaseDocumentInfo(participantsDocs)
 
     // Get the IDs of the participants
     const participantIds = participantsData.map(participant => participant.id)
 
     // Chunk the IDs into groups of 10 or fewer due to Firestore's limitation
-    const chunks: Item[] = []
+    const chunks: any[] = []
     while (participantIds.length) {
         chunks.push(participantIds.splice(0, 10))
     }
@@ -193,10 +197,9 @@ export const getParticipantsAvatar = async (
  * @returns {Array<any>} - An array of contributions for the circuit.
 */ 
 export const getContributions = async (
-    firestoreDatabase: Firestore, 
-    circuitId: string, 
-    ceremonyId: string
+    ceremonyId: string,
+    circuitId: string
 ): Promise<any[]> => {
-    const contributionsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${ceremonyId}/circuits/${circuitId}/contributions`);
+    const contributionsDocs = await getAllCollectionDocs(`ceremonies/${ceremonyId}/circuits/${circuitId}/contributions`);
     return contributionsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() }));
 }

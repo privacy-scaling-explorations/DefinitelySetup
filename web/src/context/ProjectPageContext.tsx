@@ -4,7 +4,6 @@ import { DocumentData } from "firebase/firestore";
 import { z } from "zod";
 import { StateContext, useStateContext } from "./StateContext";
 import {
-  initializeFirebaseCoreServices,
   getAllCollectionDocs,
   getCeremonyCircuits,
   getContributions
@@ -59,18 +58,17 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const { firestoreDatabase } = await initializeFirebaseCoreServices();
-
-        const circuitsDocs = await getCeremonyCircuits(firestoreDatabase, projectId);
+        const circuitsDocs = await getCeremonyCircuits(projectId);
         const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data }));
 
-        const participantsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/participants`);
+        const participantsDocs = await getAllCollectionDocs(`ceremonies/${projectId}/participants`);
         const participants: ParticipantDocumentReferenceAndData[] = participantsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() }));
 
         // run concurrent requests per circuit
-        const args: string[] = circuits.map((circuit: CircuitDocumentReferenceAndData) => circuit.uid)
+        const args: any[][] = circuits.map((circuit: CircuitDocumentReferenceAndData) => [projectId, circuit.uid])
         // @todo handle errors? const { results, errors } = ...
         const { results } = await processItems(args, getContributions)
+        
         const contributions = results.flat()
 
         const updatedProjectData = { circuits, participants, contributions };

@@ -15,12 +15,11 @@ import {
   Heading,
   Spacer
 } from "@chakra-ui/react";
-import { FaSearch } from "react-icons/fa";
+import { FaHeart, FaSearch } from "react-icons/fa";
 import { StateContext } from "./context/StateContext";
 import { ColorModeSwitch } from "./components/ColorModeSwitch";
 import Joyride, { STATUS } from "react-joyride";
 import { searchBarSteps } from "./helpers/utils";
-import { LogoIcon } from "./assets/LogoIcon";
 
 const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
   const { search, setSearch, loading, setLoading } = useContext(StateContext);

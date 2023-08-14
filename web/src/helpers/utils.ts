@@ -1,3 +1,5 @@
+import { Item } from "./interfaces";
+
 export function truncateString(str: string, numCharacters = 5): string {
     if (str.length <= numCharacters * 2) {
         return str;
@@ -90,3 +92,42 @@ export const singleProjectPageSteps = [
         content: "Click here to download the final zKey for this circuit (only if the ceremony has been finalized)",
     }
 ]
+
+/**
+ * Execute in batches of 25 different processes.
+ * @param items {any} the items to process
+ * @param process {any} the process function to apply to each item
+ * @returns {any} - the results and errors
+ */
+export const processItems = async (items: (any[] | any)[], process: any): Promise<any> => {
+    // we store the errors and the results
+    const errors: any = []
+    const results: any = []
+
+    // index starts at 0 (first args to process)
+    let index: number = 0
+    
+    // recursively execute the function on the items
+    const exec = async (): Promise<any> => {
+        if (index === items.length) return 
+        const item = items[index++]
+
+        // store results
+        try { 
+            // we want to be able to accept arguments as arrays of single items
+            if (Array.isArray(item)) results.push(await process(...item))
+            else results.push(await process(item))
+        }
+        catch (error) { errors.push(error) }
+
+        // call itself
+        return exec() 
+    }
+
+    // create workers
+    const workers = Array.from( { length: Math.min(items.length, 50) }, exec)
+
+    // run all workers
+    await Promise.all(workers)
+    return { results, errors }
+}

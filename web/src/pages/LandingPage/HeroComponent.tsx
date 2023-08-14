@@ -26,7 +26,6 @@ import {
 } from "@chakra-ui/react";
 import { HeroComponentProps } from "../../helpers/interfaces";
 import { ProjectCard } from "../../components/ProjectCard";
-import { ScrollBanner } from "./Banner";
 // import {
 //   bytesToMegabytes,
 //   parseDate,

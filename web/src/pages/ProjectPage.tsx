@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -54,6 +54,7 @@ import {
   truncateString
 } from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
+import { getParticipantsAvatar, initializeFirebaseCoreServices } from "../helpers/firebase";
 
 type RouteParams = {
   ceremonyName: string | undefined;

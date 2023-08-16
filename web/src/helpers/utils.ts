@@ -1,5 +1,3 @@
-import { Item } from "./interfaces";
-
 export function truncateString(str: string, numCharacters = 5): string {
     if (str.length <= numCharacters * 2) {
         return str;

@@ -95,9 +95,14 @@ export const singleProjectPageSteps = [
  * Execute in batches of 25 different processes.
  * @param items {any} the items to process
  * @param process {any} the process function to apply to each item
+ * @param unwrap {boolean} whether to unwrap the args or not
  * @returns {any} - the results and errors
  */
-export const processItems = async (items: (any[] | any)[], process: any): Promise<any> => {
+export const processItems = async (
+    items: (any[] | any)[], 
+    process: any,
+    unwrap: boolean = false
+): Promise<any> => {
     // we store the errors and the results
     const errors: any = []
     const results: any = []
@@ -112,8 +117,7 @@ export const processItems = async (items: (any[] | any)[], process: any): Promis
 
         // store results
         try { 
-            // we want to be able to accept arguments as arrays of single items
-            if (Array.isArray(item)) results.push(await process(...item))
+            if (unwrap) results.push(await process(...item))
             else results.push(await process(item))
         }
         catch (error) { errors.push(error) }

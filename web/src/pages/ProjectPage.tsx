@@ -54,6 +54,7 @@ import {
   truncateString
 } from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
+import ScrollingAvatars from "../components/Avatars";
 
 type RouteParams = {
   ceremonyName: string | undefined;
@@ -62,7 +63,7 @@ type RouteParams = {
 const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { projects, setRunTutorial, runTutorial } = useContext(StateContext);
-  const { projectData, isLoading } = useProjectPageContext();
+  const { projectData, isLoading, avatars } = useProjectPageContext();
 
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
@@ -192,7 +193,7 @@ const ProjectPage: React.FC = () => {
           alignItems="flex-start"
           p={8}
         >
-          <VStack align="start" spacing={2} py={2} alignSelf={"stretch"}>
+          <VStack alignSelf={"stretch"}>
             {!project?.ceremony.data || isLoading ? (
               <Box padding="6" boxShadow="lg" bg="white">
                 <SkeletonCircle size="10" />
@@ -241,7 +242,7 @@ const ProjectPage: React.FC = () => {
                 </Text>
                 <VStack
                   className="contributeCopyButton"
-                  align="start"
+                  // align="start"
                   spacing={2}
                   py={2}
                   alignSelf={"stretch"}
@@ -265,12 +266,9 @@ const ProjectPage: React.FC = () => {
               `}
                   </Button>
                 </VStack>
-                <VStack align="start" spacing={2} py={2} alignSelf={"stretch"}>
+                <VStack spacing={2} py={2} alignSelf={"stretch"}>
                   <HStack
                     spacing={1}
-                    alignSelf={"stretch"}
-                    alignItems={"flex-start"}
-                    justifyContent={"flex-start"}
                     flexWrap={"wrap"}
                   >
                     <Badge
@@ -296,6 +294,9 @@ const ProjectPage: React.FC = () => {
                 </VStack>
               </>
             )}
+            <VStack alignSelf={"stretch"}> 
+              <ScrollingAvatars images={avatars}/>
+            </VStack>
             <VStack
               minH={[null, null, "100vh"]}
               margin="auto"

@@ -2,7 +2,7 @@
 
 import React, { useState, createContext, useEffect, useContext } from "react";
 import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitContributionVerificationMechanism, CircuitDocumentReferenceAndData, ContributionDocumentReferenceAndData, ParticipantDocumentReferenceAndData } from "../helpers/interfaces";
-import { getAllCollectionDocs, getCeremonyCircuits, initializeFirebaseCoreServices } from "../helpers/firebase";
+import { getAllCollectionDocs, getCeremonyCircuits } from "../helpers/firebase";
 import { DocumentData } from 'firebase/firestore'
 
 export interface Project {
@@ -138,12 +138,11 @@ export const useInitialStateContext = () => {
   useEffect(() => {
     const fetchData = async () => {
       /// @todo refactoring needed.
-      const ceremonyProjectId = "i3kFOOUi8L42ooRWQh8N"
+      const ceremonyProjectId = "B7HZ7yW6waAWGKLr7GiA"
 
       if (ceremonyProjectId) {
         try {
-          const { firestoreDatabase } = await initializeFirebaseCoreServices();
-          const circuitsDocs = await getCeremonyCircuits(firestoreDatabase, ceremonyProjectId);
+          const circuitsDocs = await getCeremonyCircuits(ceremonyProjectId);
           const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map(
             (document: DocumentData) => ({ uid: document.id, data: document.data })
           );
@@ -151,8 +150,6 @@ export const useInitialStateContext = () => {
           const updatedProjectData = { ...projects, circuits };
           setProjects(updatedProjectData);
           setCircuit(circuits[0])
-
-          console.log("circuit: ", circuits[0])
         } catch (error) {
           console.error(error);
         }
@@ -167,10 +164,9 @@ export const useInitialStateContext = () => {
     const fetchData = async () => {
       // 0. Prepare service.
       setLoading(true)
-      const { firestoreDatabase } = await initializeFirebaseCoreServices()
 
       // 1. Fetch data.
-      const docs = await getAllCollectionDocs(firestoreDatabase, `ceremonies`)
+      const docs = await getAllCollectionDocs(`ceremonies`)
 
       // 2. Post-process data.
       const ceremonies: CeremonyDocumentReferenceAndData[] = docs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
@@ -178,7 +174,6 @@ export const useInitialStateContext = () => {
 
       // 3. Store data.      
       setProjects(projects)
-      console.log(projects)
       setLoading(false)
     }
 

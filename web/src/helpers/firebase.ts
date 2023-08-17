@@ -169,10 +169,11 @@ export const getParticipantsAvatar = async (
     const fetchAvatarsForChunk = async (chunk: string[]): Promise<string[]> => {
         const q = query(
             collection(firestoreDatabase, 'avatars'),
-            where('__name__', 'in', [chunk])
+            where('__name__', 'in', chunk)
         );
 
         const avatarDocs = await getDocs(q)
+
         return avatarDocs.docs
             .filter(doc => doc.exists())
             .map(doc => doc.data().avatarUrl)
@@ -180,8 +181,7 @@ export const getParticipantsAvatar = async (
 
     // Process all the chunks concurrently
     // @todo do something with the errors - for now ignore them
-    const { results } = await processItems(chunks, fetchAvatarsForChunk)
-
+    const { results } = await processItems(chunks, fetchAvatarsForChunk, false)
     // Flattening the list of lists of avatar URLs
     const avatarURLs = results.flat()
 

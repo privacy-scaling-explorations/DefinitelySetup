@@ -6,7 +6,8 @@ import { StateContext, useStateContext } from "./StateContext";
 import {
   getAllCollectionDocs,
   getCeremonyCircuits,
-  getContributions
+  getContributions,
+  getParticipantsAvatar
 } from "../helpers/firebase";
 import {
   CircuitDocumentReferenceAndData,
@@ -27,6 +28,7 @@ export type ProjectPageContextProps = {
   projectData: ProjectData | null;
   isLoading: boolean;
   runTutorial: boolean;
+  avatars?: string[];
 };
 
 export const defaultProjectData: ProjectData = {};
@@ -38,7 +40,8 @@ type ProjectPageProviderProps = {
 const ProjectPageContext = createContext<ProjectPageContextProps>({
   projectData: defaultProjectData,
   isLoading: false,
-  runTutorial: false 
+  runTutorial: false,
+  avatars: []
 });
 
 export const useProjectPageContext = () => useContext(ProjectPageContext);
@@ -47,6 +50,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
   const navigate = useNavigate();
   const { loading: isLoading, setLoading: setIsLoading, runTutorial } = useContext(StateContext);
   const [projectData, setProjectData] = useState<ProjectData | null>(defaultProjectData);
+  const [avatars, setAvatars] = useState<string[]>([]);
 
   const { projects } = useStateContext();
   const { ceremonyName } = useParams();
@@ -67,7 +71,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
         // run concurrent requests per circuit
         const args: any[][] = circuits.map((circuit: CircuitDocumentReferenceAndData) => [projectId, circuit.uid])
         // @todo handle errors? const { results, errors } = ...
-        const { results } = await processItems(args, getContributions)
+        const { results } = await processItems(args, getContributions, true)
         
         const contributions = results.flat()
 
@@ -76,6 +80,10 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
         const parsedData = ProjectDataSchema.parse(updatedProjectData);
 
         setProjectData(parsedData);
+
+        const avatars = await getParticipantsAvatar(projectId)
+        console.log(avatars)
+        setAvatars(avatars)
       } catch (error) {
         console.error(error);
         navigate("/error");
@@ -88,7 +96,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
   }, [navigate, projectId]);
 
   return (
-    <ProjectPageContext.Provider value={{ projectData, isLoading, runTutorial }}>
+    <ProjectPageContext.Provider value={{ projectData, isLoading, runTutorial, avatars }}>
       {children}
     </ProjectPageContext.Provider>
   );

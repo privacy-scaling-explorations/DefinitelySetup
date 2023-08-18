@@ -93,7 +93,7 @@ jobs:
         for ceremony in "${ALL_CEREMONIES[@]}"; do
             if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
                 echo 'Setting up ceremony: ./ceremonies/$ceremony/p0tionConfig.json'
-                phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets.ACCESS_TOKEN }}"
+                NODE_OPTIONS=--max-old-space-size=12288 phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets.ACCESS_TOKEN }}"
             fi
         done
 

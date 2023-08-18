@@ -1,0 +1,443 @@
+{
+    "title": "RLN Trusted Setup Ceremony",
+    "description": "This is a trusted setup ceremony for the Rate-Limiting Nullifier protocol",
+    "startDate": "2023-07-31T10:30:00",
+    "endDate": "2023-09-05T00:00:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 3,
+    "circuits": [
+      {
+          "description": "RLN withdraw circuit",
+          "compiler": {
+            "version": "2.1.5",
+            "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+          },
+          "template": {
+            "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+            "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+            "paramConfiguration": []
+          },
+          "verification": {
+            "cfOrVm": "CF"
+          },
+          "artifacts": {
+            "bucket": "p0tion-test-definitely-setup",
+            "region": "us-east-1",
+            "r1csStoragePath": "withdraw.r1cs",
+            "wasmStoragePath": "withdraw.wasm"
+          },
+          "name": "RLN-Withdraw",
+          "fixedTimeWindow": 3,
+          "sequencePosition": 1
+      },
+      {
+        "description": "RLN circuit with depth = 16",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [16, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln16.r1cs",
+          "wasmStoragePath": "rln16.wasm"
+        },
+        "name": "RLN-16",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 2
+      },
+      {
+        "description": "RLN circuit with depth = 17",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [17, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln17.r1cs",
+          "wasmStoragePath": "rln17.wasm"
+        },
+        "name": "RLN-17",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 3
+      },
+      {
+        "description": "RLN circuit with depth = 18",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [18, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln18.r1cs",
+          "wasmStoragePath": "rln18.wasm"
+        },
+        "name": "RLN-18",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 4
+      },
+      {
+        "description": "RLN circuit with depth = 19",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [19, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln19.r1cs",
+          "wasmStoragePath": "rln19.wasm"
+        },
+        "name": "RLN-19",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 5
+      },
+      {
+        "description": "RLN circuit with depth = 20",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [20, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln20.r1cs",
+          "wasmStoragePath": "rln20.wasm"
+        },
+        "name": "RLN-20",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 6
+      },
+      {
+        "description": "RLN circuit with depth = 21",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [21, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln21.r1cs",
+          "wasmStoragePath": "rln21.wasm"
+        },
+        "name": "RLN-21",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 7
+      },
+      {
+        "description": "RLN circuit with depth = 22",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [22, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln22.r1cs",
+          "wasmStoragePath": "rln22.wasm"
+        },
+        "name": "RLN-22",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 8
+      },
+      {
+        "description": "RLN circuit with depth = 23",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [23, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln23.r1cs",
+          "wasmStoragePath": "rln23.wasm"
+        },
+        "name": "RLN-23",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 9
+      },
+      {
+        "description": "RLN circuit with depth = 24",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [24, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln24.r1cs",
+          "wasmStoragePath": "rln24.wasm"
+        },
+        "name": "RLN-24",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 10
+      },
+      {
+        "description": "RLN circuit with depth = 25",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramConfiguration": [25, 16]
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln25.r1cs",
+          "wasmStoragePath": "rln25.wasm"
+        },
+        "name": "RLN-25",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 6
+      },
+      {
+        "description": "RLN circuit with depth = 20",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln26.r1cs",
+          "wasmStoragePath": "rln26.wasm"
+        },
+        "name": "RLN-26",
+        "dynamicThreshold": 0,
+        "fixedTimeWindow": 3,
+        "sequencePosition": 12
+      },
+      {
+        "description": "RLN circuit with depth = 27",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln27.r1cs",
+          "wasmStoragePath": "rln27.wasm"
+        },
+        "name": "RLN-20",
+        "dynamicThreshold": 0,
+        "fixedTimeWindow": 3,
+        "sequencePosition": 13
+      },
+      {
+        "description": "RLN circuit with depth = 28",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln28.r1cs",
+          "wasmStoragePath": "rln28.wasm"
+        },
+        "name": "RLN-28",
+        "dynamicThreshold": 0,
+        "fixedTimeWindow": 3,
+        "sequencePosition": 14
+      },
+      {
+        "description": "RLN circuit with depth = 29",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln29.r1cs",
+          "wasmStoragePath": "rln29.wasm"
+        },
+        "name": "RLN-20",
+        "dynamicThreshold": 0,
+        "fixedTimeWindow": 3,
+        "sequencePosition": 15
+      },
+      {
+        "description": "RLN circuit with depth = 30",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln30.r1cs",
+          "wasmStoragePath": "rln30.wasm"
+        },
+        "name": "RLN-30",
+        "dynamicThreshold": 0,
+        "fixedTimeWindow": 3,
+        "sequencePosition": 16
+      },
+      {
+        "description": "RLN circuit with depth = 31",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln31.r1cs",
+          "wasmStoragePath": "rln31.wasm"
+        },
+        "name": "RLN-31",
+        "dynamicThreshold": 0,
+        "fixedTimeWindow": 3,
+        "sequencePosition": 17
+      },
+      {
+        "description": "RLN circuit with depth = 32",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+        },
+        "verification": {
+          "cfOrVm": "CF"
+        },
+        "artifacts": {
+          "bucket": "p0tion-test-definitely-setup",
+          "region": "us-east-1",
+          "r1csStoragePath": "rln32.r1cs",
+          "wasmStoragePath": "rln32.wasm"
+        },
+        "name": "RLN-32",
+        "dynamicThreshold": 0,
+        "fixedTimeWindow": 3,
+        "sequencePosition": 18
+      }
+    ]
+  }
+  

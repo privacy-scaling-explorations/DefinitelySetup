@@ -1,49 +1,41 @@
-<p align="center">
-    <h1 align="center">
-        Ceremonies 🌵
-    </h1>
-    <p align="center">A folder where projects wanting to do a trusted setup phase2 ceremony can add their artifacts.</p>
-</p>
+# DefinitelySetup Pull Request Template
+## Title
 
-| This folder contains a collection of ceremony artifacts (r1cs, wasm) and setup configuration file which are used to setup a phase2 trusted setup ceremony using [p0tion](https://github.com/privacy-scaling-explorations/p0tion/). |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+[Short description of the new ceremony]
 
-To request a new ceremony to be setup, you will need to submit a PR with a folder including your ceremony configuration file.
+## Description
 
-## Guidelines
+Please provide a detailed description of the ceremony you are proposing.
 
-### Process
+## Uploads
+
+ - [ ] R1CS file
+ - [ ] wasm file
+ - [ ] Ceremony config file
+
+**Process**
 
 - open the PR from a branch named $YOUR_PROJECT_NAME-ceremony
 - fill the *p0tionConfig.json* file accordingly:
     + The title of the ceremony will end up being its prefix. Prefixes are simply the title all lowercase, with dashes (*-*) instead of whitespace. For example, given a title of *Example Ceremony*, the prefix will be *example-ceremony*.
     + Fill the rest of the fields with the desired data, ensuring that each circuit details are correct, and that you chose the required Verification method.
-    + In the artifacts fields, please add the correct storage path and bucket name - note that we require both the *r1cs* and the *wasm* files.
+    + In the artifacts fields, please add the correct path which should be:
+        *./ceremonies/$PREFIX/$CIRCUIT_NAME.$EXTENSION* - note that we require both the *r1cs* and the *wasm* files.
     + *Note* that you can use [p0tion phase2cli](https://github.com/privacy-scaling-explorations/p0tion) as follows to verify that the config file is correct:
         * `phase2cli validate --template $PATH_TO_THE_TEMPLATE`
 - create a directory inside *./ceremonies* and name it with the *prefix* (detailed in the bullet point above). 
-- ensure that only one file is added:
+- ensure that only these three files were added:
+    + r1cs
+    + wasm
     + p0tionConfig.json
 - the destination path of the PR should be either of:
     + main (for production runs)
     + staging (for a test run)
     + development (for a test run using experimental features such as VM verification)
+    
+Failing to follow the above instructions, will result in the CI checks failing. If all is done accordingly, an administrator will approve and merge your PR and a ceremony will be setup for you. 
 
-### Use setup_ceremony_config.sh to generate the configuration file
-
-If your ceremony includes a large number of circuit instances, you might want to use the bash script included in this folder - **setup_ceremony_config.sh**.
-
-The script will upload your artifacts to a S3 bucket of your choice (must be owned by yourself) and autofill the **p0tionConfig.json** file. You only need to have installed the following:
-
-* **jq** 
-* **aws-cli** - please ensure that you set a profile with its credentials (access key id and secret access key). For more info please refer to [aws docs](https://aws.amazon.com/cli/)
-
-**Usage**:
-
-- `chmod +x setup_ceremony_config.sh`
-* `./setup_ceremony_config.sh`
-
-### Template in details
+## Ceremony Details
 
 **p0tionConfig.json** template:
 
@@ -54,7 +46,7 @@ The script will upload your artifacts to a S3 bucket of your choice (must be own
   "startDate": "<START_DATE FORMAT: 2023-08-07T00:00:00>",
   "endDate": "<END_DATE FORMAT: 2023-09-10T00:00:00>",
   "timeoutMechanismType": "<TIMEOUT_MECHANISM FIXED/DYNAMIC>",
-  "penalty": "<THE_PENALTY_APPLIED_TO_USERS (NUMBER)>",
+  "penalty": 10,
   "circuits": [
       {
           "description": "<CIRCUIT_DESCRIPTION>",
@@ -65,21 +57,19 @@ The script will upload your artifacts to a S3 bucket of your choice (must be own
           "template": {
               "source": "<HTTPS_URL_OF_THE_CIRCOM_FILE>",
               "commitHash": "<TEMPLATE_COMMIT_HASH>",
-              "paramConfiguration": ["<CIRCUIT_INSTANCE_PARAMETERS_ARRAY>"]
+              "paramConfiguration": [6,8,3,2]
           },
           "verification": {
-              "cfOrVm": "<DESIRED_VERIFICATION_MECHANISM (VM/CF)>"
+              "cfOrVm": "CF"
           },
           "artifacts": {
-              "bucket": "<THE_BUCKET_NAME>",
-              "region": "<THE_AWS_REGION_WHERE_THE_BUCKET_LIVES>",
               "r1csLocalFilePath": "<PATH_TO_THE_CIRCUIT_R1CS>",
               "wasmLocalFilePath": "<PATH_TO_THE_CIRCUIT_WASM>"
           },
           "name": "<CIRCUIT_NAME>",
-          "dynamicThreshold": "<THE_DYNAMIC_THRESHOLD (NUMBER)>",
-          "fixedTimeWindow": "<THE_FIXED_TIME_WINDOW_FOR_CONTRIBUTION (NUMBER)>",
-          "sequencePosition": "<THE_SEQUENCE_POSITION_OF_THE_CIRCUIT_INSTANCE (NUMBER)>"
+          "dynamicThreshold": 0,
+          "fixedTimeWindow": 3600,
+          "sequencePosition": 1
       }
   ]
 }
@@ -115,13 +105,20 @@ The script will upload your artifacts to a S3 bucket of your choice (must be own
                 * "io1"
                 * "st1"
                 * "sc1"
-    - artifacts - an object with the storage path to the r1cs and wasm on s3
-        - bucket - a string with the bucket name
-        - region - the AWS region where the bucket live
-        - r1csStoragePath - a string with the r1cs storage path e.g. "test-ceremony/circuit.r1cs"
-        - wasmStoragePath - a string with the wasm storage path e.g. "test-ceremony/circuit.wasm"
+    - artifacts - an object with the local paths to the r1cs and wasm
+        - r1csLocalFilePath - a string with the r1cs path e.g. "./ceremonies/ceremonyPrefix/circuit.r1cs"
+        - wasmLocalFilePath - a string with the r1cs path e.g. "./ceremonies/ceremonyPrefix/circuit.wasm"
     - name - a string with the circuit name
     - dynamicThreshold - if selected dynamic timeout please enter the threshold here as a number
     - fixedTimeWindow - if selected fixed timeout please enter the time window here as a number
     - sequencePosition - a number with the circuit sequence position. Each sequence must be different and it should start from 1. The circuit with the lowest sequence number will be the first one which users will contribute to.
 
+> Note: If the constraint size is less than 1M, your PR will be automatically approved and merged at the end of the week.
+
+## Additional Notes
+
+If there are any additional notes, requirements or special instructions related to this ceremony, please specify them here.
+
+Confirmation
+ - [ ] I have read and understood the DefinitelySetup guidelines and requirements.
+ - [ ] I confirm that all uploaded files are correctly configured and adhere to the guidelines.

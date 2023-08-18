@@ -4,15 +4,16 @@ import { DocumentData } from "firebase/firestore";
 import { z } from "zod";
 import { StateContext, useStateContext } from "./StateContext";
 import {
-  initializeFirebaseCoreServices,
   getAllCollectionDocs,
-  getCeremonyCircuits
+  getCeremonyCircuits,
+  getContributions,
+  getParticipantsAvatar
 } from "../helpers/firebase";
 import {
   CircuitDocumentReferenceAndData,
-  ContributionDocumentReferenceAndData,
   ParticipantDocumentReferenceAndData
 } from "../helpers/interfaces";
+import { processItems } from "../helpers/utils";
 
 
 export const ProjectDataSchema = z.object({
@@ -27,6 +28,7 @@ export type ProjectPageContextProps = {
   projectData: ProjectData | null;
   isLoading: boolean;
   runTutorial: boolean;
+  avatars?: string[];
 };
 
 export const defaultProjectData: ProjectData = {};
@@ -38,7 +40,8 @@ type ProjectPageProviderProps = {
 const ProjectPageContext = createContext<ProjectPageContextProps>({
   projectData: defaultProjectData,
   isLoading: false,
-  runTutorial: false 
+  runTutorial: false,
+  avatars: []
 });
 
 export const useProjectPageContext = () => useContext(ProjectPageContext);
@@ -47,6 +50,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
   const navigate = useNavigate();
   const { loading: isLoading, setLoading: setIsLoading, runTutorial } = useContext(StateContext);
   const [projectData, setProjectData] = useState<ProjectData | null>(defaultProjectData);
+  const [avatars, setAvatars] = useState<string[]>([]);
 
   const { projects } = useStateContext();
   const { ceremonyName } = useParams();
@@ -58,24 +62,28 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const { firestoreDatabase } = await initializeFirebaseCoreServices();
-
-        const circuitsDocs = await getCeremonyCircuits(firestoreDatabase, projectId);
+        const circuitsDocs = await getCeremonyCircuits(projectId);
         const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data }));
 
-        const participantsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/participants`);
+        const participantsDocs = await getAllCollectionDocs(`ceremonies/${projectId}/participants`);
         const participants: ParticipantDocumentReferenceAndData[] = participantsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() }));
 
-        let contributions: ContributionDocumentReferenceAndData[] = [];
-        for (const circuit of circuits) {
-          const contributionsDocs = await getAllCollectionDocs(firestoreDatabase, `ceremonies/${projectId}/circuits/${circuit.uid}/contributions`);
-          contributions = contributions.concat(contributionsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() })));
-        }
+        // run concurrent requests per circuit
+        const args: any[][] = circuits.map((circuit: CircuitDocumentReferenceAndData) => [projectId, circuit.uid])
+        // @todo handle errors? const { results, errors } = ...
+        const { results } = await processItems(args, getContributions, true)
+        
+        const contributions = results.flat()
 
         const updatedProjectData = { circuits, participants, contributions };
+        
         const parsedData = ProjectDataSchema.parse(updatedProjectData);
 
         setProjectData(parsedData);
+
+        const avatars = await getParticipantsAvatar(projectId)
+        console.log(avatars)
+        setAvatars(avatars)
       } catch (error) {
         console.error(error);
         navigate("/error");
@@ -88,7 +96,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
   }, [navigate, projectId]);
 
   return (
-    <ProjectPageContext.Provider value={{ projectData, isLoading, runTutorial }}>
+    <ProjectPageContext.Provider value={{ projectData, isLoading, runTutorial, avatars }}>
       {children}
     </ProjectPageContext.Provider>
   );

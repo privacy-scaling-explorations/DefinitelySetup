@@ -198,7 +198,7 @@ export interface CircuitDocument {
       vmConfigurationType?: string
       vmDiskType?: DiskTypeForVM
       vmDiskSize?: number
-      vmInstanceId?: string  
+      vmInstanceId?: string
     }
   },
   compilationArtifacts?: {
@@ -279,7 +279,7 @@ export interface ParticipantDocument {
     uploadId: string
     chunks: Array<{
       ETag: string | undefined
-      PartNumber: number  
+      PartNumber: number
     }>
   }
 }
@@ -374,7 +374,8 @@ export interface ContributionDocumentReferenceAndData {
 
 
 export interface HeroComponentProps {
-  project: Project;
-  circuits: CircuitDocumentReferenceAndData[];
-  contributions: ContributionDocumentReferenceAndData[];
+  projects: Project[];
+  circuit: CircuitDocumentReferenceAndData;
+  // circuits: CircuitDocumentReferenceAndData[];
+  // contributions: ContributionDocumentReferenceAndData[];
 }

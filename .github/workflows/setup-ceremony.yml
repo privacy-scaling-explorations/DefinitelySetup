@@ -6,12 +6,50 @@ on:
     branches: [ main, staging, dev ]
 
 jobs:
-  setup:
+  # first we start a custom runner
+  start-runner:
+    if: github.ref != 'refs/heads/dev'
+    name: Start self-hosted EC2 runner
     runs-on: ubuntu-latest
     environment: 
       ${{ (github.ref == 'refs/heads/main' && 'p0tion-production') ||
-      (github.ref == 'refs/heads/staging' && 'p0tion-staging') ||
-      (github.ref == 'refs/heads/dev' && 'p0tion-development') }}
+      (github.ref == 'refs/heads/staging' && 'p0tion-staging') }}
+    outputs:
+      label: ${{ steps.start-ec2-runner.outputs.label }}
+      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Start EC2 runner
+        id: start-ec2-runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          ec2-image-id: ami-0d65ed0872506990c
+          ec2-instance-type: t3.2xlarge
+          subnet-id: subnet-0817be1b2160793b5
+          security-group-id: sg-0aea3cbb15e30a921
+          aws-resource-tags: >
+            [
+                { "Key": "Name", "Value": "p0tion-github-runner" },
+                { "Key": "GitHubRepository", "Value": "${{ github.repository }}" }
+            ]
+
+  # then we setup the ceremony
+  setup-ceremonies:
+    name: Setup ceremony using vm-runner
+    needs: start-runner
+    if: github.ref != 'refs/heads/dev'
+    runs-on: ${{ needs.start-runner.outputs.label }} # run the job on the newly created runner
+    environment: 
+      ${{ (github.ref == 'refs/heads/main' && 'p0tion-production') ||
+      (github.ref == 'refs/heads/staging' && 'p0tion-staging') }}
     steps:
     - uses: actions/checkout@v2
 
@@ -40,7 +78,7 @@ jobs:
     - name: List all ceremonies
       id: list_all_ceremonies
       run: |
-        echo "$(ls -d ceremonies/* | cut -d'/' -f2)" > dir_output.txt
+        echo "$(ls -d ceremonies/* | grep -v 'README.md' | cut -d'/' -f2)" > dir_output.txt
         cat dir_output.txt
 
     # want to setup only ceremonies that have not been setup already
@@ -54,6 +92,86 @@ jobs:
 
         for ceremony in "${ALL_CEREMONIES[@]}"; do
             if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
+                echo 'Setting up ceremony: ./ceremonies/$ceremony/p0tionConfig.json'
                 phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets.ACCESS_TOKEN }}"
             fi
         done
+
+  # on dev do not use runner
+  setup-ceremonies-dev:
+    name: Setup ceremony without vm-runner
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    environment: 'p0tion-development'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    # install p0tion
+    - name: Install p0tion globally
+      run: npm install -g @p0tion/phase2cli
+
+    # write env to file
+    - name: Write env locally
+      run: |
+        echo "${{ secrets.PHASE2CLI_ENV_FILE }}" > ./.env
+
+    # List ceremonies that have already been created
+    - name: List existing ceremonies
+      id: list_ceremonies
+      run: |
+        echo "$(phase2cli list)" > existing_ceremonies.txt
+        cat existing_ceremonies.txt
+
+    # List all the ceremonies in ./ceremonies
+    - name: List all ceremonies
+      id: list_all_ceremonies
+      run: |
+        echo "$(ls -d ceremonies/* | grep -v 'README.md' | cut -d'/' -f2)" > dir_output.txt
+        cat dir_output.txt
+
+    # want to setup only ceremonies that have not been setup already
+    - name: Run p0tion and setup ceremony
+      run: |
+        IFS=',' read -ra EXISTING_CEREMONIES <<< $(cat existing_ceremonies.txt)
+        ALL_CEREMONIES=()
+        while IFS= read -r line; do
+            ALL_CEREMONIES+=("$line")
+        done < dir_output.txt
+
+        for ceremony in "${ALL_CEREMONIES[@]}"; do
+            if [[ ! " ${EXISTING_CEREMONIES[@]} " =~ " ${ceremony} " ]]; then
+                echo 'Setting up ceremony: ./ceremonies/$ceremony/p0tionConfig.json'
+                phase2cli coordinate setup --template "./ceremonies/$ceremony/p0tionConfig.json" --auth "${{ secrets.ACCESS_TOKEN }}"
+            fi
+        done
+
+  # after everything, make sure we stop the runner
+  # do not set environment so there is no need to approve to stop the runner
+  stop-runner:
+    name: Stop self-hosted EC2 runner
+    # run if previous failed and if not on dev branch
+    if: ${{ always() && github.ref != 'refs/heads/dev' }} 
+    needs:
+      - start-runner # required to get output from the start-runner job
+      - setup-ceremonies # required to wait when the main job is done
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Stop EC2 runner
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          label: ${{ needs.start-runner.outputs.label }}
+          ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}

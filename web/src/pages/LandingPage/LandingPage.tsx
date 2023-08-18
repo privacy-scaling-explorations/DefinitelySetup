@@ -1,32 +1,41 @@
 import React, { useContext } from "react";
-import { Text } from "@chakra-ui/react";
+// import { Text } from "@chakra-ui/react";
 import { StateContext } from "../../context/StateContext";
-import { useLandingPageContext } from "../../context/LandingPageContext";
+// import { useLandingPageContext } from "../../context/LandingPageContext";
 
-import { ProjectData, ProjectDataSchema } from "../../context/ProjectPageContext";
+// import { ProjectData, ProjectDataSchema } from "../../context/ProjectPageContext";
 import { HeroComponent } from "./HeroComponent";
 import SearchResults from "../../components/SearchResults";
+import { CircularProgress } from "@chakra-ui/react";
 
 const LandingPage: React.FC = () => {
-  const { projects, search, loading } = useContext(StateContext);
+  const { projects, circuit, search, loading } = useContext(StateContext);
 
-  const { projectData, isLoading, index } = useLandingPageContext();
+  console.log(projects)
+  console.log(circuit)
+  
+  // const { projectData, isLoading, index } = useLandingPageContext();
 
-
-  if (isLoading || loading) {
-    return <Text>Loading...</Text>;
+  if (loading) {
+    return (
+      <CircularProgress isIndeterminate color='green.300'>Fetching ceremonies...</CircularProgress>
+    )
   }
 
-  // const projectId = "A8CVrp2MMx7KO512KFdv"; // aka ceremonyId.
-  const project = projects[index];
+  // if (isLoading || loading) {
+  //   return <Text>Loading...</Text>;
+  // }
 
-  if (!project || !projectData) {
-    return <Text>Error loading project.</Text>;
-  }
+  // // const projectId = "A8CVrp2MMx7KO512KFdv"; // aka ceremonyId.
+  // const project = projects[index];
+
+  // if (!project || !projectData) {
+  //   return <Text>Error loading project.</Text>;
+  // }
 
   // Validate the project data against the schema
-  const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
-  console.log("validatedProjectData", validatedProjectData);
+  // const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
+  // console.log("validatedProjectData", validatedProjectData);
   // const circuits = validatedProjectData.circuits
   //   ? validatedProjectData.circuits
   //   : {
@@ -54,9 +63,10 @@ const LandingPage: React.FC = () => {
     <SearchResults />
   ) : (
     <HeroComponent
-      project={project}
-      circuits={projectData.circuits??[]}
-      contributions={projectData.contributions??[]}
+      projects={projects}
+      circuit={circuit}
+      // circuits={projects.circuits??[]}
+      // contributions={projectData.contributions??[]}
     ></HeroComponent>
   );
   return render;

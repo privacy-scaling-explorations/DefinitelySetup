@@ -36,6 +36,3 @@ jobs:
         env:
           # read only token when the PR originates from a fork
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # only from within the same repo
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

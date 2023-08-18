@@ -21,10 +21,8 @@
             "cfOrVm": "CF"
           },
           "artifacts": {
-            "bucket": "p0tion-test-definitely-setup",
-            "region": "us-east-1",
-            "r1csStoragePath": "withdraw.r1cs",
-            "wasmStoragePath": "withdraw.wasm"
+            "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/withdraw.r1cs",
+            "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/withdraw.wasm"
           },
           "name": "RLN-Withdraw",
           "fixedTimeWindow": 3,
@@ -47,8 +45,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln16.r1cs",
-          "wasmStoragePath": "rln16.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln16.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln16.wasm"
         },
         "name": "RLN-16",
         "fixedTimeWindow": 3,
@@ -71,8 +69,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln17.r1cs",
-          "wasmStoragePath": "rln17.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln17.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln17.wasm"
         },
         "name": "RLN-17",
         "fixedTimeWindow": 3,
@@ -95,8 +93,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln18.r1cs",
-          "wasmStoragePath": "rln18.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln18.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln18.wasm"
         },
         "name": "RLN-18",
         "fixedTimeWindow": 3,
@@ -119,8 +117,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln19.r1cs",
-          "wasmStoragePath": "rln19.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln19.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln19.wasm"
         },
         "name": "RLN-19",
         "fixedTimeWindow": 3,
@@ -143,8 +141,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln20.r1cs",
-          "wasmStoragePath": "rln20.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln20.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln20.wasm"
         },
         "name": "RLN-20",
         "fixedTimeWindow": 3,
@@ -167,8 +165,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln21.r1cs",
-          "wasmStoragePath": "rln21.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln21.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln21.wasm"
         },
         "name": "RLN-21",
         "fixedTimeWindow": 3,
@@ -191,8 +189,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln22.r1cs",
-          "wasmStoragePath": "rln22.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln22.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln22.wasm"
         },
         "name": "RLN-22",
         "fixedTimeWindow": 3,
@@ -215,8 +213,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln23.r1cs",
-          "wasmStoragePath": "rln23.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln23.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln23.wasm"
         },
         "name": "RLN-23",
         "fixedTimeWindow": 3,
@@ -239,8 +237,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln24.r1cs",
-          "wasmStoragePath": "rln24.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln24.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln24.wasm"
         },
         "name": "RLN-24",
         "fixedTimeWindow": 3,
@@ -263,8 +261,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln25.r1cs",
-          "wasmStoragePath": "rln25.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln25.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln25.wasm"
         },
         "name": "RLN-25",
         "fixedTimeWindow": 3,
@@ -286,8 +284,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln26.r1cs",
-          "wasmStoragePath": "rln26.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln26.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln26.wasm"
         },
         "name": "RLN-26",
         "dynamicThreshold": 0,
@@ -310,8 +308,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln27.r1cs",
-          "wasmStoragePath": "rln27.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln27.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln27.wasm"
         },
         "name": "RLN-20",
         "dynamicThreshold": 0,
@@ -334,8 +332,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln28.r1cs",
-          "wasmStoragePath": "rln28.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln28.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln28.wasm"
         },
         "name": "RLN-28",
         "dynamicThreshold": 0,
@@ -358,8 +356,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln29.r1cs",
-          "wasmStoragePath": "rln29.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln29.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln29.wasm"
         },
         "name": "RLN-20",
         "dynamicThreshold": 0,
@@ -382,8 +380,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln30.r1cs",
-          "wasmStoragePath": "rln30.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln30.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln30.wasm"
         },
         "name": "RLN-30",
         "dynamicThreshold": 0,
@@ -406,8 +404,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln31.r1cs",
-          "wasmStoragePath": "rln31.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln31.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln31.wasm"
         },
         "name": "RLN-31",
         "dynamicThreshold": 0,
@@ -430,8 +428,8 @@
         "artifacts": {
           "bucket": "p0tion-test-definitely-setup",
           "region": "us-east-1",
-          "r1csStoragePath": "rln32.r1cs",
-          "wasmStoragePath": "rln32.wasm"
+          "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln32.r1cs",
+          "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln32.wasm"
         },
         "name": "RLN-32",
         "dynamicThreshold": 0,

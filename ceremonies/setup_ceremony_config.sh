@@ -288,7 +288,7 @@ do
                 "compiler": {"version": $compiler_version, "commitHash": $compiler_commit_hash},
                 "template": {"source": $template_source, "commitHash": $template_commit_hash, "paramConfiguration": $params},
                 "verification": ($verification_method | if . == "CF" then {"cfOrVm": "CF"} else {"cfOrVm": "VM", "vmConfigurationType": $vm_configuration_type, "vmDiskSize": $vm_disk_size|tonumber, "vmDiskType": $vm_disk_type} end),
-                "artifacts": {"bucket": $bucket, "region": $region, "r1csStoragePath": ($base_name + ".r1cs"), "wasmStoragePath": ($base_name + ".wasm")},
+                "artifacts": {"r1csStoragePath": ("https://" + $bucket + ".s3." + $region + ".amazonaws.com/" + $base_name + ".r1cs"), "wasmStoragePath": ("https://" + $bucket + ".s3." + $region + ".amazonaws.com/" + $base_name + ".wasm")},
                 "name": $base_name,
                 "sequencePosition": $index|tonumber
             }')

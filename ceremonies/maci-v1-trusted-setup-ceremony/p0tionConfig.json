@@ -1,7 +1,7 @@
 {
     "title": "MACI V1 Trusted Setup Ceremony",
     "description": "This is a trusted setup ceremony for the Minimal Anti Collusion Infrastructure (MACI) v1 protocol",
-    "startDate": "2023-08-18T11:30:00",
+    "startDate": "2023-08-18T12:00:00",
     "endDate": "2023-10-19T00:00:00",
     "timeoutMechanismType": "FIXED",
     "penalty": 10,
@@ -24,7 +24,7 @@
                 "vmDiskType": "gp2"
             },
             "artifacts": {
-                "bucket": "maci-v1-setup-artifacts",
+                "bucket": "maci-ceremony-artifacts",
                 "region": "eu-central-1",
                 "r1csStoragePath": "ProcessMessages_6-8-2-3_test.r1cs",
                 "wasmStoragePath": "ProcessMessages_6-8-2-3_test.wasm"
@@ -51,7 +51,7 @@
                 "vmDiskType": "gp2"
             },
             "artifacts": {
-                "bucket": "maci-v1-setup-artifacts",
+                "bucket": "maci-ceremony-artifacts",
                 "region": "eu-central-1",
                 "r1csStoragePath": "TallyVotes_6-2-3_test.r1cs",
                 "wasmStoragePath": "TallyVotes_6-2-3_test.wasm"

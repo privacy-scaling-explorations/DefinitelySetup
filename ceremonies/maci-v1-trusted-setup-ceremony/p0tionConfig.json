@@ -24,10 +24,8 @@
                 "vmDiskType": "gp2"
             },
             "artifacts": {
-                "bucket": "maci-ceremony-artifacts",
-                "region": "eu-central-1",
-                "r1csStoragePath": "ProcessMessages_6-8-2-3_test.r1cs",
-                "wasmStoragePath": "ProcessMessages_6-8-2-3_test.wasm"
+                "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/ProcessMessages_6-8-2-3_test.r1cs",
+                "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/ProcessMessages_6-8-2-3_test.wasm"
             },
             "name": "MACI-ProcessMessages_6-8-2-3",
             "fixedTimeWindow": 30,
@@ -51,10 +49,8 @@
                 "vmDiskType": "gp2"
             },
             "artifacts": {
-                "bucket": "maci-ceremony-artifacts",
-                "region": "eu-central-1",
-                "r1csStoragePath": "TallyVotes_6-2-3_test.r1cs",
-                "wasmStoragePath": "TallyVotes_6-2-3_test.wasm"
+                "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/TallyVotes_6-2-3_test.r1cs",
+                "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/TallyVotes_6-2-3_test.wasm"
             },
             "name": "MACI-TallyVotes_6-2-3",
             "fixedTimeWindow": 30,

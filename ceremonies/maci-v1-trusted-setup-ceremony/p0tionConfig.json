@@ -1,7 +1,7 @@
 {
     "title": "MACI V1 Trusted Setup Ceremony",
     "description": "This is a trusted setup ceremony for the Minimal Anti Collusion Infrastructure (MACI) v1 protocol",
-    "startDate": "2023-08-18T11:00:00",
+    "startDate": "2023-08-18T11:30:00",
     "endDate": "2023-10-19T00:00:00",
     "timeoutMechanismType": "FIXED",
     "penalty": 10,
@@ -24,41 +24,41 @@
                 "vmDiskType": "gp2"
             },
             "artifacts": {
-                "bucket": "maci-v1---vm-test-p0tion-staging-environment",
-                "region": "us-east-1",
-                "r1csStoragePath": "circuits/processmessages_6-8-2-3_test/ProcessMessages_6-8-2-3_test.r1cs",
-                "wasmStoragePath": "circuits/processmessages_6-8-2-3_test/ProcessMessages_6-8-2-3_test.wasm"
+                "bucket": "maci-v1-setup-artifacts",
+                "region": "eu-central-1",
+                "r1csStoragePath": "ProcessMessages_6-8-2-3_test.r1cs",
+                "wasmStoragePath": "ProcessMessages_6-8-2-3_test.wasm"
             },
             "name": "MACI-ProcessMessages_6-8-2-3",
             "fixedTimeWindow": 30,
             "sequencePosition": 1
         },
         {
-        "description": "Tally Votes 6-2-3",
-        "compiler": {
-            "version": "2.1.0",
-            "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
-        },
-        "template": {
-            "source": "https://github.com/privacy-scaling-explorations/maci",
-            "commitHash": "78609349aecd94186216ac8743d61b1cb81a097f",
-            "paramConfiguration": [6,2,3]
-        },
-        "verification": {
-            "cfOrVm": "VM",
-            "vmConfigurationType": "m5.4xlarge",
-            "vmDiskSize": "30",
-            "vmDiskType": "gp2"
-        },
-        "artifacts": {
-            "bucket": "maci-v1---vm-test-p0tion-staging-environment",
-            "region": "us-east-1",
-            "r1csStoragePath": "circuits/tallyvotes_6-2-3_test/TallyVotes_6-2-3_test.r1cs",
-            "wasmStoragePath": "circuits/tallyvotes_6-2-3_test/TallyVotes_6-2-3_test.wasm"
-        },
-        "name": "MACI-TallyVotes_6-2-3",
-        "fixedTimeWindow": 30,
-        "sequencePosition": 2
+            "description": "Tally Votes 6-2-3",
+            "compiler": {
+                "version": "2.1.0",
+                "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+            },
+            "template": {
+                "source": "https://github.com/privacy-scaling-explorations/maci",
+                "commitHash": "78609349aecd94186216ac8743d61b1cb81a097f",
+                "paramConfiguration": [6,2,3]
+            },
+            "verification": {
+                "cfOrVm": "VM",
+                "vmConfigurationType": "m5.4xlarge",
+                "vmDiskSize": "30",
+                "vmDiskType": "gp2"
+            },
+            "artifacts": {
+                "bucket": "maci-v1-setup-artifacts",
+                "region": "eu-central-1",
+                "r1csStoragePath": "TallyVotes_6-2-3_test.r1cs",
+                "wasmStoragePath": "TallyVotes_6-2-3_test.wasm"
+            },
+            "name": "MACI-TallyVotes_6-2-3",
+            "fixedTimeWindow": 30,
+            "sequencePosition": 2
         }
     ]
 }

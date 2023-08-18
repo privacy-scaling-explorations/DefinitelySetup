@@ -23,8 +23,7 @@ Please provide a detailed description of the ceremony you are proposing.
 - fill the *p0tionConfig.json* file accordingly:
     + The title of the ceremony will end up being its prefix. Prefixes are simply the title all lowercase, with dashes (*-*) instead of whitespace. For example, given a title of *Example Ceremony*, the prefix will be *example-ceremony*.
     + Fill the rest of the fields with the desired data, ensuring that each circuit details are correct, and that you chose the required Verification method.
-    + In the artifacts fields, please add the correct path which should be:
-        *./ceremonies/$PREFIX/$CIRCUIT_NAME.$EXTENSION* - note that we require both the *r1cs* and the *wasm* files.
+    + In the artifacts fields, please add the correct storage path and bucket name - note that we require both the *r1cs* and the *wasm* files.
     + *Note* that you can use [p0tion phase2cli](https://github.com/privacy-scaling-explorations/p0tion) as follows to verify that the config file is correct:
         * `phase2cli validate --template $PATH_TO_THE_TEMPLATE`
 - create a directory inside *./ceremonies* and name it with the *prefix* (detailed in the bullet point above). 
@@ -69,6 +68,8 @@ Failing to follow the above instructions, will result in the CI checks failing. 
               "cfOrVm": "<DESIRED_VERIFICATION_MECHANISM (VM/CF)>"
           },
           "artifacts": {
+              "bucket": "<THE_BUCKET_NAME>",
+              "region": "<THE_AWS_REGION_WHERE_THE_BUCKET_LIVES>",
               "r1csLocalFilePath": "<PATH_TO_THE_CIRCUIT_R1CS>",
               "wasmLocalFilePath": "<PATH_TO_THE_CIRCUIT_WASM>"
           },
@@ -111,9 +112,11 @@ Failing to follow the above instructions, will result in the CI checks failing. 
                 * "io1"
                 * "st1"
                 * "sc1"
-    - artifacts - an object with the local paths to the r1cs and wasm
-        - r1csLocalFilePath - a string with the r1cs path e.g. "./ceremonies/ceremonyPrefix/circuit.r1cs"
-        - wasmLocalFilePath - a string with the r1cs path e.g. "./ceremonies/ceremonyPrefix/circuit.wasm"
+    - artifacts - an object with the storage path to the r1cs and wasm on s3
+        - bucket - a string with the bucket name
+        - region - the AWS region where the bucket live
+        - r1csStoragePath - a string with the r1cs storage path e.g. "test-ceremony/circuit.r1cs"
+        - wasmStoragePath - a string with the wasm storage path e.g. "test-ceremony/circuit.wasm"
     - name - a string with the circuit name
     - dynamicThreshold - if selected dynamic timeout please enter the threshold here as a number
     - fixedTimeWindow - if selected fixed timeout please enter the time window here as a number

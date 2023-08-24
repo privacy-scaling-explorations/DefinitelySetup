@@ -498,11 +498,7 @@ const ProjectPage: React.FC = () => {
                       <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch">
                         {" "}
                         Please note that when circuits have a large number of constraints (you can usually see that when the memory requirements 
-                        are greater than 100mb), the contribution might take a long time and it is recommended to run the contribution using the following syntax:
-                        <br/>
-                        NODE_OPTIONS=--max-old-space-size=$A_VALUE_FROM_4096 phase2cli contribute --ceremony $CEREMONY_NAME 
-                        <br/>
-                        This allows the node process to use more memory (this is expressed in mb).
+                        are greater than 100mb), the contribution might take a long time.
                       </Text>
                     </VStack>
                   </TabPanel>

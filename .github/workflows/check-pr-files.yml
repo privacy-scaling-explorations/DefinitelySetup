@@ -15,54 +15,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install jq
-        run: sudo apt-get install jq
-
       - name: Get changed files
         id: get-changed-files
         uses: jitterbit/get-changed-files@v1
         with:
           format: 'csv'
 
-      - name: Parse p0tionConfig.json
-        id: parse-config
-        run: |
-          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')"
-          config_file="${directory_name}/p0tionConfig.json"
-          num_circuits=$(jq '.circuits | length' $config_file)
-          echo "NUM_CIRCUITS=$num_circuits" >> $GITHUB_ENV
-
       - name: Validate files
         run: |
           changed_files="${{ steps.get-changed-files.outputs.all }}"
           IFS=', ' read -r -a files <<< "$changed_files"
-          expected_files=$((NUM_CIRCUITS * 2 + 1))
-          
-          if [[ ${#files[@]} -ne $expected_files ]]; then
-            echo "The PR should have $expected_files files changed only"
-            exit 1
-          fi
-          r1cs_files=()
-          wasm_files=()
-          json_files=()
+          config_found=false
           for file in "${files[@]}"; do
-            if [[ $file == *.r1cs ]]; then r1cs_files+=("$file")
-            elif [[ $file == *.wasm ]]; then wasm_files+=("$file")
-            elif [[ $file == *p0tionConfig.json ]]; then json_files+=("$file")
-            fi
-          done
-          
-          if [[ ${#r1cs_files[@]} -ne $NUM_CIRCUITS || ${#wasm_files[@]} -ne $NUM_CIRCUITS || ${#json_files[@]} -ne 1 ]]; then
-            echo "Invalid or missing circuit artifacts"
-            exit 1
-          fi
-          echo "Ceremony artifacts are present"
-          directory_name="ceremonies/$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')"
-          echo "Checking that all files are inside $directory_name"
-          for file in "${files[@]}"; do
-            if [[ ! $file =~ ^$directory_name/ ]]; then
-              echo "Files must be inside the $directory_name directory"
+            if [[ $file == ceremonies/$(echo $GITHUB_HEAD_REF | tr '[:upper:]' '[:lower:]')/p0tionConfig.json ]]; then 
+              config_found=true
+            else
+              echo "Invalid file detected: $file"
               exit 1
             fi
           done
-          echo "All checks passed"
+          
+          if [[ $config_found = false ]]; then
+            echo "No p0tionConfig.json file found in PR."
+            exit 1
+          fi
+
+          echo "p0tionConfig.json file is present and no other files were changed."

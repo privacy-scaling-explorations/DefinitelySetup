@@ -144,6 +144,8 @@ const ProjectPage: React.FC = () => {
     !project || isLoading
       ? ""
       : `phase2cli auth && phase2cli contribute -c ${project?.ceremony.data.prefix}`;
+  const installCommand = `npm install -g @p0tion/phase2cli`;
+  const authCommand = `phase2cli auth`;
   const zKeyFilename = !circuit || isLoading ? "" : `${circuit.data.prefix}_final.zkey`;
   const downloadLink =
     !project || !circuit || isLoading
@@ -155,6 +157,8 @@ const ProjectPage: React.FC = () => {
         }/contributions/${zKeyFilename}`;
   // Hook for clipboard
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
+  const { onCopy: copyInstall, hasCopied: copiedInstall } = useClipboard(installCommand);
+  const { onCopy: copyAuth, hasCopied: copiedAuth } = useClipboard(authCommand);
 
   /// @todo with a bit of refactor, could be used everywhere for downloading files from S3.
   // Download a file from AWS S3 bucket.
@@ -251,8 +255,34 @@ const ProjectPage: React.FC = () => {
                     Contribute:
                   </Text>
                   <Text color="gray.500">
-                    You can contribute to this project by running the CLI command below.
+                    You can contribute to this project by running the CLI commands below.
                   </Text>
+                  <Button 
+                    leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                    variant="outline"
+                    fontSize={12}
+                    fontWeight={"regular"}
+                    onClick={copyInstall}
+                  >
+                    {
+                      copiedInstall ?
+                      "Copied"
+                      : `> npm install -g @p0tion/phase2cli`
+                    }
+                  </Button>
+                  <Button 
+                    leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                    variant="outline"
+                    fontSize={12}
+                    fontWeight={"regular"}
+                    onClick={copyAuth}
+                  >
+                    {
+                      copiedAuth ?
+                      "Copied"
+                      : `> phase2cli auth`
+                    }
+                  </Button>
                   <Button
                     leftIcon={<Box as={FaCopy} w={3} h={3} />}
                     variant="outline"
@@ -262,8 +292,8 @@ const ProjectPage: React.FC = () => {
                   >
                     {copiedContribute
                       ? "Copied"
-                      : `> phase2cli contribute 
-              `}
+                      : `> phase2cli contribute`
+                    }
                   </Button>
                 </VStack>
                 <VStack spacing={2} py={2} alignSelf={"stretch"}>
@@ -457,9 +487,9 @@ const ProjectPage: React.FC = () => {
                         letterSpacing={"0.01rem"}
                       >
                         {" "}
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium
-                        odio corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam
-                        corrupti cum, amet maxime nesciunt? Laudantium officia iste quo id.
+                        DefinitelySetup is powered by p0tion, a framework for setting up, managing and contributing to trusted setup ceremonies.
+                        You can use this page to view the details of a ceremony, and also to download the final zKey, which will be made available 
+                        once the ceremony is finalized. 
                       </Text>
                       <Text textAlign={"center"} fontWeight={"600"} fontSize={"18px"} maxW="30ch">
                         {" "}
@@ -467,9 +497,8 @@ const ProjectPage: React.FC = () => {
                       </Text>
                       <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch">
                         {" "}
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ex accusantium
-                        odio corrupti nihil nostrum? Beatae ducimus consequuntur magni quaerat totam
-                        corrupti cum, amet maxime nesciunt? Laudantium officia iste quo id.
+                        Please note that when circuits have a large number of constraints (you can usually see that when the memory requirements 
+                        are greater than 100mb), the contribution might take a long time.
                       </Text>
                     </VStack>
                   </TabPanel>

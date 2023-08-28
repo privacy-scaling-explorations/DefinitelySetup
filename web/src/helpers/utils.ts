@@ -492,8 +492,8 @@ export const getContributionsValidityForContributor = async (
                       (contributionDocument: FirebaseDocumentInfo) =>
                           contributionDocument.data.zkeyIndex === finalContributionIndex
                   )
-                  .at(0)
-            : circuitContributionsFromContributor.at(0)
+                [0]
+            : circuitContributionsFromContributor[0]
 
         if (!contribution)
             throw new Error(
@@ -607,7 +607,7 @@ export const generateValidContributionsAttestation = async (
         if (matchedContributions.length > 1)
             throw new Error(`Duplicated circuit contribution information. Please, contact the coordinator.`)
 
-        const participantContribution = matchedContributions.at(0)!
+        const participantContribution = matchedContributions[0]
 
         // Get circuit document (the one for which the contribution was calculated).
         const circuitDocument = await getDocumentById(

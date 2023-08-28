@@ -258,7 +258,7 @@ const ProjectPage: React.FC = () => {
                     user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
                       <Contribution ceremonyId={project.ceremony.uid} /> :
                       hasUserContributed ?
-                      <Text fontSize={12} fontWeight="bold">
+                      <Text color="gray.500" fontSize={12} fontWeight="bold">
                         You have already contributed to this ceremony. Thank you for your participation.
                       </Text> :
                       <>
@@ -335,7 +335,10 @@ const ProjectPage: React.FC = () => {
                 </VStack>
               </>
             )}
-            <VStack alignSelf={"stretch"}> 
+            <VStack 
+              maxW={["390px", "390px", "100%"]}
+              minW={["390px", "390px", null]}
+            > 
               <ScrollingAvatars images={avatars}/>
             </VStack>
             <VStack

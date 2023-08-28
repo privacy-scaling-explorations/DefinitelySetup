@@ -187,7 +187,7 @@ export const handleStartOrResumeContribution = async (
     let blob: Uint8Array = new Uint8Array()
     if (updatedParticipantData.contributionStep === ParticipantContributionStep.DOWNLOADING) {
         setStatus("Downloading zKey", true)
-        blob = await downloadCeremonyArtifact(bucketName, lastZkeyStorageFilePath)
+        blob = await downloadCeremonyArtifact(bucketName, lastZkeyStorageFilePath, setStatus)
 
         setStatus("Downloaded zKey", false)
         // progress to the next step
@@ -250,6 +250,7 @@ export const handleStartOrResumeContribution = async (
             bucketName,
             nextZkeyStorageFilePath,
             nextZKey.data,
+            setStatus,
             ceremony.id,
             updatedParticipantData.tempContributionData
         )

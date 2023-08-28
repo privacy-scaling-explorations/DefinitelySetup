@@ -686,11 +686,6 @@ export const publishGist = async (
     ceremonyTitle: string,
     ceremonyPrefix: string
 ): Promise<string> => {
-    // Make request.
-    console.log("ceremony preifx", ceremonyPrefix)
-    console.log("ceremony title", ceremonyTitle)
-    console.log("content", content)
-    console.log("token", token)
 
     const response = await request("POST /gists", {
         description: `Attestation for ${ceremonyTitle} MPC Phase 2 Trusted Setup ceremony`,

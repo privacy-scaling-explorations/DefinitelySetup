@@ -139,7 +139,7 @@ export const useInitialStateContext = () => {
   useEffect(() => {
     const fetchData = async () => {
       /// @todo refactoring needed.
-      const ceremonyProjectId = "i3kFOOUi8L42ooRWQh8N"
+      const ceremonyProjectId = "B7HZ7yW6waAWGKLr7GiA"
 
       if (ceremonyProjectId) {
         try {

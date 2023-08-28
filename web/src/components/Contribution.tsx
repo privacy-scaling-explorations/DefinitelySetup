@@ -39,7 +39,7 @@ export const Contribution = (props: any): React.JSX.Element => {
                 </Box>
                 {
                     status === "" &&
-                    <Button disabled={status !== ""} p={4} width="100%" color={"red"} onClick={() => contribute(ceremonyId, handleChanges)}>
+                    <Button p={4} width="100%" color={"red"} onClick={() => contribute(ceremonyId, handleChanges)}>
                         Contribute
                     </Button>
                 }

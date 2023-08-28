@@ -49,7 +49,7 @@ const getFirestoreDatabase = (app: FirebaseApp): Firestore => getFirestore(app)
  * @returns <string> - the participants collection path.
  */
 export const getCircuitsCollectionPath = (ceremonyId: string): string =>
-    `ceremonies/${ceremonyId}/circuits`
+    `${commonTerms.collections.ceremonies.name}/${ceremonyId}/${commonTerms.collections.circuits.name}`
 
 /**
  * Return the core Firebase services instances (App, Database, Functions).

@@ -64,10 +64,8 @@ type RouteParams = {
 
 const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
-  const { projects, setRunTutorial, runTutorial } = useContext(StateContext);
+  const { user, projects, setRunTutorial, runTutorial } = useContext(StateContext);
   const { hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
-
-  const user = localStorage.getItem("username");
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -76,6 +74,7 @@ const ProjectPage: React.FC = () => {
       setRunTutorial(false);
     }
   };
+
 
   // find a project with the given ceremony name
   const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
@@ -248,7 +247,11 @@ const ProjectPage: React.FC = () => {
                   {project.ceremony.data.description}
                 </Text>
                 <VStack
-                  className="contributeCopyButton"
+                  className={
+                    user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
+                    "browserContributeCopyButton" :
+                    "contributeCopyButton"
+                  }
                   // align="start"
                   spacing={2}
                   py={2}

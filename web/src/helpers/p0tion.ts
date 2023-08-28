@@ -46,15 +46,14 @@ export const signInWithGitHub = async (): Promise<string> => {
  * Signs out the user from Firebase
  * @param setUser 
  */
-export const signOutWithGitHub = async (setUser: any) => {
+export const signOutWithGitHub = async () => {
     const auth = getAuth(firebaseApp)
     try {
         await signOut(auth)
-        setUser("")
         localStorage.removeItem("token")
         localStorage.removeItem("username")
     } catch (error: any) {
-        console.error("Error while signing out")
+        console.error(error)
     }
 }
 
@@ -84,43 +83,31 @@ export const contribute = async (ceremonyId: string, setStatus: (message: string
         const canParticipateToCeremony = await checkParticipantForCeremony(ceremonyId)
 
         if (!canParticipateToCeremony) {
-            let contributions = 0
-            const circuits = await getCeremonyCircuits(ceremonyId)
-            for (const circuit of circuits) {
-                const hasContributed = await getCircuitContributionsFromContributor(ceremonyId, circuit.id, user.uid)
-                if (hasContributed.length > 0) {
-                    contributions++
+            const activeTimeouts = await getCurrentActiveParticipantTimeout(ceremonyId, user.uid)
+            if (activeTimeouts.length > 0) {
+                // Get active timeout.
+                const activeTimeout = activeTimeouts[0]!
+
+                if (!activeTimeout.data) {
+                    setStatus("There seems to be an error with the timeout, please try again or contact an administrator", false)
+                    return 
                 }
-            }
-            if (contributions === circuits.length) {
-                setStatus("You have already contributed to all circuits", false)
+
+                // Extract data.
+                const { endDate } = activeTimeout.data!
+
+                const { seconds, minutes, hours, days } = getSecondsMinutesHoursFromMillis(
+                    Number(endDate) - new Date().getMilliseconds()
+                )
+
+                setStatus(`You are timed out. Timeout will end in ${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(
+                    minutes
+                )}:${convertToDoubleDigits(seconds)}`, false)
+                return 
             } else {
-                const activeTimeouts = await getCurrentActiveParticipantTimeout(ceremonyId, user.uid)
-                if (activeTimeouts.length > 0) {
-                    // Get active timeout.
-                    const activeTimeout = activeTimeouts[0]!
-
-                    if (!activeTimeout.data) {
-                        setStatus("There seems to be an error with the timeout, please try again or contact an administrator", false)
-                        return 
-                    }
-
-                    // Extract data.
-                    const { endDate } = activeTimeout.data!
-
-                    const { seconds, minutes, hours, days } = getSecondsMinutesHoursFromMillis(
-                        Number(endDate) - new Date().getMilliseconds()
-                    )
-
-                    setStatus(`You are timed out. Timeout will end in ${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(
-                        minutes
-                    )}:${convertToDoubleDigits(seconds)}`, false)
-                    return 
-                } else {
-                    // check if the user already contributed, or is timed out
-                    setStatus("You cannot participate to this ceremony", false)
-                    return 
-                }
+                // check if the user already contributed, or is timed out
+                setStatus("You cannot participate to this ceremony", false)
+                return 
             }
         }
 
@@ -273,10 +260,10 @@ export const handleStartOrResumeContribution = async (
                 ceremony.id,
                 circuit,
                 bucketName,
-                participant.id,
+                contributorIdentifier,
                 String(import.meta.env.VITE_FIREBASE_CF_URL_VERIFY_CONTRIBUTION)
             )
-            setStatus("Contribution was valid", false)
+            setStatus("Contribution is valid", false)
         } catch (error: any) {
             setStatus(`Error verifying, ${error.toString()}`, false)
         }
@@ -372,7 +359,8 @@ export const handlePublicAttestation = async (
     contributorIdentifier: string,
     ceremonyName: string,
     ceremonyPrefix: string,
-    participantAccessToken: string
+    participantAccessToken: string,
+    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void
 ): Promise<string> => {
     // Generate attestation with valid contributions.
     const publicAttestation = await generatePublicAttestation(
@@ -381,7 +369,8 @@ export const handlePublicAttestation = async (
         participantId,
         participantContributions,
         contributorIdentifier,
-        ceremonyName
+        ceremonyName,
+        setStatus
     )
 
     await sleep(1000) // workaround for file descriptor unexpected close.
@@ -586,11 +575,11 @@ export const listenToParticipantDocumentChanges = async (
                 
                 if (!timeoutExpired) {
                     // progress to next circuit
-                    setStatus(`Progressing to the next circuit at position ${nextCircuit.data.sequencePosition}`, true)
+                    setStatus(`Progressing to the next circuit at position #${nextCircuit.data.sequencePosition}`, true)
                     await progressToNextCircuitForContribution(ceremonyId)
                 } else {
                     // resume 
-                    setStatus(`Resuming with circuit at ${nextCircuit.data.sequencePosition}`, true)
+                    setStatus(`Resuming with circuit  #${nextCircuit.data.sequencePosition}`, true)
                     await resumeContributionAfterTimeoutExpiration(ceremonyId)
                 }
             }
@@ -602,7 +591,7 @@ export const listenToParticipantDocumentChanges = async (
                 // generate public attestation
                 setStatus("You have contributed to all circuits", false)
 
-                const url = await handlePublicAttestation(circuits, ceremonyId, participant.id, changedContributions, participant.id, ceremonyData.title, ceremonyData.prefix, token)
+                const url = await handlePublicAttestation(circuits, ceremonyId, participant.id, changedContributions, participantProviderId, ceremonyData.title, ceremonyData.prefix, token, setStatus)
                 setStatus(`You can share your attestation by clicking the button below`, false, url)
                 unsubscribe()
             }

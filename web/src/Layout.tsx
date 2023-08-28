@@ -30,7 +30,6 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
-    console.log(status);
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
       setRunTutorial(false);

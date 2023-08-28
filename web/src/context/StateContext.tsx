@@ -24,6 +24,8 @@ export interface State {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   runTutorial: boolean;
   setRunTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  user?: string;
+  setUser?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 
@@ -122,7 +124,8 @@ export const StateContext = createContext<State>({
   loading: false,
   setLoading: () => null,
   runTutorial: false,
-  setRunTutorial: () => null
+  setRunTutorial: () => null,
+  setUser: () => {}
 });
 
 export const useInitialStateContext = () => {
@@ -194,11 +197,23 @@ type StateProviderProps = {
 };
 export const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
  
+  const [user, setUser] = useState<string | undefined>(
+    localStorage.getItem("username") || undefined
+  );
+
+  useEffect(() => {
+    const _user = localStorage.getItem("username")?.toString() || "";
+    if (_user !== user) {
+      setUser(_user);
+    }
+  }, [user]);
+
+
   const state =useInitialStateContext()
 
   return (
     // @ts-ignore
-    <StateContext.Provider value={{...state }}>
+    <StateContext.Provider value={{...state, user, setUser }}>
       {children}
     </StateContext.Provider>
   );

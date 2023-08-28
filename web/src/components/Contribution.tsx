@@ -18,7 +18,6 @@ export const Contribution = (props: any): React.JSX.Element => {
     const handleChanges = (message: string, loading?: boolean, attestationLink?: string) => {
         setStatus(message)
         if (typeof loading === 'boolean') setIsLoading(loading)
-        console.log("attestation link", attestationLink)
         if (typeof attestationLink === 'string') {
             setAttestationLink(attestationLink)
         }

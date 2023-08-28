@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { DocumentData } from "firebase/firestore";
 import { z } from "zod";
@@ -31,7 +31,7 @@ export type ProjectPageContextProps = {
   isLoading: boolean;
   runTutorial: boolean;
   avatars?: string[];
-  largestCircuitConstraints: number
+  largestCircuitConstraints: number,
 };
 
 export const defaultProjectData: ProjectData = {};
@@ -46,7 +46,7 @@ const ProjectPageContext = createContext<ProjectPageContextProps>({
   isLoading: false,
   runTutorial: false,
   avatars: [],
-  largestCircuitConstraints: maxConstraintsForBrowser + 1 // contribution on browser has 100000 max constraints
+  largestCircuitConstraints: maxConstraintsForBrowser + 1, // contribution on browser has 100000 max constraints
 });
 
 export const useProjectPageContext = () => useContext(ProjectPageContext);
@@ -105,6 +105,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
 
     fetchData();
   }, [navigate, projectId]);
+
 
   return (
     <ProjectPageContext.Provider value={{ largestCircuitConstraints, hasUserContributed, projectData, isLoading, runTutorial, avatars }}>

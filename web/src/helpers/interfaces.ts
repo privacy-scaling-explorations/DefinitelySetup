@@ -1,3 +1,4 @@
+import { DocumentData, DocumentReference } from "firebase/firestore";
 import { Project } from "../context/StateContext";
 
 /**
@@ -378,4 +379,99 @@ export interface HeroComponentProps {
   circuit: CircuitDocumentReferenceAndData;
   // circuits: CircuitDocumentReferenceAndData[];
   // contributions: ContributionDocumentReferenceAndData[];
+}
+
+/**
+ * Useful for interacting with reference and data from a Firestore document at the same time.
+ * @typedef {Object} FirebaseDocumentInfo
+ * @property {string} id - the unique identifier of the Firestore document.
+ * @property {DocumentReference<DocumentData>} ref - the Firestore reference for the document (useful for queries).
+ * @property {DocumentData} data - the Firestore document whole data.
+ */
+export type FirebaseDocumentInfo = {
+  id: string
+  ref: DocumentReference<DocumentData>
+  data: DocumentData
+}
+
+/**
+ * Group a pre-signed url chunk core information.
+ * @typedef {Object} ETagWithPartNumber
+ * @property {string | null} ETag - a unique reference to this chunk associated to a pre-signed url.
+ * @property {number} PartNumber - indicate where the chunk is positioned in order to reconhstruct the file with multiPartUpload/Download.
+ */
+export type ETagWithPartNumber = {
+  ETag: string | undefined
+  PartNumber: number
+}
+
+/**
+ * Auxiliary data needed for resumption in an intermediate step of contribution.
+ * @dev The data is used when the current contributorinterrupts during the download, contribute, upload steps
+ * to prevent it from having to start over but can pick up where it left off.
+ * This restart operation does NOT interact with the timeout mechanism (which remains unchanged).
+ * @typedef {Object} TemporaryParticipantContributionData
+ * @property {number} contributionComputationTime - the time spent since the contribution start.
+ * @property {string} uploadId - the unique identifier of the pre-signed url PUT request to upload the newest contribution.
+ * @property {Array<ETagWithPartNumber>} chunks - the list of ETags and PartNumbers that make up the chunks.
+ */
+export type TemporaryParticipantContributionData = {
+  contributionComputationTime: number
+  uploadId: string
+  chunks: Array<ETagWithPartNumber>
+}
+
+/**
+ * Define a custom file data chunk associated with a pre-signed url.
+ * @dev Useful when interacting with AWS S3 buckets using pre-signed urls for multi-part upload or download storing temporary information on the database.
+ * @typedef {Object} ChunkWithUrl
+ * @property {number} partNumber - indicate where the chunk is positioned in order to reconhstruct the file with multiPartUpload/Download.
+ * @property {Uint8Array} chunk - the piece of information in bytes.
+ * @property {string} preSignedUrl - the unique reference to the pre-signed url to which this chunk is linked too.
+ */
+export type ChunkWithUrl = {
+  partNumber: number
+  chunk: Uint8Array
+  preSignedUrl: string
+}
+
+/**
+ * Define a custom object for time management tasks.
+ * @typedef {Object} Timing
+ * @property {number} seconds
+ * @property {number} minutes
+ * @property {number} hours
+ * @property {number} days
+ */
+export type Timing = {
+  seconds: number
+  minutes: number
+  hours: number
+  days: number
+}
+
+/**
+ * Data defining a contribution made by a participant.
+ * @typedef {Object} Contribution
+ * @property {string} doc - the unique identifier of the document related to the contribution.
+ * @property {number} computationTime - the overall time spent while computing the contribution.
+ * @property {string} hash - the contribution hash (generated as output from the snarkjs command).
+ */
+export type Contribution = {
+  doc: string
+  computationTime: number
+  hash: string
+}
+
+/**
+ * Group the information when retrieving the validity of a contribution for a contributor.
+ * @typedef {Object} ContributionValidity
+ * @property {string} contributionId - the unique identifier of the contribution.
+ * @property {string} circuitId - the unique identifier of the circuit for which the contribution was computed.
+ * @property {boolean} valid - true if and only if the contribution is valid; otherwise false.
+ */
+export type ContributionValidity = {
+  contributionId: string
+  circuitId: string
+  valid: boolean
 }

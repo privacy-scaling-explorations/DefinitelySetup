@@ -12,6 +12,7 @@ interface ScrollingAvatarsProps {
 const ScrollingAvatars: React.FC<ScrollingAvatarsProps> = ({ images }) => {
     return (
       <Box
+        maxW={"container.md"}
         width="50%"
         overflowX="auto"
         whiteSpace="nowrap"

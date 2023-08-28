@@ -230,7 +230,7 @@ export const getCircuitBySequencePosition = (
             `Unable to find the circuit having position ${sequencePosition}. Run the command again and, if this error persists please contact the coordinator.`
         )
 
-    return matchedCircuits.at(0)!
+    return matchedCircuits[0]!
 }
 
 

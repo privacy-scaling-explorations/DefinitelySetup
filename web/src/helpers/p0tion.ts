@@ -97,7 +97,7 @@ export const contribute = async (ceremonyId: string, entropy: string, setStatus:
                 const activeTimeouts = await getCurrentActiveParticipantTimeout(ceremonyId, user.uid)
                 if (activeTimeouts.length > 0) {
                     // Get active timeout.
-                    const activeTimeout = activeTimeouts.at(0)!
+                    const activeTimeout = activeTimeouts[0]!
 
                     if (!activeTimeout.data) {
                         setStatus("There seems to be an error with the timeout, please try again or contact an administrator")
@@ -557,7 +557,7 @@ export const listenToParticipantDocumentChanges = async (
                 }
 
                 // Get active timeout.
-                const activeTimeout = activeTimeouts.at(0)!
+                const activeTimeout = activeTimeouts[0]!
 
                 if (!activeTimeout.data) {
                     setStatus("There seems to be an error with the timeout, please try again or contact an administrator")
@@ -620,7 +620,7 @@ export const listenToParticipantDocumentChanges = async (
 export const getLatestVerificationResult = async (ceremonyId: string, circuitId: string, participantId: string): Promise<boolean> => {
     const circuitContributionsFromContributor = await getCircuitContributionsFromContributor(ceremonyId, circuitId, participantId)
 
-    const contribution = circuitContributionsFromContributor.at(0)
+    const contribution = circuitContributionsFromContributor[0]
 
     return contribution?.data.valid 
 }

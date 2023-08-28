@@ -168,3 +168,4 @@ export const localPaths = {
 export const genesisZkeyIndex = "00000"
 export const finalContributionIndex = "final"
 export const bucketPostfix = import.meta.env.VITE_CONFIG_CEREMONY_BUCKET_POSTFIX
+export const maxConstraintsForBrowser = 1000000

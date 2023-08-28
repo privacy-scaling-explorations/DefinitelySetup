@@ -20,6 +20,9 @@ dependencies:
   firebase:
     specifier: ^9.23.0
     version: 9.23.0
+  randomf:
+    specifier: ^0.0.3
+    version: 0.0.3
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -1449,6 +1452,7 @@ packages:
 
   /@emotion/memoize@0.7.4:
     resolution: {integrity: sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==}
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -3876,6 +3880,10 @@ packages:
       '@iden3/binfileutils': 0.0.11
       fastfile: 0.0.20
       ffjavascript: 0.2.57
+    dev: false
+
+  /randomf@0.0.3:
+    resolution: {integrity: sha512-hcZAFZNPZ3YeNpYLkC3MYjVedW4Hb4I0OhQdEHRd/UdDM8roGRH1vCtt8/UTaIHy4VKPLh6kfzS9ljzlMD2Y2Q==}
     dev: false
 
   /react-clientside-effect@1.2.6(react@18.2.0):

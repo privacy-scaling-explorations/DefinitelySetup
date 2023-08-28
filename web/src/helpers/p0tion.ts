@@ -5,6 +5,7 @@ import { DocumentData, DocumentSnapshot, onSnapshot } from "firebase/firestore";
 import { checkParticipantForCeremony, permanentlyStoreCurrentContributionTimeAndHash, progressToNextCircuitForContribution, progressToNextContributionStep, resumeContributionAfterTimeoutExpiration, verifyContribution } from "./functions";
 import { convertToDoubleDigits, downloadCeremonyArtifact, formatHash, formatZkeyIndex, generatePublicAttestation, getBucketName, getGithubProviderUserId, getParticipantsCollectionPath, getSecondsMinutesHoursFromMillis, getZkeyStorageFilePath, handleTweetGeneration, multiPartUpload, publishGist, sleep } from "./utils";
 import { bucketPostfix, commonTerms } from "./constants";
+import randomf from "randomf"
 
 declare global {
     interface Window {
@@ -60,10 +61,10 @@ export const signOutWithGitHub = async (setUser: any) => {
 /**
  * Allow a user to contribute using definitely setup
  * @param ceremonyId {string}
- * @param entropy {string}
+ * @param setStatus {function}
  * @returns 
  */
-export const contribute = async (ceremonyId: string, entropy: string, setStatus: (message: string, loading?: boolean) => void) => {
+export const contribute = async (ceremonyId: string, setStatus: (message: string, loading?: boolean, attestationLink?: string) => void) => {
     const user = getAuth(firebaseApp).currentUser
     if (user === null) {
         setStatus("Not authenticated, please authenticate first")
@@ -79,7 +80,7 @@ export const contribute = async (ceremonyId: string, entropy: string, setStatus:
     const participantProviderId = await getGithubProviderUserId(token)
 
     try {
-        setStatus("Checking if you can contribute to the ceremony")
+        setStatus("Checking if you can contribute to the ceremony", true)
         const canParticipateToCeremony = await checkParticipantForCeremony(ceremonyId)
 
         if (!canParticipateToCeremony) {
@@ -92,7 +93,7 @@ export const contribute = async (ceremonyId: string, entropy: string, setStatus:
                 }
             }
             if (contributions === circuits.length) {
-                setStatus("You have already contributed to all circuits")
+                setStatus("You have already contributed to all circuits", false)
             } else {
                 const activeTimeouts = await getCurrentActiveParticipantTimeout(ceremonyId, user.uid)
                 if (activeTimeouts.length > 0) {
@@ -100,7 +101,7 @@ export const contribute = async (ceremonyId: string, entropy: string, setStatus:
                     const activeTimeout = activeTimeouts[0]!
 
                     if (!activeTimeout.data) {
-                        setStatus("There seems to be an error with the timeout, please try again or contact an administrator")
+                        setStatus("There seems to be an error with the timeout, please try again or contact an administrator", false)
                         return 
                     }
 
@@ -113,20 +114,20 @@ export const contribute = async (ceremonyId: string, entropy: string, setStatus:
 
                     setStatus(`You are timed out. Timeout will end in ${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(
                         minutes
-                    )}:${convertToDoubleDigits(seconds)}`)
+                    )}:${convertToDoubleDigits(seconds)}`, false)
                     return 
                 } else {
                     // check if the user already contributed, or is timed out
-                    setStatus("You cannot participate to this ceremony")
+                    setStatus("You cannot participate to this ceremony", false)
                     return 
                 }
             }
         }
 
-        setStatus("You can participate to this ceremony")
+        setStatus("You can participate to this ceremony", false)
 
         const participant = await getDocumentById(`ceremonies/${ceremonyId}/participants`, user.uid)
-        await listenToParticipantDocumentChanges(participant, ceremonyId, entropy, participantProviderId!, token, setStatus)
+        await listenToParticipantDocumentChanges(participant, ceremonyId, participantProviderId!, token, setStatus)
     } catch (error: any) {
         setStatus(error)
     }
@@ -138,7 +139,6 @@ export const contribute = async (ceremonyId: string, entropy: string, setStatus:
  * @param ceremonyId 
  * @param circuit 
  * @param participant 
- * @param entropy 
  * @param contributorIdentifier 
  * @returns 
  */
@@ -146,15 +146,14 @@ export const handleStartOrResumeContribution = async (
     ceremonyId: string,
     circuit: FirebaseDocumentInfo,
     participant: FirebaseDocumentInfo,
-    entropy: any,
     contributorIdentifier: string,
-    setStatus: (message: string, loading?: boolean) => void
+    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void
 ) => {
     const ceremony = await getDocumentById("ceremonies", ceremonyId)
     const ceremonyData = ceremony.data()
 
     if (!ceremonyData) {
-        setStatus("There is no such ceremony")
+        setStatus("There is no such ceremony", false)
         return 
     }
     const { prefix: ceremonyPrefix } = ceremonyData
@@ -164,11 +163,11 @@ export const handleStartOrResumeContribution = async (
 
     const updatedParticipant = await getDocumentById(`ceremonies/${ceremonyId}/participants`, participant.id)
     if (!updatedParticipant.data()) {
-        setStatus("The participant document seems to not have any data, please try again.")
+        setStatus("The participant document seems to not have any data, please try again.", false)
         return 
     } 
 
-    setStatus(`You are contributing at circuit #${sequencePosition}`)
+    setStatus(`You are contributing at circuit #${sequencePosition}`, true)
 
     let updatedParticipantData = updatedParticipant.data()!
 
@@ -187,10 +186,10 @@ export const handleStartOrResumeContribution = async (
 
     let blob: Uint8Array = new Uint8Array()
     if (updatedParticipantData.contributionStep === ParticipantContributionStep.DOWNLOADING) {
-        setStatus("Downloading zKey")
+        setStatus("Downloading zKey", true)
         blob = await downloadCeremonyArtifact(bucketName, lastZkeyStorageFilePath)
 
-        setStatus("Downloaded zKey")
+        setStatus("Downloaded zKey", false)
         // progress to the next step
         await progressToNextContributionStep(ceremonyId)
 
@@ -200,25 +199,33 @@ export const handleStartOrResumeContribution = async (
     }
 
     if (updatedParticipantData.contributionStep === ParticipantContributionStep.COMPUTING) {
-        setStatus("Computing contribution")
+        setStatus("Computing contribution", true)
 
         // time
         const start = new Date().getTime();
-
+        let output: any 
         // contribute
-        const output = await snarkjs.zKey.contribute(
-            blob,
-            nextZKey,
-            contributorIdentifier,
-            entropy,
-        )
+        try {
+            output = await snarkjs.zKey.contribute(
+                blob,
+                nextZKey,
+                contributorIdentifier,
+                Array(32)
+                .fill(null)
+                .map(() => randomf(2n ** 256n))
+                .join(''),
+            )
+        } catch (error: any) {
+            setStatus(`Error computing, ${error.toString()}`, false)
+            
+        }
 
         // take hash
         const hash = formatHash(output, "Contribution Hash: ")
 
         const end = new Date().getTime();
         const time = end - start;
-        setStatus(`Computed zKey in: ${time}ms`);
+        setStatus(`Computed zKey in: ${time}ms`, false);
 
         // upload hash and time taken
         await permanentlyStoreCurrentContributionTimeAndHash(
@@ -238,7 +245,7 @@ export const handleStartOrResumeContribution = async (
     }
 
     if (updatedParticipantData.contributionStep === ParticipantContributionStep.UPLOADING) {
-        setStatus("Uploading contribution")
+        setStatus("Uploading contribution", true)
         await multiPartUpload(
             bucketName,
             nextZkeyStorageFilePath,
@@ -247,7 +254,7 @@ export const handleStartOrResumeContribution = async (
             updatedParticipantData.tempContributionData
         )
 
-        setStatus("Uploaded contribution")
+        setStatus("Uploaded contribution", false)
         await sleep(1000)
 
         await progressToNextContributionStep(ceremonyId)
@@ -258,7 +265,7 @@ export const handleStartOrResumeContribution = async (
     }
 
     if (updatedParticipantData.contributionStep === ParticipantContributionStep.VERIFYING) {
-        setStatus("Verifying contribution")
+        setStatus("Verifying contribution", true)
         try {
             // Execute contribution verification.
             await verifyContribution(
@@ -268,9 +275,9 @@ export const handleStartOrResumeContribution = async (
                 participant.id,
                 String(import.meta.env.VITE_FIREBASE_CF_URL_VERIFY_CONTRIBUTION)
             )
-            setStatus("Contribution was valid")
+            setStatus("Contribution was valid", false)
         } catch (error: any) {
-            setStatus(`Error verifying, ${error.toString()}`)
+            setStatus(`Error verifying, ${error.toString()}`, false)
         }
     }
 
@@ -296,7 +303,7 @@ export const listenToCeremonyCircuitDocumentChanges = (
     const unsubscribeToCeremonyCircuitListener = onSnapshot(circuit.ref, async (changedCircuit: DocumentSnapshot) => {
         // Check data.
         if (!circuit.data || !changedCircuit.data()) {
-            setStatus(`There is no circuit data for circuit ${circuit.id}`)
+            setStatus(`There is no circuit data for circuit ${circuit.id}`, false)
             return 
         }
 
@@ -326,19 +333,19 @@ export const listenToCeremonyCircuitDocumentChanges = (
 
         // Check if the participant is now the new current contributor for the circuit.
         if (latestParticipantPositionInQueue === 1) {
-            setStatus(`You are now the first in the queue, getting ready for contributing.`)
+            setStatus(`You are now the first in the queue, getting ready for contributing.`, true)
             // Unsubscribe from updates.
             unsubscribeToCeremonyCircuitListener()
             // eslint-disable no-unused-vars
         } else if (latestParticipantPositionInQueue !== cachedLatestPosition) {
-            setStatus(`You are at position ${latestParticipantPositionInQueue} in the queue`)
+            setStatus(`You are at position ${latestParticipantPositionInQueue} in the queue`, false)
             setStatus(
                 `You will have to wait for ${latestParticipantPositionInQueue - 1} contributors (~${
                 newEstimatedWaitingTime > 0
                     ? 
                           `${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(minutes)}:${convertToDoubleDigits(seconds)}`
                     : `no time`
-            } (dd/hh/mm/ss))`)
+            } (dd/hh/mm/ss))`, false)
 
             cachedLatestPosition = latestParticipantPositionInQueue
         }
@@ -389,29 +396,21 @@ export const handlePublicAttestation = async (
  * Main contribution login
  * @param participant {DocumentSnapshot<DocumentData>}
  * @param ceremonyId {string}
- * @param entropy {string}
  */
 export const listenToParticipantDocumentChanges = async (
     participant: DocumentSnapshot<DocumentData>,
     ceremonyId: string,
-    entropy: string,
     participantProviderId: string,
     token: string,
-    setStatus: (message: string, loading?: boolean) => void
+    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void
 ) => {
     const ceremonyDodc = await getDocumentById(commonTerms.collections.ceremonies.name, ceremonyId)
     const ceremonyData = ceremonyDodc.data()
     if (!ceremonyData) {
-        setStatus(`There is no such ceremony`)
+        setStatus(`There is no such ceremony`, false)
         return 
     }
     const unsubscribe = onSnapshot(participant.ref, async (changedParticipant: DocumentSnapshot) => {
-        // console.log(participant, changedParticipant)
-        // // Check data.
-        // if (!participant.data() || !changedParticipant.data()) {
-        //     setStatus("Error, no participant data. Please try again")
-        //     return 
-        // }
         // Extract data.
         const {
             contributionProgress: prevContributionProgress,
@@ -438,7 +437,7 @@ export const listenToParticipantDocumentChanges = async (
             !changedContributionProgress
         ) {
             // Progress the participant to the next circuit making it ready for contribution.
-            setStatus("Progressing to the next circuit")
+            setStatus("Progressing to the next circuit", true)
             await progressToNextCircuitForContribution(ceremonyId)
             await sleep(1000)
         }
@@ -526,8 +525,8 @@ export const listenToParticipantDocumentChanges = async (
 
             
             if (isCurrentContributor && hasResumableStep && startingOrResumingContribution) {
-                setStatus("Starting or resuming contribution")
-                await handleStartOrResumeContribution(ceremonyId, circuit, changedParticipant, entropy, participantProviderId, setStatus)
+                setStatus("Starting or resuming contribution", true)
+                await handleStartOrResumeContribution(ceremonyId, circuit, changedParticipant, participantProviderId, setStatus)
             } else if (isWaitingForContribution) {
                 listenToCeremonyCircuitDocumentChanges(ceremonyId, participant.id, circuit, setStatus)
             }
@@ -537,15 +536,15 @@ export const listenToParticipantDocumentChanges = async (
                 isResumingContribution &&
                 changedContributionStep === ParticipantContributionStep.VERIFYING
             ) {
-                setStatus("Resuming and verifying")
-                setStatus("Verifying might have not started if you are in this step. Please wait for a confirmation or timeout")
+                setStatus("Resuming and verifying", false)
+                setStatus("Verifying might have not started if you are in this step. Please wait for a confirmation or timeout", false)
             }
 
             if (progressToNextContribution && noStatusChanges &&
                 (changedStatus === ParticipantStatus.DONE || changedStatus === ParticipantStatus.CONTRIBUTED)) {
                     // get the latest verification result 
                     const res = await getLatestVerificationResult(ceremonyId, circuit.id, participant.id)
-                    setStatus(`Result of previous contribution - verified = ${res}`)
+                    setStatus(`Result of previous contribution - verified = ${res}`, false)
             }
 
             // check timeout
@@ -560,7 +559,7 @@ export const listenToParticipantDocumentChanges = async (
                 const activeTimeout = activeTimeouts[0]!
 
                 if (!activeTimeout.data) {
-                    setStatus("There seems to be an error with the timeout, please try again or contact an administrator")
+                    setStatus("There seems to be an error with the timeout, please try again or contact an administrator", false)
                     unsubscribe()
                 }
 
@@ -573,37 +572,37 @@ export const listenToParticipantDocumentChanges = async (
 
                 setStatus(`You are timed out. Timeout will end in ${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(
                     minutes
-                )}:${convertToDoubleDigits(seconds)}`)
+                )}:${convertToDoubleDigits(seconds)}`, false)
             }
 
             if (completedContribution || timeoutExpired) {
                 if (completedContribution) {
                     const res = await getLatestVerificationResult(ceremonyId, circuit.id, participant.id)
-                    setStatus(`The latest contribution was verifed as ${res}`)
+                    setStatus(`The latest contribution was verifed as ${res}`, false)
                 }
 
                 const nextCircuit = timeoutExpired ? getCircuitBySequencePosition(circuits, changedContributionProgress) : getCircuitBySequencePosition(circuits, changedContributionProgress + 1)
                 
                 if (!timeoutExpired) {
                     // progress to next circuit
-                    setStatus(`Progressing to the next circuit at position ${nextCircuit.data.sequencePosition}`)
+                    setStatus(`Progressing to the next circuit at position ${nextCircuit.data.sequencePosition}`, true)
                     await progressToNextCircuitForContribution(ceremonyId)
                 } else {
                     // resume 
-                    setStatus(`Resuming with circuit at ${nextCircuit.data.sequencePosition}`)
+                    setStatus(`Resuming with circuit at ${nextCircuit.data.sequencePosition}`, true)
                     await resumeContributionAfterTimeoutExpiration(ceremonyId)
                 }
             }
 
             if (alreadyContributedToEveryCeremonyCircuit) {
                 const res = await getLatestVerificationResult(ceremonyId, circuit.id, participant.id)
-                setStatus(`The latest contribution was verifed as ${res}`)
+                setStatus(`The latest contribution was verifed as ${res ? "valid" : "invalid"}`, false)
 
                 // generate public attestation
-                setStatus("You have contributed to all circuits")
+                setStatus("You have contributed to all circuits", false)
 
                 const url = await handlePublicAttestation(circuits, ceremonyId, participant.id, changedContributions, participant.id, ceremonyData.title, ceremonyData.prefix, token)
-                setStatus(`You can share your attestation at ${url}`)
+                setStatus(`You can share your attestation by clicking the button below`, false, url)
                 unsubscribe()
             }
         }

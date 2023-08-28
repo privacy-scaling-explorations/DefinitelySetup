@@ -1,5 +1,6 @@
+import { getAuth } from "firebase/auth";
 import { commonTerms, finalContributionIndex, genesisZkeyIndex, localPaths } from "./constants";
-import {getCircuitContributionsFromContributor, getCircuitsCollectionPath, getDocumentById } from "./firebase";
+import {firebaseApp, getCeremonyCircuits, getCircuitContributionsFromContributor, getCircuitsCollectionPath, getDocumentById } from "./firebase";
 import { completeMultiPartUpload, generateGetObjectPreSignedUrl, generatePreSignedUrlsParts, openMultiPartUpload, temporaryStoreCurrentContributionMultiPartUploadId, temporaryStoreCurrentContributionUploadedChunkData } from "./functions";
 import { ChunkWithUrl, Contribution, ContributionValidity, ETagWithPartNumber, FirebaseDocumentInfo, TemporaryParticipantContributionData, Timing } from "./interfaces";
 import { request } from "@octokit/request"
@@ -767,4 +768,33 @@ export const getGithubProviderUserId = async (githubToken: string): Promise<stri
     }
 
     throw new Error("No token or failed request")
+}
+
+/**
+ * Check if a user already contributed to this ceremony
+ * @param ceremonyId {string} - the ceremony id 
+ * @returns {boolean}
+ */
+export const checkIfUserContributed = async (ceremonyId: string): Promise<boolean> => {
+    const user = getAuth(firebaseApp).currentUser
+    if (!user) return false 
+    const circuits = await getCeremonyCircuits(ceremonyId)
+    for (const circuit of circuits) {
+        const hasContributed = await getCircuitContributionsFromContributor(ceremonyId, circuit.id, user.uid)
+        if (hasContributed.length === 0) return false 
+    }
+    return true        
+}
+
+/**
+ * Get the largest constraints of a circuit
+ * @param array {any[]|undefined}
+ * @returns {number}
+ */
+export const findLargestConstraint = (array: any[]|undefined): number => {
+    if (!array) return 0
+    return array.reduce((max: any, current: any) => {
+        const constraint = current.data.metadata?.constraints ?? 0
+        return Math.max(max, constraint)
+    }, 0)
 }

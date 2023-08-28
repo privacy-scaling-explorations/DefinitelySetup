@@ -34,7 +34,7 @@ import {
   Skeleton,
   Stack,
   SkeletonCircle,
-  useClipboard
+  useClipboard,
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
@@ -55,6 +55,7 @@ import {
 } from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
 import ScrollingAvatars from "../components/Avatars";
+import { Contribution } from "../components/Contribution";
 
 type RouteParams = {
   ceremonyName: string | undefined;
@@ -64,6 +65,7 @@ const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { projects, setRunTutorial, runTutorial } = useContext(StateContext);
   const { projectData, isLoading, avatars } = useProjectPageContext();
+
 
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
@@ -82,6 +84,15 @@ const ProjectPage: React.FC = () => {
 
   /// @todo work on multiple circuits.
   /// @todo uncomplete info for mocked fallback circuit data.
+
+  const findLargestConstraint = (array: any[]|undefined): number => {
+    if (!array) return 0;
+    return array.reduce((max: any, current: any) => {
+      const constraint = current.data.metadata?.constraints ?? 0;
+      return Math.max(max, constraint);
+    }, 0)};
+
+  const largestCircuitConstraints = findLargestConstraint(validatedProjectData.circuits ? validatedProjectData.circuits : []);
 
   const circuitsClean =
     validatedProjectData.circuits?.map((circuit) => ({
@@ -254,6 +265,11 @@ const ProjectPage: React.FC = () => {
                   <Text fontSize={12} fontWeight="bold">
                     Contribute:
                   </Text>
+                  {
+                    largestCircuitConstraints < 100000 &&
+                      <Contribution ceremonyId={project.ceremony.uid} />
+
+                  }
                   <Text color="gray.500">
                     You can contribute to this project by running the CLI commands below.
                   </Text>

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 8080",
     "build": "tsc && vite build",
     "deploy:dev": "firebase deploy --only hosting --project dev",
     "deploy:staging": "firebase deploy --only hosting --project staging",
@@ -15,12 +15,16 @@
   "dependencies": {
     "@chakra-ui/react": "^2.7.1",
     "@fontsource/poppins": "^5.0.5",
+    "@octokit/auth-oauth-device": "^6.0.0",
+    "@octokit/request": "^8.1.1",
     "firebase": "^9.23.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-joyride": "^2.5.4",
     "react-router-dom": "^6.14.1",
+    "snarkjs": "^0.7.0",
+    "types.js": "link:@octokit/auth-oauth-device/dist-types/types.js",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -32,6 +36,7 @@
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "process": "^0.11.10",
     "typescript": "^5.0.2",
     "vite": "^4.3.9"
   }

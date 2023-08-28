@@ -21,6 +21,7 @@ import { ColorModeSwitch } from "./components/ColorModeSwitch";
 import Joyride, { STATUS } from "react-joyride";
 import { searchBarSteps } from "./helpers/utils";
 import { LogoIcon } from "./assets/LogoIcon";
+import { Login } from "./components/Login";
 
 const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
   const { search, setSearch, loading, setLoading } = useContext(StateContext);
@@ -108,6 +109,7 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
               Documentation
             </Heading> */}
             <ColorModeSwitch />
+            <Login />
           </HStack>
         </HStack>
         <HStack

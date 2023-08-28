@@ -335,7 +335,10 @@ const ProjectPage: React.FC = () => {
                 </VStack>
               </>
             )}
-            <VStack alignSelf={"stretch"}> 
+            <VStack 
+              maxW={["390px", "390px", "100%"]}
+              minW={["390px", "390px", null]}
+            > 
               <ScrollingAvatars images={avatars}/>
             </VStack>
             <VStack

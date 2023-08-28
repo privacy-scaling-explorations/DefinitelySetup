@@ -198,13 +198,43 @@ export const getBucketName = (ceremonyPrefix: string, ceremonyPostfix: string): 
 export const downloadCeremonyArtifact = async (
     bucketName: string,
     storagePath: string,
+    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void
 ): Promise<Uint8Array> => {
     // Request pre-signed url to make GET download request.
     const getPreSignedUrl = await generateGetObjectPreSignedUrl(bucketName, storagePath)
-    const result = await fetch(getPreSignedUrl)
-    const data = await result.arrayBuffer()
-    return new Uint8Array(data)
+
+    const response = await fetch(getPreSignedUrl);
+    const totalLength = Number(response.headers.get("Content-Length"))
+
+    if (!response.body) throw Error("ReadableStream not yet supported in this browser.")
+
+    const reader = response.body.getReader()
+    let chunks: Uint8Array[] = []
+    let receivedLength = 0
+
+    while (true) {
+        const { done, value } = await reader.read()
+
+        if (done) break
+        
+
+        chunks.push(value!)
+        receivedLength += value!.length
+
+        setStatus(`Downloading: (${(receivedLength / totalLength * 100).toFixed(2)}%)`, true)
+    }
+
+    let chunksAll = new Uint8Array(receivedLength)
+    let position = 0;
+
+    for (let chunk of chunks) {
+        chunksAll.set(chunk, position)
+        position += chunk.length
+    }
+
+    return chunksAll
 }
+
 
 /**
  * Get participants collection path for database reference.
@@ -308,14 +338,18 @@ export const getChunksAndPreSignedUrls = async (
  */
 export const uploadParts = async (
     chunksWithUrls: Array<ChunkWithUrl>,
+    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void,
     ceremonyId?: string,
-    alreadyUploadedChunks?: Array<ETagWithPartNumber>
+    alreadyUploadedChunks?: Array<ETagWithPartNumber>,
 ): Promise<Array<ETagWithPartNumber>> => {
     // Keep track of uploaded chunks.
     const uploadedChunks: Array<ETagWithPartNumber> = alreadyUploadedChunks || []
 
+    const totalChunks = chunksWithUrls.length
+
     // Loop through remaining chunks.
     for (let i = alreadyUploadedChunks ? alreadyUploadedChunks.length : 0; i < chunksWithUrls.length; i += 1) {
+        setStatus(`Uploading chunk ${i + 1} of ${totalChunks}...`, true)
         // Consume the pre-signed url to upload the chunk.
         // @ts-ignore
         const response = await fetch(chunksWithUrls[i].preSignedUrl, {
@@ -339,6 +373,8 @@ export const uploadParts = async (
             PartNumber: chunksWithUrls[i].partNumber
         }
         uploadedChunks.push(chunk)
+
+        setStatus(`Uploaded chunk ${i + 1} of ${totalChunks}`, true)
 
         // Temporary store uploaded chunk data to enable later resumable contribution.
         // nb. this must be done only when contributing (not finalizing).
@@ -373,6 +409,7 @@ export const multiPartUpload = async (
     bucketName: string,
     objectKey: string,
     fileData: Uint8Array,
+    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void,
     ceremonyId?: string,
     temporaryDataToResumeMultiPartUpload?: TemporaryParticipantContributionData
 ) => {
@@ -410,6 +447,7 @@ export const multiPartUpload = async (
     // Step (2).
     const partNumbersAndETagsZkey = await uploadParts(
         chunksWithUrlsZkey,
+        setStatus,
         ceremonyId,
         alreadyUploadedChunks
     )

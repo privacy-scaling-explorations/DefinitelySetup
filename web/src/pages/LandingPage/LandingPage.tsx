@@ -11,9 +11,6 @@ import { CircularProgress } from "@chakra-ui/react";
 const LandingPage: React.FC = () => {
   const { projects, circuit, search, loading } = useContext(StateContext);
 
-  console.log(projects)
-  console.log(circuit)
-  
   // const { projectData, isLoading, index } = useLandingPageContext();
 
   if (loading) {

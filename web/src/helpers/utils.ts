@@ -81,6 +81,10 @@ export const singleProjectPageSteps = [
         content: "Here you can copy the command needed to contribute to this ceremony",
     },
     {
+        target: ".browserContributeCopyButton",
+        content: "Here you can contribute to the ceremony directly on your Browser"
+    },
+    {
         target: ".circuitsView",
         content: "Here you can see the circuits for this ceremony and their live statistics",
     },
@@ -558,7 +562,8 @@ export const getContributionsValidityForContributor = async (
 export const handleContributionValidity = async (
     circuits: Array<FirebaseDocumentInfo>,
     ceremonyId: string,
-    participantId: string
+    participantId: string,
+    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void
 ) => {
     // Get contributors' contributions validity.
     const contributionsWithValidity = await getContributionsValidityForContributor(
@@ -574,9 +579,9 @@ export const handleContributionValidity = async (
     )
 
     if (!validContributions.length)
-        console.log("You have provided some invalid contributions")
+        setStatus("You have provided some invalid contributions")
     else {
-        console.log("You have provided valid contributions for all circuits")
+        setStatus("You have provided valid contributions for all circuits")
     }
 }
 
@@ -690,10 +695,11 @@ export const generatePublicAttestation = async (
     participantId: string,
     participantContributions: Array<Contribution>,
     contributorIdentifier: string,
-    ceremonyName: string
+    ceremonyName: string,
+    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void
 ): Promise<string> => {
     // Display contribution validity.
-    await handleContributionValidity(circuits, ceremonyId, participantId)
+    await handleContributionValidity(circuits, ceremonyId, participantId, setStatus)
 
     await sleep(3000)
 
@@ -769,8 +775,6 @@ export const generateCustomUrlToTweetAboutParticipation = (
 export const handleTweetGeneration = async (ceremonyTitle: string, gistUrl: string): Promise<string> => {
     // Generate a ready to share custom url to tweet about ceremony participation.
     const tweetUrl = generateCustomUrlToTweetAboutParticipation(ceremonyTitle, gistUrl, false)
-
-    console.log("We encourage you to tweet to spread the word about your participation to the ceremony by sharing on Twitter")
 
     // Automatically open a webpage with the tweet.
     return tweetUrl

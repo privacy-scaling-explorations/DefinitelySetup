@@ -21,6 +21,7 @@ import { ColorModeSwitch } from "./components/ColorModeSwitch";
 import Joyride, { STATUS } from "react-joyride";
 import { searchBarSteps } from "./helpers/utils";
 import { LogoIcon } from "./assets/LogoIcon";
+import { Login } from "./components/Login";
 
 const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
   const { search, setSearch, loading, setLoading } = useContext(StateContext);
@@ -29,7 +30,6 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
-    console.log(status);
     if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
       // Need to set our running state to false, so we can restart if we click start again.
       setRunTutorial(false);
@@ -108,6 +108,7 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
               Documentation
             </Heading> */}
             <ColorModeSwitch />
+            <Login />
           </HStack>
         </HStack>
         <HStack

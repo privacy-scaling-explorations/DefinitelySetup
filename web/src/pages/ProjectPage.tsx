@@ -34,7 +34,7 @@ import {
   Skeleton,
   Stack,
   SkeletonCircle,
-  useClipboard
+  useClipboard,
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
@@ -55,6 +55,8 @@ import {
 } from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
 import ScrollingAvatars from "../components/Avatars";
+import { Contribution } from "../components/Contribution";
+import { maxConstraintsForBrowser } from "../helpers/constants";
 
 type RouteParams = {
   ceremonyName: string | undefined;
@@ -62,9 +64,8 @@ type RouteParams = {
 
 const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
-  const { projects, setRunTutorial, runTutorial } = useContext(StateContext);
-  const { projectData, isLoading, avatars } = useProjectPageContext();
-
+  const { user, projects, setRunTutorial, runTutorial } = useContext(StateContext);
+  const { hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -73,6 +74,7 @@ const ProjectPage: React.FC = () => {
       setRunTutorial(false);
     }
   };
+
 
   // find a project with the given ceremony name
   const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
@@ -245,56 +247,68 @@ const ProjectPage: React.FC = () => {
                   {project.ceremony.data.description}
                 </Text>
                 <VStack
-                  className="contributeCopyButton"
+                  className={
+                    user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
+                    "browserContributeCopyButton" :
+                    "contributeCopyButton"
+                  }
                   // align="start"
                   spacing={2}
                   py={2}
                   alignSelf={"stretch"}
                 >
-                  <Text fontSize={12} fontWeight="bold">
-                    Contribute:
-                  </Text>
-                  <Text color="gray.500">
-                    You can contribute to this project by running the CLI commands below.
-                  </Text>
-                  <Button 
-                    leftIcon={<Box as={FaCopy} w={3} h={3} />}
-                    variant="outline"
-                    fontSize={12}
-                    fontWeight={"regular"}
-                    onClick={copyInstall}
-                  >
-                    {
-                      copiedInstall ?
-                      "Copied"
-                      : `> npm install -g @p0tion/phase2cli`
-                    }
-                  </Button>
-                  <Button 
-                    leftIcon={<Box as={FaCopy} w={3} h={3} />}
-                    variant="outline"
-                    fontSize={12}
-                    fontWeight={"regular"}
-                    onClick={copyAuth}
-                  >
-                    {
-                      copiedAuth ?
-                      "Copied"
-                      : `> phase2cli auth`
-                    }
-                  </Button>
-                  <Button
-                    leftIcon={<Box as={FaCopy} w={3} h={3} />}
-                    variant="outline"
-                    onClick={copyContribute}
-                    fontSize={12}
-                    fontWeight={"regular"}
-                  >
-                    {copiedContribute
-                      ? "Copied"
-                      : `> phase2cli contribute`
-                    }
-                  </Button>
+                  {
+                    user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
+                      <Contribution ceremonyId={project.ceremony.uid} /> :
+                      hasUserContributed ?
+                      <Text color="gray.500" fontSize={12} fontWeight="bold">
+                        You have already contributed to this ceremony. Thank you for your participation.
+                      </Text> :
+                      <>
+                        <Text color="gray.500">
+                          You can contribute to this project by running the CLI commands below.
+                        </Text>
+                      
+                        <Button 
+                          leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                          variant="outline"
+                          fontSize={12}
+                          fontWeight={"regular"}
+                          onClick={copyInstall}
+                        >
+                          {
+                            copiedInstall ?
+                            "Copied"
+                            : `> npm install -g @p0tion/phase2cli`
+                          }
+                        </Button>
+                        <Button 
+                          leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                          variant="outline"
+                          fontSize={12}
+                          fontWeight={"regular"}
+                          onClick={copyAuth}
+                        >
+                          {
+                            copiedAuth ?
+                            "Copied"
+                            : `> phase2cli auth`
+                          }
+                        </Button>
+                        <Button
+                          leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                          variant="outline"
+                          onClick={copyContribute}
+                          fontSize={12}
+                          fontWeight={"regular"}
+                        >
+                          {copiedContribute
+                            ? "Copied"
+                            : `> phase2cli contribute`
+                          }
+                        </Button>
+                    </>  
+                  }
                 </VStack>
                 <VStack spacing={2} py={2} alignSelf={"stretch"}>
                   <HStack
@@ -324,7 +338,10 @@ const ProjectPage: React.FC = () => {
                 </VStack>
               </>
             )}
-            <VStack alignSelf={"stretch"}> 
+            <VStack 
+              maxW={["390px", "390px", "100%"]}
+              minW={["390px", "390px", null]}
+            > 
               <ScrollingAvatars images={avatars}/>
             </VStack>
             <VStack

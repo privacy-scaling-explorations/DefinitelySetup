@@ -10,14 +10,22 @@ import {
     getFirestore,
     query,
     collection,
-    where
+    where,
+    QueryConstraint,
+    QuerySnapshot
 } from "firebase/firestore"
 import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app" // ref https://firebase.google.com/docs/web/setup#access-firebase.
 import { Functions, getFunctions } from "firebase/functions"
-import { processItems } from "./utils"
+import { getContributionsCollectionPath, getParticipantsCollectionPath, getTimeoutsCollectionPath, processItems } from "./utils"
+import { Auth, getAuth } from "firebase/auth"
+import { FirebaseDocumentInfo } from "./interfaces"
+import { commonTerms } from "./constants"
 
 // we init this here so we can use it throughout the functions below
-let firestoreDatabase: Firestore
+export let firestoreDatabase: Firestore
+export let firebaseApp: FirebaseApp
+export let firebaseAuth: Auth
+export let firebaseFunctions: Functions
 
 /**
  * This method initialize a Firebase app if no other app has already been initialized.
@@ -34,13 +42,6 @@ const initializeFirebaseApp = (options: FirebaseOptions): FirebaseApp => initial
 const getFirestoreDatabase = (app: FirebaseApp): Firestore => getFirestore(app)
 
 /**
- * This method returns the Cloud Functions instance associated to the given Firebase application.
- * @param app <FirebaseApp> - the Firebase application.
- * @returns <Functions> - the Cloud Functions associated to the application.
- */
-const getFirebaseFunctions = (app: FirebaseApp): Functions => getFunctions(app)
-
-/**
  * Get circuits collection path for database reference.
  * @notice all circuits related documents are store under `ceremonies/<ceremonyId>/circuits` collection path.
  * nb. This is a rule that must be satisfied. This is NOT an optional convention.
@@ -48,7 +49,7 @@ const getFirebaseFunctions = (app: FirebaseApp): Functions => getFunctions(app)
  * @returns <string> - the participants collection path.
  */
 export const getCircuitsCollectionPath = (ceremonyId: string): string =>
-    `ceremonies/${ceremonyId}/circuits`
+    `${commonTerms.collections.ceremonies.name}/${ceremonyId}/${commonTerms.collections.circuits.name}`
 
 /**
  * Return the core Firebase services instances (App, Database, Functions).
@@ -72,7 +73,7 @@ export const initializeFirebaseCoreServices = async (): Promise<{
         appId: import.meta.env.VITE_FIREBASE_APP_ID
     })
     const firestoreDatabase = getFirestoreDatabase(firebaseApp)
-    const firebaseFunctions = getFirebaseFunctions(firebaseApp)
+    const firebaseFunctions = getFunctions(firebaseApp, "europe-west1")
 
     return {
         firebaseApp,
@@ -83,9 +84,12 @@ export const initializeFirebaseCoreServices = async (): Promise<{
 
 // Init the Firestore database instance.
 (async () => {
-    const { firestoreDatabase: db } = await initializeFirebaseCoreServices()
+    const { firestoreDatabase: db, firebaseApp: app, firebaseFunctions: functions } = await initializeFirebaseCoreServices()
 
     firestoreDatabase = db
+    firebaseApp = app
+    firebaseAuth = getAuth(app)
+    firebaseFunctions = functions
 })()
 
 /**
@@ -202,4 +206,111 @@ export const getContributions = async (
 ): Promise<any[]> => {
     const contributionsDocs = await getAllCollectionDocs(`ceremonies/${ceremonyId}/circuits/${circuitId}/contributions`);
     return contributionsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() }));
+}
+
+/**
+ * Check and return the circuit document based on its sequence position among a set of circuits (if any).
+ * @dev there should be only one circuit with a provided sequence position. This method checks and return an
+ * error if none is found.
+ * @param circuits <Array<FirebaseDocumentInfo>> - the set of ceremony circuits documents.
+ * @param sequencePosition <number> - the sequence position (index) of the circuit to be found and returned.
+ * @returns <FirebaseDocumentInfo> - the document of the circuit in the set of circuits that has the provided sequence position.
+ */
+export const getCircuitBySequencePosition = (
+    circuits: Array<FirebaseDocumentInfo>,
+    sequencePosition: number
+): FirebaseDocumentInfo => {
+    // Filter by sequence position.
+    const matchedCircuits = circuits.filter(
+        (circuitDocument: FirebaseDocumentInfo) => circuitDocument.data.sequencePosition === sequencePosition
+    )
+
+    if (matchedCircuits.length !== 1)
+        throw new Error(
+            `Unable to find the circuit having position ${sequencePosition}. Run the command again and, if this error persists please contact the coordinator.`
+        )
+
+    return matchedCircuits[0]!
+}
+
+
+/**
+ * Return the most up-to-date data about the participant document for the given ceremony.
+ * @param firestoreDatabase <Firestore> - the Firestore service instance associated to the current Firebase application.
+ * @param ceremonyId <string> - the unique identifier of the ceremony.
+ * @param participantId <string> - the unique identifier of the participant.
+ * @returns <Promise<DocumentData>> - the most up-to-date participant data.
+ */
+export const getLatestUpdatesFromParticipant = async (
+    ceremonyId: string,
+    participantId: string
+): Promise<DocumentData> => {
+    // Fetch participant data.
+    const participant = await getDocumentById(
+        getParticipantsCollectionPath(ceremonyId),
+        participantId
+    )
+
+    if (!participant.data()) return {}
+
+    return participant.data()!
+}
+
+/**
+ * Helper for query a collection based on certain constraints.
+ * @param collection <string> - the name of the collection.
+ * @param queryConstraints <Array<QueryConstraint>> - a sequence of where conditions.
+ * @returns <Promise<QuerySnapshot<DocumentData>>> - return the matching documents (if any).
+ */
+export const queryCollection = async (
+    collection: string,
+    queryConstraints: Array<QueryConstraint>
+): Promise<QuerySnapshot<DocumentData>> => {
+    // Make a query.
+    const q = query(collectionRef(firestoreDatabase, collection), ...queryConstraints)
+
+    // Get docs.
+    const snap = await getDocs(q)
+
+    return snap
+}
+
+/**
+ * Query for a specific ceremony' circuit contribution from a given contributor (if any).
+ * @notice if the caller is a coordinator, there could be more than one contribution (= the one from finalization applies to this criteria).
+ * @param ceremonyId <string> - the unique identifier of the ceremony.
+ * @param circuitId <string> - the unique identifier of the circuit.
+ * @param participantId <string> - the unique identifier of the participant.
+ * @returns <Promise<Array<FirebaseDocumentInfo>>> - the document info about the circuit contributions from contributor.
+ */
+export const getCircuitContributionsFromContributor = async (
+    ceremonyId: string,
+    circuitId: string,
+    participantId: string
+): Promise<Array<FirebaseDocumentInfo>> => {
+    const participantContributionsQuerySnap = await queryCollection(
+        getContributionsCollectionPath(ceremonyId, circuitId),
+        [where(commonTerms.collections.contributions.fields.participantId, "==", participantId)]
+    )
+
+    return fromQueryToFirebaseDocumentInfo(participantContributionsQuerySnap.docs)
+}
+
+
+/**
+ * Query for the active timeout from given participant for a given ceremony (if any).
+ * @param ceremonyId <string> - the identifier of the ceremony.
+ * @param participantId <string> - the identifier of the participant.
+ * @returns <Promise<Array<FirebaseDocumentInfo>>> - the document info about the current active participant timeout.
+ */
+export const getCurrentActiveParticipantTimeout = async (
+    ceremonyId: string,
+    participantId: string
+): Promise<Array<FirebaseDocumentInfo>> => {
+    const participantTimeoutQuerySnap = await queryCollection(
+        getTimeoutsCollectionPath(ceremonyId, participantId),
+        [where(commonTerms.collections.timeouts.fields.endDate, ">=", new Date().getMilliseconds())]
+    )
+
+    return fromQueryToFirebaseDocumentInfo(participantTimeoutQuerySnap.docs)
 }

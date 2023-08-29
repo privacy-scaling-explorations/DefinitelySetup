@@ -4,6 +4,7 @@ import React, { useState, createContext, useEffect, useContext } from "react";
 import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitContributionVerificationMechanism, CircuitDocumentReferenceAndData, ContributionDocumentReferenceAndData, ParticipantDocumentReferenceAndData } from "../helpers/interfaces";
 import { getAllCollectionDocs, getCeremonyCircuits } from "../helpers/firebase";
 import { DocumentData } from 'firebase/firestore'
+import { commonTerms } from "../helpers/constants";
 
 export interface Project {
   ceremony: CeremonyDocumentReferenceAndData
@@ -23,6 +24,8 @@ export interface State {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   runTutorial: boolean;
   setRunTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  user?: string;
+  setUser?: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 
@@ -121,7 +124,8 @@ export const StateContext = createContext<State>({
   loading: false,
   setLoading: () => null,
   runTutorial: false,
-  setRunTutorial: () => null
+  setRunTutorial: () => null,
+  setUser: () => {}
 });
 
 export const useInitialStateContext = () => {
@@ -134,7 +138,7 @@ export const useInitialStateContext = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [runTutorial, setRunTutorial] = useState<boolean>(false);
 
-  // Fetch circuit data.
+  // Fetch circuit data and current user
   useEffect(() => {
     const fetchData = async () => {
       /// @todo refactoring needed.
@@ -156,6 +160,7 @@ export const useInitialStateContext = () => {
       }
     };
 
+
     fetchData();
   }, []);
 
@@ -166,7 +171,7 @@ export const useInitialStateContext = () => {
       setLoading(true)
 
       // 1. Fetch data.
-      const docs = await getAllCollectionDocs(`ceremonies`)
+      const docs = await getAllCollectionDocs(commonTerms.collections.ceremonies.name)
 
       // 2. Post-process data.
       const ceremonies: CeremonyDocumentReferenceAndData[] = docs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
@@ -192,11 +197,23 @@ type StateProviderProps = {
 };
 export const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
  
+  const [user, setUser] = useState<string | undefined>(
+    localStorage.getItem("username") || undefined
+  );
+
+  useEffect(() => {
+    const _user = localStorage.getItem("username")?.toString() || "";
+    if (_user !== user) {
+      setUser(_user);
+    }
+  }, [user]);
+
+
   const state =useInitialStateContext()
 
   return (
     // @ts-ignore
-    <StateContext.Provider value={{...state }}>
+    <StateContext.Provider value={{...state, user, setUser }}>
       {children}
     </StateContext.Provider>
   );

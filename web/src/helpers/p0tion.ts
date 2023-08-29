@@ -3,7 +3,7 @@ import { Contribution, FirebaseDocumentInfo, ParticipantContributionStep, Partic
 import { getAuth, GithubAuthProvider, signInWithPopup, signOut } from  "firebase/auth"
 import { DocumentData, DocumentSnapshot, onSnapshot } from "firebase/firestore";
 import { checkParticipantForCeremony, permanentlyStoreCurrentContributionTimeAndHash, progressToNextCircuitForContribution, progressToNextContributionStep, resumeContributionAfterTimeoutExpiration, verifyContribution } from "./functions";
-import { convertToDoubleDigits, downloadCeremonyArtifact, formatHash, formatZkeyIndex, generatePublicAttestation, getBucketName, getGithubProviderUserId, getParticipantsCollectionPath, getSecondsMinutesHoursFromMillis, getZkeyStorageFilePath, handleTweetGeneration, multiPartUpload, publishGist, sleep } from "./utils";
+import { checkGitHubReputation, convertToDoubleDigits, downloadCeremonyArtifact, formatHash, formatZkeyIndex, generatePublicAttestation, getBucketName, getGithubProviderUserId, getParticipantsCollectionPath, getSecondsMinutesHoursFromMillis, getZkeyStorageFilePath, handleTweetGeneration, multiPartUpload, publishGist, sleep } from "./utils";
 import { bucketPostfix, commonTerms } from "./constants";
 import randomf from "randomf"
 
@@ -75,6 +75,19 @@ export const contribute = async (ceremonyId: string, setStatus: (message: string
         setStatus("No token, auth first")
         return 
     }
+
+    // check if the user passes the GitHub reputation checks
+    const reputable = await checkGitHubReputation()
+    if (!reputable) {
+        setStatus(`You do not pass the GitHub reputation checks. 
+        You need to have at least: ${import.meta.env.VITE_GITHUB_REPOS} public 
+        repo${import.meta.env.VITE_GITHUB_REPOS > 1 ? "s" : ""}, ${import.meta.env.VITE_GITHUB_FOLLOWERS} 
+        follower${import.meta.env.VITE_GITHUB_FOLLOWERS > 1 ? "s" : ""}, 
+        and follow ${import.meta.env.VITE_GITHUB_FOLLOWING} user${import.meta.env.VITE_GITHUB_FOLLOWING > 1 ? "s" : ""}. 
+        Please fulfil the requirements and login again.`)
+        return 
+    }
+
     // we are sure to get this cause the user is authenticated
     const participantProviderId = await getGithubProviderUserId(token)
 

@@ -834,3 +834,30 @@ export const findLargestConstraint = (array: any[]|undefined): number => {
         return Math.max(max, constraint)
     }, 0)
 }
+
+/**
+ * Check if the user is reputable enough to contribute to a ceremony
+ * @param username {string} 
+ * @returns 
+ */
+export const checkGitHubReputation = async (): Promise<boolean> => {
+    const minRepos = import.meta.env.VITE_GITHUB_REPOS
+    const minFollowers = import.meta.env.VITE_GITHUB_FOLLOWERS
+    const minFollowing = import.meta.env.VITE_GITHUB_FOLLOWING
+
+    const resp = await fetch(`https://api.github.com/user`, {
+        headers: {
+            Authorization: `token ${localStorage.getItem("token")}`
+        }
+    })
+
+    if (resp.status !== 200) return false
+
+    const data = await resp.json()
+
+    if (data.public_repos < minRepos) return false
+    if (data.followers < minFollowers) return false
+    if (data.following < minFollowing) return false
+
+    return true 
+}

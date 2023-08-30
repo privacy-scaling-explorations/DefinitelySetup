@@ -75,7 +75,6 @@ const ProjectPage: React.FC = () => {
     }
   };
 
-
   // find a project with the given ceremony name
   const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
 

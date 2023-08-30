@@ -3,7 +3,7 @@ import { Contribution, FirebaseDocumentInfo, ParticipantContributionStep, Partic
 import { getAuth, GithubAuthProvider, signInWithPopup, signOut } from  "firebase/auth"
 import { DocumentData, DocumentSnapshot, onSnapshot } from "firebase/firestore";
 import { checkParticipantForCeremony, permanentlyStoreCurrentContributionTimeAndHash, progressToNextCircuitForContribution, progressToNextContributionStep, resumeContributionAfterTimeoutExpiration, verifyContribution } from "./functions";
-import { convertToDoubleDigits, downloadCeremonyArtifact, formatHash, formatZkeyIndex, generatePublicAttestation, getBucketName, getGithubProviderUserId, getParticipantsCollectionPath, getSecondsMinutesHoursFromMillis, getZkeyStorageFilePath, handleTweetGeneration, multiPartUpload, publishGist, sleep } from "./utils";
+import { checkGitHubReputation, convertToDoubleDigits, downloadCeremonyArtifact, formatHash, formatZkeyIndex, generatePublicAttestation, getBucketName, getGithubProviderUserId, getParticipantsCollectionPath, getSecondsMinutesHoursFromMillis, getZkeyStorageFilePath, handleTweetGeneration, multiPartUpload, publishGist, sleep } from "./utils";
 import { bucketPostfix, commonTerms } from "./constants";
 import randomf from "randomf"
 
@@ -75,6 +75,19 @@ export const contribute = async (ceremonyId: string, setStatus: (message: string
         setStatus("No token, auth first")
         return 
     }
+
+    // check if the user passes the GitHub reputation checks
+    const reputable = await checkGitHubReputation()
+    if (!reputable) {
+        setStatus(`You do not pass the GitHub reputation checks. 
+        You need to have at least: ${import.meta.env.VITE_GITHUB_REPOS} public 
+        repo${import.meta.env.VITE_GITHUB_REPOS > 1 ? "s" : ""}, ${import.meta.env.VITE_GITHUB_FOLLOWERS} 
+        follower${import.meta.env.VITE_GITHUB_FOLLOWERS > 1 ? "s" : ""}, 
+        and follow ${import.meta.env.VITE_GITHUB_FOLLOWING} user${import.meta.env.VITE_GITHUB_FOLLOWING > 1 ? "s" : ""}. 
+        Please fulfil the requirements and login again.`)
+        return 
+    }
+
     // we are sure to get this cause the user is authenticated
     const participantProviderId = await getGithubProviderUserId(token)
 
@@ -97,12 +110,12 @@ export const contribute = async (ceremonyId: string, setStatus: (message: string
                 const { endDate } = activeTimeout.data!
 
                 const { seconds, minutes, hours, days } = getSecondsMinutesHoursFromMillis(
-                    Number(endDate) - new Date().getMilliseconds()
+                    Number(endDate) - Date.now()
                 )
 
                 setStatus(`You are timed out. Timeout will end in ${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(
                     minutes
-                )}:${convertToDoubleDigits(seconds)}`, false)
+                )}:${convertToDoubleDigits(seconds)} (dd:hh:mm:ss)`, false)
                 return 
             } else {
                 // check if the user already contributed, or is timed out
@@ -542,14 +555,15 @@ export const listenToParticipantDocumentChanges = async (
                 // alert how long
                 const activeTimeouts = await getCurrentActiveParticipantTimeout(ceremonyId, participant.id)
                 if (activeTimeouts.length !== 1) {
-                    throw new Error("No active timeouts")
+                    setStatus("You are timed out, please reload the page and wait for the timeout to expire", false)
+                    unsubscribe()
                 }
 
                 // Get active timeout.
                 const activeTimeout = activeTimeouts[0]!
 
                 if (!activeTimeout.data) {
-                    setStatus("There seems to be an error with the timeout, please try again or contact an administrator", false)
+                    setStatus("There seems to be an error with the timeout, please reload the page and try again or contact the coordinator", false)
                     unsubscribe()
                 }
 
@@ -557,12 +571,12 @@ export const listenToParticipantDocumentChanges = async (
                 const { endDate } = activeTimeout.data!
 
                 const { seconds, minutes, hours, days } = getSecondsMinutesHoursFromMillis(
-                    Number(endDate) - new Date().getMilliseconds()
+                    Number(endDate) - Date.now()
                 )
 
                 setStatus(`You are timed out. Timeout will end in ${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(
                     minutes
-                )}:${convertToDoubleDigits(seconds)}`, false)
+                )}:${convertToDoubleDigits(seconds)} (dd:hh:mm:ss)`, false)
             }
 
             if (completedContribution || timeoutExpired) {

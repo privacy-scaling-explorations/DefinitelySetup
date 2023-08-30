@@ -209,7 +209,7 @@ export const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
   }, [user]);
 
 
-  const state =useInitialStateContext()
+  const state = useInitialStateContext()
 
   return (
     // @ts-ignore

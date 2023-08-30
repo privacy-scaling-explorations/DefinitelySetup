@@ -309,7 +309,7 @@ export const getCurrentActiveParticipantTimeout = async (
 ): Promise<Array<FirebaseDocumentInfo>> => {
     const participantTimeoutQuerySnap = await queryCollection(
         getTimeoutsCollectionPath(ceremonyId, participantId),
-        [where(commonTerms.collections.timeouts.fields.endDate, ">=", new Date().getMilliseconds())]
+        [where(commonTerms.collections.timeouts.fields.endDate, ">=", Date.now())]
     )
 
     return fromQueryToFirebaseDocumentInfo(participantTimeoutQuerySnap.docs)

@@ -31,6 +31,7 @@ export const Contribution = (props: any): React.JSX.Element => {
                         status === "" &&
                         <Text p={4} fontSize={"large"}>Press contribute to join the ceremony</Text>
                     }
+                    <Text p={4} fontSize={"medium"}>If contributing on your phone, please do not leave the current browser tab</Text>
                 </Box>
                 <Box p={4} width={"100%"} border="0px solid" borderColor="gray.300" borderRadius="md" textAlign={"center"}>
                     <Text p={4} fontSize={"large"} padding={"10px"}>{status}</Text>                             

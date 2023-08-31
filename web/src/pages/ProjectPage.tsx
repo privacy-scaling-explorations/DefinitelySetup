@@ -242,13 +242,13 @@ const ProjectPage: React.FC = () => {
                   {
                     project.ceremony.data.state === CeremonyState.OPENED && user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
                       <Contribution ceremonyId={project.ceremony.uid} /> :
-                      hasUserContributed ?
-                      <Text color="gray.500" fontSize={12} fontWeight="bold">
-                        You have already contributed to this ceremony. Thank you for your participation.
-                      </Text> :
                       project.ceremony.data.state !== CeremonyState.OPENED ?
                       <Text color="gray.500" fontSize={12} fontWeight="bold">
                         This ceremony is {project.ceremony.data.state.toLocaleLowerCase()}.
+                      </Text> :
+                      hasUserContributed ?
+                      <Text color="gray.500" fontSize={12} fontWeight="bold">
+                        You have already contributed to this ceremony. Thank you for your participation.
                       </Text> :
                       <>
                         <Text color="gray.500">
@@ -579,7 +579,8 @@ const ProjectPage: React.FC = () => {
                         Download Last ZKey
                         </Text>
                         <Text color="gray.500">
-                          You can use this zKey with the beacon value to verify that the final zKey was computed correctly.
+                          You can 
+                          use this zKey with the beacon value to verify that the final zKey was computed correctly.
                         </Text>
                         {
                           latestZkeys?.map((zkey, index) => {

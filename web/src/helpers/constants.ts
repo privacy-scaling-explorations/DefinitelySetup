@@ -178,4 +178,4 @@ export const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID
 export const messagingSenderId = import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID
 export const appId = import.meta.env.VITE_FIREBASE_APP_ID
 export const awsRegion = import.meta.env.VITE_AWS_REGION
-export const maxConstraintsForBrowser = 1500000
+export const maxConstraintsForBrowser = 1000000

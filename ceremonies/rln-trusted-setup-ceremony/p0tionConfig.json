@@ -15,7 +15,7 @@
           "template": {
             "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
             "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-            "paramConfiguration": []
+            "paramsConfiguration": []
           },
           "verification": {
             "cfOrVm": "CF"
@@ -37,7 +37,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [16, 16]
+          "paramsConfiguration": [16, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -61,7 +61,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [17, 16]
+          "paramsConfiguration": [17, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -85,7 +85,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [18, 16]
+          "paramsConfiguration": [18, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -109,7 +109,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [19, 16]
+          "paramsConfiguration": [19, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -133,7 +133,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [20, 16]
+          "paramsConfiguration": [20, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -157,7 +157,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [21, 16]
+          "paramsConfiguration": [21, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -181,7 +181,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [22, 16]
+          "paramsConfiguration": [22, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -205,7 +205,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [23, 16]
+          "paramsConfiguration": [23, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -229,7 +229,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [24, 16]
+          "paramsConfiguration": [24, 16]
         },
         "verification": {
           "cfOrVm": "CF"
@@ -253,7 +253,7 @@
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
           "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
-          "paramConfiguration": [25, 16]
+          "paramsConfiguration": [25, 16]
         },
         "verification": {
           "cfOrVm": "CF"

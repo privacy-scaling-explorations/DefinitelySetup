@@ -263,7 +263,7 @@ do
     echo -e "\nEnter circuit description:"
     read circuit_description
 
-    echo -e "\nEnter paramConfiguration values as a comma-separated list (e.g. 6,8,3,2):"
+    echo -e "\nEnter paramsConfiguration values as a comma-separated list (e.g. 6,8,3,2):"
     read param_str
     params=$(jq -nR '[(input | split(",")[] | tonumber)]' <<< "$param_str")
 
@@ -286,7 +286,7 @@ do
             '{
                 "description": $circuit_description,
                 "compiler": {"version": $compiler_version, "commitHash": $compiler_commit_hash},
-                "template": {"source": $template_source, "commitHash": $template_commit_hash, "paramConfiguration": $params},
+                "template": {"source": $template_source, "commitHash": $template_commit_hash, "paramsConfiguration": $params},
                 "verification": ($verification_method | if . == "CF" then {"cfOrVm": "CF"} else {"cfOrVm": "VM", "vmConfigurationType": $vm_configuration_type, "vmDiskSize": $vm_disk_size|tonumber, "vmDiskType": $vm_disk_type} end),
                 "artifacts": {"r1csStoragePath": ("https://" + $bucket + ".s3." + $region + ".amazonaws.com/" + $base_name + ".r1cs"), "wasmStoragePath": ("https://" + $bucket + ".s3." + $region + ".amazonaws.com/" + $base_name + ".wasm")},
                 "name": $base_name,

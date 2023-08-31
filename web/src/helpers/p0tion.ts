@@ -576,7 +576,10 @@ export const listenToParticipantDocumentChanges = async (
 
                 setStatus(`You are timed out. Timeout will end in ${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(
                     minutes
-                )}:${convertToDoubleDigits(seconds)} (dd:hh:mm:ss)`, false)
+                )}:${convertToDoubleDigits(seconds)} (dd:hh:mm:ss). 
+                Please reload the page and try again once the timeout expires`, false)
+
+                unsubscribe()
             }
 
             if (completedContribution || timeoutExpired) {

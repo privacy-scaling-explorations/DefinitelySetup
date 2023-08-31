@@ -351,8 +351,7 @@ export const getFinalBeacon = async (ceremonyId: string, coordinatorId: string, 
     const contributions = await getCircuitContributionsFromContributor(ceremonyId, circuitId, coordinatorId)
 
     const filtered = contributions
-    .filter((contributionDocument: any) => contributionDocument.data.zkeyIndex === finalContributionIndex)
-    .at(0)
+    .filter((contributionDocument: any) => contributionDocument.data.zkeyIndex === finalContributionIndex)[0]
 
     if (!filtered)
         return {

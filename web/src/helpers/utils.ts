@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { commonTerms, finalContributionIndex, genesisZkeyIndex, localPaths } from "./constants";
+import { commonTerms, finalContributionIndex, genesisZkeyIndex, localPaths, minFollowers, minFollowing, minRepos } from "./constants";
 import {firebaseApp, getCeremonyCircuits, getCircuitContributionsFromContributor, getCircuitsCollectionPath, getDocumentById } from "./firebase";
 import { completeMultiPartUpload, generateGetObjectPreSignedUrl, generatePreSignedUrlsParts, openMultiPartUpload, temporaryStoreCurrentContributionMultiPartUploadId, temporaryStoreCurrentContributionUploadedChunkData } from "./functions";
 import { ChunkWithUrl, Contribution, ContributionValidity, ETagWithPartNumber, FirebaseDocumentInfo, TemporaryParticipantContributionData, Timing } from "./interfaces";
@@ -77,6 +77,10 @@ export const projectsPageSteps =  [
 // steps for the tutorial on the single project details page
 export const singleProjectPageSteps = [
     {
+        target: ".loginButton",
+        content: "Click Login here to be able to contribute via your Browser"
+    },
+    {
         target: ".contributeCopyButton",
         content: "Here you can copy the command needed to contribute to this ceremony",
     },
@@ -86,15 +90,15 @@ export const singleProjectPageSteps = [
     },
     {
         target: ".circuitsView",
-        content: "Here you can see the circuits for this ceremony and their live statistics",
+        content: "Click here to view the circuits for this ceremony and their live statistics",
     },
     {
         target: ".contributionsButton",
         content: "Click here to view the completed contributions",
     },
     {
-        target: ".detailsButton",
-        content: "Click here to view the details of this circuit",
+        target: ".linksButton",
+        content: "Click here to view the details of the circuits",
     },
     {
         target: ".zKeyNavigationButton",
@@ -841,10 +845,6 @@ export const findLargestConstraint = (array: any[]|undefined): number => {
  * @returns 
  */
 export const checkGitHubReputation = async (): Promise<boolean> => {
-    const minRepos = import.meta.env.VITE_GITHUB_REPOS
-    const minFollowers = import.meta.env.VITE_GITHUB_FOLLOWERS
-    const minFollowing = import.meta.env.VITE_GITHUB_FOLLOWING
-
     const resp = await fetch(`https://api.github.com/user`, {
         headers: {
             Authorization: `token ${localStorage.getItem("token")}`

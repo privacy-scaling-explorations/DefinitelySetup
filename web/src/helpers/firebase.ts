@@ -18,8 +18,8 @@ import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app" // re
 import { Functions, getFunctions } from "firebase/functions"
 import { getContributionsCollectionPath, getParticipantsCollectionPath, getTimeoutsCollectionPath, processItems } from "./utils"
 import { Auth, getAuth } from "firebase/auth"
-import { FirebaseDocumentInfo } from "./interfaces"
-import { commonTerms } from "./constants"
+import { FirebaseDocumentInfo, WaitingQueue } from "./interfaces"
+import { apiKey, appId, authDomain, commonTerms, finalContributionIndex, messagingSenderId, projectId } from "./constants"
 
 // we init this here so we can use it throughout the functions below
 export let firestoreDatabase: Firestore
@@ -66,11 +66,11 @@ export const initializeFirebaseCoreServices = async (): Promise<{
     firebaseFunctions: Functions
 }> => {
     const firebaseApp = initializeFirebaseApp({
-        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-        appId: import.meta.env.VITE_FIREBASE_APP_ID
+        apiKey: apiKey,
+        authDomain: authDomain,
+        projectId: projectId,
+        messagingSenderId: messagingSenderId,
+        appId: appId
     })
     const firestoreDatabase = getFirestoreDatabase(firebaseApp)
     const firebaseFunctions = getFunctions(firebaseApp, "europe-west1")
@@ -313,4 +313,55 @@ export const getCurrentActiveParticipantTimeout = async (
     )
 
     return fromQueryToFirebaseDocumentInfo(participantTimeoutQuerySnap.docs)
+}
+
+/**
+ * Get how many users in the waiting queue per circuit
+ * @param ceremonyId {string} - the ceremony unique identifier.
+ * @param ceremonyName {string} - the ceremony name.
+ * @returns {WaitingQueue[]}
+ */
+export const getCeremonyCircuitsWaitingQueue = async (
+    ceremonyId: string,
+    ceremonyName: string
+): Promise<WaitingQueue[]> => {
+    const circuits = await getCeremonyCircuits(ceremonyId)
+
+    const waiting: WaitingQueue[] = []
+    for (const circuit of circuits) {
+        const { waitingQueue, name } = circuit.data 
+        const { contributors } = waitingQueue 
+
+        waiting.push({
+            ceremonyName: ceremonyName,
+            circuitName: name,
+            waitingQueue: contributors.length
+        })
+    }
+
+    return waiting 
+}
+
+
+/**
+ * Get the final beacon used for finalizing a ceremony
+ * @param ceremonyId 
+ */
+export const getFinalBeacon = async (ceremonyId: string, coordinatorId: string, circuitId: string) => {
+    const contributions = await getCircuitContributionsFromContributor(ceremonyId, circuitId, coordinatorId)
+
+    const filtered = contributions
+    .filter((contributionDocument: any) => contributionDocument.data.zkeyIndex === finalContributionIndex)
+    .at(0)
+
+    if (!filtered)
+        return {
+            beacon: "",
+            beaconHash: ""
+        }
+
+    return {
+        beacon: filtered.data.beacon.value,
+        beaconHash: filtered.data.beacon.hash
+    }
 }

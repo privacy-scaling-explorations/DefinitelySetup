@@ -43,7 +43,6 @@ const ScrollBanner: FC<ScrollBannerProps> = ({ imageArray }) => {
     <HStack
       overflow="hidden"
       p={0}
-      
       w="97vw"
       spacing={0}
       alignSelf={"stretched"}
@@ -54,9 +53,7 @@ const ScrollBanner: FC<ScrollBannerProps> = ({ imageArray }) => {
       h="full"
     >
       <HStack
-
       p={0}
-      
       w="calc(750px * 4)"
       spacing={0}
       alignSelf={"stretched"}
@@ -72,13 +69,13 @@ const ScrollBanner: FC<ScrollBannerProps> = ({ imageArray }) => {
           "100%": { transform: "translate(-30%, 0)" },
         }
       }}
-    >
+      >
 
         {loopArray.map((item, index) => (
           <BannerItem key={index} {...item} />
         ))}
 
-</HStack>
+      </HStack>
     </HStack>
   );
 };

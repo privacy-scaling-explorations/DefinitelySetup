@@ -1,33 +1,8 @@
-// useStateContext.tsx
-
 import React, { useState, createContext, useEffect, useContext } from "react";
-import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitContributionVerificationMechanism, CircuitDocumentReferenceAndData, ContributionDocumentReferenceAndData, ParticipantDocumentReferenceAndData } from "../helpers/interfaces";
-import { getAllCollectionDocs, getCeremonyCircuits } from "../helpers/firebase";
+import { CeremonyDocumentReferenceAndData, CeremonyState, CeremonyTimeoutType, CeremonyType, CircuitContributionVerificationMechanism, CircuitDocumentReferenceAndData, Project, State, StateProviderProps, WaitingQueue } from "../helpers/interfaces";
+import { getAllCollectionDocs, getCeremonyCircuitsWaitingQueue } from "../helpers/firebase";
 import { DocumentData } from 'firebase/firestore'
 import { commonTerms } from "../helpers/constants";
-
-export interface Project {
-  ceremony: CeremonyDocumentReferenceAndData
-  circuits?: CircuitDocumentReferenceAndData[] | null
-  participants?: ParticipantDocumentReferenceAndData[] | null
-  contributions?: ContributionDocumentReferenceAndData[] | null
-}
-
-export interface State {
-  projects: Project[];
-  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
-  circuit: CircuitDocumentReferenceAndData;
-  setCircuit: React.Dispatch<React.SetStateAction<CircuitDocumentReferenceAndData>>;
-  search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
-  loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  runTutorial: boolean;
-  setRunTutorial: React.Dispatch<React.SetStateAction<boolean>>;
-  user?: string;
-  setUser?: React.Dispatch<React.SetStateAction<string | undefined>>;
-}
-
 
 export const StateContext = createContext<State>({
   projects: [
@@ -125,46 +100,19 @@ export const StateContext = createContext<State>({
   setLoading: () => null,
   runTutorial: false,
   setRunTutorial: () => null,
-  setUser: () => {}
+  setUser: () => {},
+  waitingQueue: [{} as WaitingQueue]
 });
 
 export const useInitialStateContext = () => {
-  const [projects, setProjects] = useState<Project[]>([
-    // Initial project data
-  ]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [circuit, setCircuit] = useState<CircuitDocumentReferenceAndData>();
-
+  const [waitingQueue, setWaitingQueue] = useState<WaitingQueue[]>([])
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [runTutorial, setRunTutorial] = useState<boolean>(false);
 
-  // Fetch circuit data and current user
-  useEffect(() => {
-    const fetchData = async () => {
-      /// @todo refactoring needed.
-      const ceremonyProjectId = "B7HZ7yW6waAWGKLr7GiA"
-
-      if (ceremonyProjectId) {
-        try {
-          const circuitsDocs = await getCeremonyCircuits(ceremonyProjectId);
-          const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map(
-            (document: DocumentData) => ({ uid: document.id, data: document.data })
-          );
-
-          const updatedProjectData = { ...projects, circuits };
-          setProjects(updatedProjectData);
-          setCircuit(circuits[0])
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
-
-
-    fetchData();
-  }, []);
-
-  // Fetch ceremony data.
+   // Fetch ceremony data.
   useEffect(() => {
     const fetchData = async () => {
       // 0. Prepare service.
@@ -177,6 +125,15 @@ export const useInitialStateContext = () => {
       const ceremonies: CeremonyDocumentReferenceAndData[] = docs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
       const projects: Project[] = ceremonies.map((ceremony: CeremonyDocumentReferenceAndData) => { return { ceremony: ceremony } })
 
+      const queue: WaitingQueue[] = []
+      for (const project of projects) {
+        if (project.ceremony.data.state === CeremonyState.OPENED) {
+          const tmpQueue = await getCeremonyCircuitsWaitingQueue(project.ceremony.uid, project.ceremony.data.title)
+          queue.push(...tmpQueue)
+        }
+      }
+
+      setWaitingQueue(queue)
       // 3. Store data.      
       setProjects(projects)
       setLoading(false)
@@ -188,13 +145,9 @@ export const useInitialStateContext = () => {
    
   },[])
 
-  return { projects, setProjects, circuit, setCircuit, search, setSearch, loading, setLoading, runTutorial, setRunTutorial };
+  return { waitingQueue, projects, setProjects, circuit, setCircuit, search, setSearch, loading, setLoading, runTutorial, setRunTutorial };
 };
 
-
-type StateProviderProps = {
-  children: React.ReactNode;
-};
 export const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
  
   const [user, setUser] = useState<string | undefined>(

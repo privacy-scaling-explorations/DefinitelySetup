@@ -21,7 +21,7 @@ export const Login = () => {
     
     return (
         <>
-            <button onClick={user ? handleSignOut : login}>
+            <button className="loginButton" onClick={user ? handleSignOut : login}>
                 {user ? "Logout" : "Login"}
             </button>
         </>

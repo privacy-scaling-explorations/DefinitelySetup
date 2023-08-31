@@ -4,7 +4,7 @@ import { getAuth, GithubAuthProvider, signInWithPopup, signOut } from  "firebase
 import { DocumentData, DocumentSnapshot, onSnapshot } from "firebase/firestore";
 import { checkParticipantForCeremony, permanentlyStoreCurrentContributionTimeAndHash, progressToNextCircuitForContribution, progressToNextContributionStep, resumeContributionAfterTimeoutExpiration, verifyContribution } from "./functions";
 import { checkGitHubReputation, convertToDoubleDigits, downloadCeremonyArtifact, formatHash, formatZkeyIndex, generatePublicAttestation, getBucketName, getGithubProviderUserId, getParticipantsCollectionPath, getSecondsMinutesHoursFromMillis, getZkeyStorageFilePath, handleTweetGeneration, multiPartUpload, publishGist, sleep } from "./utils";
-import { bucketPostfix, commonTerms } from "./constants";
+import { bucketPostfix, commonTerms, minFollowers, minFollowing, minRepos, verifyContributionURL } from "./constants";
 import randomf from "randomf"
 
 declare global {
@@ -80,10 +80,10 @@ export const contribute = async (ceremonyId: string, setStatus: (message: string
     const reputable = await checkGitHubReputation()
     if (!reputable) {
         setStatus(`You do not pass the GitHub reputation checks. 
-        You need to have at least: ${import.meta.env.VITE_GITHUB_REPOS} public 
-        repo${import.meta.env.VITE_GITHUB_REPOS > 1 ? "s" : ""}, ${import.meta.env.VITE_GITHUB_FOLLOWERS} 
-        follower${import.meta.env.VITE_GITHUB_FOLLOWERS > 1 ? "s" : ""}, 
-        and follow ${import.meta.env.VITE_GITHUB_FOLLOWING} user${import.meta.env.VITE_GITHUB_FOLLOWING > 1 ? "s" : ""}. 
+        You need to have at least: ${minRepos} public 
+        repo${minRepos > 1 ? "s" : ""}, ${minFollowers} 
+        follower${minFollowers > 1 ? "s" : ""}, 
+        and follow ${minFollowing} user${minFollowers > 1 ? "s" : ""}. 
         Please fulfil the requirements and login again.`)
         return 
     }
@@ -274,7 +274,7 @@ export const handleStartOrResumeContribution = async (
                 circuit,
                 bucketName,
                 contributorIdentifier,
-                String(import.meta.env.VITE_FIREBASE_CF_URL_VERIFY_CONTRIBUTION)
+                verifyContributionURL
             )
             setStatus("Contribution is valid", false)
         } catch (error: any) {
@@ -576,7 +576,10 @@ export const listenToParticipantDocumentChanges = async (
 
                 setStatus(`You are timed out. Timeout will end in ${convertToDoubleDigits(days)}:${convertToDoubleDigits(hours)}:${convertToDoubleDigits(
                     minutes
-                )}:${convertToDoubleDigits(seconds)} (dd:hh:mm:ss)`, false)
+                )}:${convertToDoubleDigits(seconds)} (dd:hh:mm:ss). 
+                Please reload the page and try again once the timeout expires`, false)
+
+                unsubscribe()
             }
 
             if (completedContribution || timeoutExpired) {

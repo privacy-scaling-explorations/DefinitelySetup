@@ -493,8 +493,10 @@ const ProjectPage: React.FC = () => {
                                   <StatLabel fontSize={12}>Parameters</StatLabel>
                                   <StatNumber fontSize={16}>
                                     {
-                                      circuit.template.paramsConfiguration ?
+                                      circuit.template.paramsConfiguration && circuit.template.paramsConfiguration.length > 0 ?
                                       circuit.template.paramsConfiguration.join(" ") :
+                                      circuit.template.paramConfiguration && circuit.template.paramConfiguration.length > 0 ?
+                                      circuit.template.paramConfiguration.join(" ") :
                                       "No parameters"
                                     }
                                   </StatNumber>

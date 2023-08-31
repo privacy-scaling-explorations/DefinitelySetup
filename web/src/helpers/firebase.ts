@@ -19,7 +19,7 @@ import { Functions, getFunctions } from "firebase/functions"
 import { getContributionsCollectionPath, getParticipantsCollectionPath, getTimeoutsCollectionPath, processItems } from "./utils"
 import { Auth, getAuth } from "firebase/auth"
 import { FirebaseDocumentInfo, WaitingQueue } from "./interfaces"
-import { apiKey, appId, authDomain, commonTerms, messagingSenderId, projectId } from "./constants"
+import { apiKey, appId, authDomain, commonTerms, finalContributionIndex, messagingSenderId, projectId } from "./constants"
 
 // we init this here so we can use it throughout the functions below
 export let firestoreDatabase: Firestore
@@ -340,4 +340,28 @@ export const getCeremonyCircuitsWaitingQueue = async (
     }
 
     return waiting 
+}
+
+
+/**
+ * Get the final beacon used for finalizing a ceremony
+ * @param ceremonyId 
+ */
+export const getFinalBeacon = async (ceremonyId: string, coordinatorId: string, circuitId: string) => {
+    const contributions = await getCircuitContributionsFromContributor(ceremonyId, circuitId, coordinatorId)
+
+    const filtered = contributions
+    .filter((contributionDocument: any) => contributionDocument.data.zkeyIndex === finalContributionIndex)
+    .at(0)
+
+    if (!filtered)
+        return {
+            beacon: "",
+            beaconHash: ""
+        }
+
+    return {
+        beacon: filtered.data.beacon.value,
+        beaconHash: filtered.data.beacon.hash
+    }
 }

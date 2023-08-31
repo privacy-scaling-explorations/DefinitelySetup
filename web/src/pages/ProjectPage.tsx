@@ -64,7 +64,7 @@ type RouteParams = {
 const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { user, projects, setRunTutorial, runTutorial } = useContext(StateContext);
-  const { finalZkeys, hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
+  const { latestZkeys, finalBeacon, finalZkeys, hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -131,11 +131,16 @@ const ProjectPage: React.FC = () => {
       : `phase2cli auth && phase2cli contribute -c ${project?.ceremony.data.prefix}`;
   const installCommand = `npm install -g @p0tion/phase2cli`;
   const authCommand = `phase2cli auth`;
+  const beaconValue = finalBeacon?.beacon
+  const beaconHash = finalBeacon?.beaconHash
  
   // Hook for clipboard
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
   const { onCopy: copyInstall, hasCopied: copiedInstall } = useClipboard(installCommand);
   const { onCopy: copyAuth, hasCopied: copiedAuth } = useClipboard(authCommand);
+  const { onCopy: copyBeaconValue, hasCopied: copiedBeaconValue } = useClipboard(beaconValue || "")
+  const { onCopy: copyBeaconHash, hasCopied: copiedBeaconHash } = useClipboard(beaconHash || "")
+
 
   // Download a file from AWS S3 bucket.
   const downloadFileFromS3 = (index: number, name: string) => {
@@ -505,8 +510,44 @@ const ProjectPage: React.FC = () => {
                   </TabPanel>
 
                   <TabPanel textAlign={"center"}>
-                    <Text fontSize={12} fontWeight="bold">
-                      Download Final ZKey:
+                    {
+                      project?.ceremony.data.state === CeremonyState.FINALIZED && beaconHash && beaconValue &&
+                      <div>
+                        <Text fontSize={14} fontWeight="bold">
+                        Final contribution beacon
+                        </Text>
+                        <Button 
+                          margin={4}
+                          leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                          variant="outline"
+                          fontSize={12}
+                          fontWeight={"regular"}
+                          onClick={copyBeaconValue}
+                        >
+                          {
+                            copiedBeaconValue ?
+                            "Copied"
+                            : `Beacon ${finalBeacon?.beacon}`
+                          }
+                        </Button>
+                        <Button 
+                          margin={4}
+                          leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                          variant="outline"
+                          fontSize={12}
+                          fontWeight={"regular"}
+                          onClick={copyBeaconHash}
+                        >
+                          {
+                            copiedBeaconHash ?
+                            "Copied"
+                            : `Beacon hash ${truncateString(finalBeacon?.beaconHash)}`
+                          }
+                        </Button>
+                      </div>
+                    }
+                    <Text p={4} fontSize={14} fontWeight="bold">
+                      Download Final ZKey
                     </Text>
                     <Text color="gray.500">
                       Press the button below to download the final ZKey files from the S3 bucket.
@@ -530,6 +571,37 @@ const ProjectPage: React.FC = () => {
                         </Button>
                         )
                       })
+                    }
+                    {
+                      project?.ceremony.data.state === CeremonyState.FINALIZED &&
+                      <>
+                        <Text p={4} fontSize={14} fontWeight="bold">
+                        Download Last ZKey
+                        </Text>
+                        <Text color="gray.500">
+                          You can use this zKey with the beacon value to verify that the final zKey was computed correctly.
+                        </Text>
+                        {
+                          latestZkeys?.map((zkey, index) => {
+                            return (
+                              <Button
+                              margin={"20px"}
+                              key={index}
+                              leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                              fontSize={12}
+                              variant="outline"
+                              onClick={() => downloadFileFromS3(index, zkey.zkeyFilename)}
+                              fontWeight={"regular"}
+                              isDisabled={
+                                project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                              }
+                            >
+                              Download {zkey.zkeyFilename}
+                            </Button>
+                            )
+                          })
+                        }
+                      </>
                     }
                    
                   </TabPanel>

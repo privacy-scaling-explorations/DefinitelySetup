@@ -499,11 +499,21 @@ export interface WaitingQueue {
   waitingQueue: number 
 }
 
+/**
+ * Define the data structure for a project.
+ * @typedef {Object} Project
+ * @property {CeremonyDocumentReferenceAndData} ceremony - the reference and data of the ceremony.
+ * @property {Array<CircuitDocumentReferenceAndData>} [circuits] - the list of references and data of the circuits.
+ * @property {Array<ParticipantDocumentReferenceAndData>} [participants] - the list of references and data of the participants.
+ * @property {Array<ContributionDocumentReferenceAndData>} [contributions] - the list of references and data of the contributions.
+ * @property {string} [coordinatorId] - the unique identifier of the coordinator.
+ */
 export interface Project {
   ceremony: CeremonyDocumentReferenceAndData
   circuits?: CircuitDocumentReferenceAndData[] | null
   participants?: ParticipantDocumentReferenceAndData[] | null
   contributions?: ContributionDocumentReferenceAndData[] | null
+  coordinatorId?: string 
 }
 
 export interface State {
@@ -522,18 +532,52 @@ export interface State {
   waitingQueue: WaitingQueue[];
 }
 
+/**
+ * Define the data structure for the project page context.
+ * @typedef {Object} ProjectData
+ * @property {string} ceremonyName - the name of the ceremony.
+ * @property {string} ceremonyDescription - the description of the ceremony.
+ * @property {string} ceremonyState - the state of the ceremony.
+ * @property {string} ceremonyType - the type of the ceremony.
+ */
 export type ProjectData = z.infer<typeof ProjectDataSchema>;
 
+/**
+ * Define the data structure for the project page context.
+ * @typedef {Object} ProjectPageContextProps
+ * @property {boolean} hasUserContributed - true if the user has contributed to the project; otherwise false.
+ * @property {ProjectData} projectData - the data about the project.
+ * @property {boolean} isLoading - true if the data is being loaded; otherwise false.
+ * @property {boolean} runTutorial - true if the tutorial should be run; otherwise false.
+ * @property {string[]} [avatars] - the list of avatars for the participants.
+ * @property {number} largestCircuitConstraints - the number of constraints of the largest circuit in the project.
+ * @property {ZkeyDownloadLink[]} [finalZkeys] - the list of final zKeys for the project.
+ * @property {FinalBeacon} [finalBeacon] - the beacon info for the final contribution.
+ * @property {ZkeyDownloadLink[]} [latestZkeys] - the list of latest zKeys for the project.
+ */
 export type ProjectPageContextProps = {
-  hasUserContributed: boolean;
-  projectData: ProjectData | null;
-  isLoading: boolean;
-  runTutorial: boolean;
-  avatars?: string[];
-  largestCircuitConstraints: number,
+  hasUserContributed: boolean
+  projectData: ProjectData | null
+  isLoading: boolean
+  runTutorial: boolean
+  avatars?: string[]
+  largestCircuitConstraints: number
   finalZkeys?: ZkeyDownloadLink[]
+  finalBeacon?: FinalBeacon
+  latestZkeys?: ZkeyDownloadLink[]
 };
 
 export type StateProviderProps = {
   children: React.ReactNode;
 };
+
+/**
+ * Define the data structure for the beacon info.
+ * @typedef {Object} BeaconInfo
+ * @property {string} value - the value of the beacon.
+ * @property {string} hash - the hash of the beacon.
+ */
+export interface FinalBeacon {
+  beacon: string 
+  beaconHash: string
+}

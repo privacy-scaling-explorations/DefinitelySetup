@@ -43,7 +43,6 @@ const ScrollBanner: FC<ScrollBannerProps> = ({ imageArray }) => {
     <HStack
       overflow="hidden"
       p={0}
-      
       w="97vw"
       spacing={0}
       alignSelf={"stretched"}

@@ -80,11 +80,9 @@ const ProjectPage: React.FC = () => {
   // Validate the project data against the schema
   const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
 
-  /// @todo work on multiple circuits.
-  /// @todo uncomplete info for mocked fallback circuit data.
-
   const circuitsClean =
     validatedProjectData.circuits?.map((circuit) => ({
+      template: circuit.data.template,
       name: circuit.data.name,
       description: circuit.data.description,
       constraints: circuit.data.metadata?.constraints,
@@ -97,7 +95,6 @@ const ProjectPage: React.FC = () => {
       currentContributor: circuit.data.waitingQueue?.currentContributor,
       memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
         .toString()
-
         .slice(0, 5),
       avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
       maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
@@ -348,8 +345,8 @@ const ProjectPage: React.FC = () => {
                   <Tab className="contributionsButton" fontSize={12}>
                     Contributions
                   </Tab>
-                  <Tab className="detailsButton" fontSize={12}>
-                    Details
+                  <Tab className="linksButton" fontSize={12}>
+                    About
                   </Tab>
                   <Tab className="zKeyNavigationButton" fontSize={12}>
                     Download ZKey
@@ -471,44 +468,60 @@ const ProjectPage: React.FC = () => {
                     </Box>
                   </TabPanel>
                   <TabPanel>
-                    <VStack
+                  <VStack
                       alignSelf={"stretch"}
                       alignItems={"center"}
                       justifyContent={"center"}
                       spacing={8}
                       py={0}
                     >
-                      <Text textAlign={"center"} fontWeight={"700"} fontSize={"3.5rem"} maxW="15ch">
-                        {" "}
-                        How it works
-                      </Text>
-                      <Text
-                        textAlign={"center"}
-                        fontWeight={"500"}
-                        fontSize={"12px"}
-                        maxW="50ch"
-                        letterSpacing={"0.01rem"}
+                      <Box alignItems="center" alignSelf={"stretch"} w="full">
+                      <SimpleGrid
+                        alignSelf={"stretch"}
+                        maxW={["392px", "390px", "100%"]}
+                        columns={1}
+                        spacing={6}
                       >
-                        {" "}
-                        DefinitelySetup is a product designed to run Trusted Setup ceremonies for GROTH16
-                        based snarks - powered by p0tion. Thanks to p0tion, PSE can setup and manage trusted
-                        setups for the community (subject to approval).
-                      </Text>
-                      <Text textAlign={"center"} fontWeight={"600"} fontSize={"18px"} maxW="30ch">
-                        {" "}
-                        Search for ceremonies, contribute your entropy to the system.
-                      </Text>
-                      <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch">
-                        {" "}
-                        In this website you will be able to browse all ceremonies created with p0tion, as well
-                        as understand how to contribute to it and retrieve the final artifacts. Let's secure
-                        GROTH16 protocols together. <br />
-                        Please note that when circuits have a large number of constraints (you can usually see that when the memory requirements 
-                        are greater than 100mb), the contribution might take a long time.
-                      </Text>
+                        {circuitsClean.map((circuit, index) => (
+                          <Box key={index} borderWidth={1} borderRadius="lg" p={4}>
+                            <Heading fontSize={16} size="md" mb={2}>
+                              {circuit.name} - {circuit.description}
+                            </Heading>
+                            <SimpleGrid columns={[2, 2]} spacing={4}>
+                              <Flex justify="space-between" align="center">
+                                <Stat>
+                                  <StatLabel fontSize={12}>Parameters</StatLabel>
+                                  <StatNumber fontSize={16}>
+                                    {
+                                      circuit.template.paramConfiguration.length > 0 ?
+                                      circuit.template.paramConfiguration.join(" ") :
+                                      "No parameters"
+                                    }
+                                  </StatNumber>
+                                </Stat>
+                              </Flex>
+                              <Stat>
+                                <StatLabel fontSize={12}>Commit Hash</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  {truncateString(circuit.template.commitHash, 6)}
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel fontSize={12}>Template Link</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  <a href={circuit.template.source} target="_blank">
+                                  {truncateString(circuit.template.source, 16)}
+                                  </a>
+                                </StatNumber>
+                              </Stat>
+                            </SimpleGrid>
+                          </Box>
+                        ))}
+                      </SimpleGrid>
+                    </Box>
+                      
                     </VStack>
                   </TabPanel>
-
                   <TabPanel textAlign={"center"}>
                     {
                       project?.ceremony.data.state === CeremonyState.FINALIZED && beaconHash && beaconValue &&
@@ -547,7 +560,7 @@ const ProjectPage: React.FC = () => {
                       </div>
                     }
                     <Text p={4} fontSize={14} fontWeight="bold">
-                      Download Final ZKey
+                      Download Final ZKey(s)
                     </Text>
                     <Text color="gray.500">
                       Press the button below to download the final ZKey files from the S3 bucket.
@@ -576,11 +589,10 @@ const ProjectPage: React.FC = () => {
                       project?.ceremony.data.state === CeremonyState.FINALIZED &&
                       <>
                         <Text p={4} fontSize={14} fontWeight="bold">
-                        Download Last ZKey
+                        Download Last ZKey(s)
                         </Text>
                         <Text color="gray.500">
-                          You can 
-                          use this zKey with the beacon value to verify that the final zKey was computed correctly.
+                          You can use this zKey(s) with the beacon value to verify that the final zKey(s) was computed correctly.
                         </Text>
                         {
                           latestZkeys?.map((zkey, index) => {

@@ -77,6 +77,10 @@ export const projectsPageSteps =  [
 // steps for the tutorial on the single project details page
 export const singleProjectPageSteps = [
     {
+        target: ".loginButton",
+        content: "Click Login here to be able to contribute via your Browser"
+    },
+    {
         target: ".contributeCopyButton",
         content: "Here you can copy the command needed to contribute to this ceremony",
     },
@@ -93,7 +97,7 @@ export const singleProjectPageSteps = [
         content: "Click here to view the completed contributions",
     },
     {
-        target: ".detailsButton",
+        target: ".linksButton",
         content: "Click here to view the details of this circuit",
     },
     {

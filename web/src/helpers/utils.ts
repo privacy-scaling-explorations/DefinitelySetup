@@ -90,7 +90,7 @@ export const singleProjectPageSteps = [
     },
     {
         target: ".circuitsView",
-        content: "Here you can see the circuits for this ceremony and their live statistics",
+        content: "Click here to view the circuits for this ceremony and their live statistics",
     },
     {
         target: ".contributionsButton",
@@ -98,7 +98,7 @@ export const singleProjectPageSteps = [
     },
     {
         target: ".linksButton",
-        content: "Click here to view the details of this circuit",
+        content: "Click here to view the details of the circuits",
     },
     {
         target: ".zKeyNavigationButton",

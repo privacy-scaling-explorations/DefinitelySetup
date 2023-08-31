@@ -1,5 +1,6 @@
 import { DocumentData, DocumentReference } from "firebase/firestore";
-import { Project } from "../context/StateContext";
+import { z } from "zod";
+import { ProjectDataSchema } from "../context/ProjectPageContext";
 
 /**
  * Define different states of a ceremony.
@@ -376,9 +377,7 @@ export interface ContributionDocumentReferenceAndData {
 
 export interface HeroComponentProps {
   projects: Project[];
-  circuit: CircuitDocumentReferenceAndData;
-  // circuits: CircuitDocumentReferenceAndData[];
-  // contributions: ContributionDocumentReferenceAndData[];
+  waitingQueue: WaitingQueue[];
 }
 
 /**
@@ -475,3 +474,66 @@ export type ContributionValidity = {
   circuitId: string
   valid: boolean
 }
+
+/**
+ * Group the information for downloading a circuit's final zKey
+ * @typedef {Object} ZkeyDownloadLink
+ * @property {string} zkeyFilename - the name of the zKey file.
+ * @property {string} zkeyURL - the url to download the zKey file.
+ */
+export interface ZkeyDownloadLink {
+  zkeyFilename: string
+  zkeyURL: string
+}
+
+/**
+ * Map a circuit to its waiting queue
+ * @typedef {Object} WaitingQueue
+ * @property {string} ceremonyName - the name of the ceremony.
+ * @property {string} circuitName - the name of the circuit.
+ * @property {number} waitingQueue - the number of participants in the waiting queue.
+ */
+export interface WaitingQueue {
+  ceremonyName: string 
+  circuitName: string 
+  waitingQueue: number 
+}
+
+export interface Project {
+  ceremony: CeremonyDocumentReferenceAndData
+  circuits?: CircuitDocumentReferenceAndData[] | null
+  participants?: ParticipantDocumentReferenceAndData[] | null
+  contributions?: ContributionDocumentReferenceAndData[] | null
+}
+
+export interface State {
+  projects: Project[];
+  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+  circuit: CircuitDocumentReferenceAndData;
+  setCircuit: React.Dispatch<React.SetStateAction<CircuitDocumentReferenceAndData>>;
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  runTutorial: boolean;
+  setRunTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  user?: string;
+  setUser?: React.Dispatch<React.SetStateAction<string | undefined>>;
+  waitingQueue: WaitingQueue[];
+}
+
+export type ProjectData = z.infer<typeof ProjectDataSchema>;
+
+export type ProjectPageContextProps = {
+  hasUserContributed: boolean;
+  projectData: ProjectData | null;
+  isLoading: boolean;
+  runTutorial: boolean;
+  avatars?: string[];
+  largestCircuitConstraints: number,
+  finalZkeys?: ZkeyDownloadLink[]
+};
+
+export type StateProviderProps = {
+  children: React.ReactNode;
+};

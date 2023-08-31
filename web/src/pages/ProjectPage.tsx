@@ -38,12 +38,11 @@ import {
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
-  ProjectData,
   ProjectDataSchema,
   useProjectPageContext
 } from "../context/ProjectPageContext";
 import { FaCloudDownloadAlt, FaCopy } from "react-icons/fa";
-import { CeremonyState } from "../helpers/interfaces";
+import { CeremonyState, ProjectData } from "../helpers/interfaces";
 import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi";
 import {
   bytesToMegabytes,
@@ -65,7 +64,7 @@ type RouteParams = {
 const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { user, projects, setRunTutorial, runTutorial } = useContext(StateContext);
-  const { hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
+  const { finalZkeys, hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -74,7 +73,6 @@ const ProjectPage: React.FC = () => {
       setRunTutorial(false);
     }
   };
-
 
   // find a project with the given ceremony name
   const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
@@ -105,6 +103,7 @@ const ProjectPage: React.FC = () => {
       maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
     })) ?? [];
 
+  // parse contributions and sort by zkey name
   const contributionsClean =
     validatedProjectData.contributions?.map((contribution) => ({
       doc: contribution.data.files?.lastZkeyFilename ?? "",
@@ -116,30 +115,14 @@ const ProjectPage: React.FC = () => {
         contribution.data?.files?.transcriptBlake2bHash ?? "",
         10
       )
-    })) ?? [];
+    })).slice().sort((a: any, b: any) => {
+      const docA = a.doc.toLowerCase()
+      const docB = b.doc.toLowerCase()
 
-  const circuit = validatedProjectData.circuits
-    ? validatedProjectData.circuits[0]
-    : {
-        data: {
-          fixedTimeWindow: 10,
-          template: {
-            source: "todo",
-            paramsConfiguration: [2, 3, 4]
-          },
-          compiler: {
-            version: "0.5.1",
-            commitHash: "0xabc"
-          },
-          avgTimings: {
-            fullContribution: 100
-          },
-          zKeySizeInBytes: 10,
-          waitingQueue: {
-            completedContributions: 0
-          }
-        }
-      };
+      if (docA < docB) return -1
+      if (docA > docB) return 1
+      return 0
+    }) ?? [];
 
   // Commands
   const contributeCommand =
@@ -148,33 +131,27 @@ const ProjectPage: React.FC = () => {
       : `phase2cli auth && phase2cli contribute -c ${project?.ceremony.data.prefix}`;
   const installCommand = `npm install -g @p0tion/phase2cli`;
   const authCommand = `phase2cli auth`;
-  const zKeyFilename = !circuit || isLoading ? "" : `${circuit.data.prefix}_final.zkey`;
-  const downloadLink =
-    !project || !circuit || isLoading
-      ? ""
-      : `https://${project?.ceremony.data.prefix}${
-          import.meta.env.VITE_CONFIG_CEREMONY_BUCKET_POSTFIX
-        }.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/circuits/${
-          circuit.data.prefix
-        }/contributions/${zKeyFilename}`;
+ 
   // Hook for clipboard
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
   const { onCopy: copyInstall, hasCopied: copiedInstall } = useClipboard(installCommand);
   const { onCopy: copyAuth, hasCopied: copiedAuth } = useClipboard(authCommand);
 
-  /// @todo with a bit of refactor, could be used everywhere for downloading files from S3.
   // Download a file from AWS S3 bucket.
-  const downloadFileFromS3 = () => {
-    fetch(downloadLink).then((response) => {
-      response.blob().then((blob) => {
-        const fileURL = window.URL.createObjectURL(blob);
-
-        let alink = document.createElement("a");
-        alink.href = fileURL;
-        alink.download = zKeyFilename;
-        alink.click();
+  const downloadFileFromS3 = (index: number, name: string) => {
+    if (finalZkeys) {
+      fetch(finalZkeys[index].zkeyURL).then((response) => {
+        response.blob().then((blob) => {
+          const fileURL = window.URL.createObjectURL(blob);
+  
+          let alink = document.createElement("a");
+          alink.href = fileURL;
+          alink.download = name;
+          alink.click();
+        });
       });
-    });
+    }
+    
   };
 
   return (
@@ -258,11 +235,15 @@ const ProjectPage: React.FC = () => {
                   alignSelf={"stretch"}
                 >
                   {
-                    user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
+                    project.ceremony.data.state === CeremonyState.OPENED && user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
                       <Contribution ceremonyId={project.ceremony.uid} /> :
                       hasUserContributed ?
                       <Text color="gray.500" fontSize={12} fontWeight="bold">
                         You have already contributed to this ceremony. Thank you for your participation.
+                      </Text> :
+                      project.ceremony.data.state !== CeremonyState.OPENED ?
+                      <Text color="gray.500" fontSize={12} fontWeight="bold">
+                        This ceremony is {project.ceremony.data.state.toLocaleLowerCase()}.
                       </Text> :
                       <>
                         <Text color="gray.500">
@@ -504,9 +485,9 @@ const ProjectPage: React.FC = () => {
                         letterSpacing={"0.01rem"}
                       >
                         {" "}
-                        DefinitelySetup is powered by p0tion, a framework for setting up, managing and contributing to trusted setup ceremonies.
-                        You can use this page to view the details of a ceremony, and also to download the final zKey, which will be made available 
-                        once the ceremony is finalized. 
+                        DefinitelySetup is a product designed to run Trusted Setup ceremonies for GROTH16
+                        based snarks - powered by p0tion. Thanks to p0tion, PSE can setup and manage trusted
+                        setups for the community (subject to approval).
                       </Text>
                       <Text textAlign={"center"} fontWeight={"600"} fontSize={"18px"} maxW="30ch">
                         {" "}
@@ -514,31 +495,43 @@ const ProjectPage: React.FC = () => {
                       </Text>
                       <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch">
                         {" "}
+                        In this website you will be able to browse all ceremonies created with p0tion, as well
+                        as understand how to contribute to it and retrieve the final artifacts. Let's secure
+                        GROTH16 protocols together. <br />
                         Please note that when circuits have a large number of constraints (you can usually see that when the memory requirements 
                         are greater than 100mb), the contribution might take a long time.
                       </Text>
                     </VStack>
                   </TabPanel>
 
-                  <TabPanel>
+                  <TabPanel textAlign={"center"}>
                     <Text fontSize={12} fontWeight="bold">
                       Download Final ZKey:
                     </Text>
                     <Text color="gray.500">
-                      Use the command below to download the final ZKey file from the S3 bucket.
+                      Press the button below to download the final ZKey files from the S3 bucket.
                     </Text>
-                    <Button
-                      leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
-                      fontSize={12}
-                      variant="outline"
-                      onClick={downloadFileFromS3}
-                      fontWeight={"regular"}
-                      isDisabled={
-                        project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
-                      }
-                    >
-                      Download From S3
-                    </Button>
+                    {
+                      finalZkeys?.map((zkey, index) => {
+                        return (
+                          <Button
+                          margin={"20px"}
+                          key={index}
+                          leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                          fontSize={12}
+                          variant="outline"
+                          onClick={() => downloadFileFromS3(index, zkey.zkeyFilename)}
+                          fontWeight={"regular"}
+                          isDisabled={
+                            project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                          }
+                        >
+                          Download {zkey.zkeyFilename}
+                        </Button>
+                        )
+                      })
+                    }
+                   
                   </TabPanel>
                 </TabPanels>
               </Tabs>

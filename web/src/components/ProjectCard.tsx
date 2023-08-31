@@ -10,7 +10,7 @@ import {
   BreadcrumbItem
 } from "@chakra-ui/react";
 
-import { Project } from "../context/StateContext";
+import { Project } from "../helpers/interfaces";
 
 
 interface ProjectCardProps {

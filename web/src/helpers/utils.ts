@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { commonTerms, finalContributionIndex, genesisZkeyIndex, localPaths } from "./constants";
+import { commonTerms, finalContributionIndex, genesisZkeyIndex, localPaths, minFollowers, minFollowing, minRepos } from "./constants";
 import {firebaseApp, getCeremonyCircuits, getCircuitContributionsFromContributor, getCircuitsCollectionPath, getDocumentById } from "./firebase";
 import { completeMultiPartUpload, generateGetObjectPreSignedUrl, generatePreSignedUrlsParts, openMultiPartUpload, temporaryStoreCurrentContributionMultiPartUploadId, temporaryStoreCurrentContributionUploadedChunkData } from "./functions";
 import { ChunkWithUrl, Contribution, ContributionValidity, ETagWithPartNumber, FirebaseDocumentInfo, TemporaryParticipantContributionData, Timing } from "./interfaces";
@@ -841,10 +841,6 @@ export const findLargestConstraint = (array: any[]|undefined): number => {
  * @returns 
  */
 export const checkGitHubReputation = async (): Promise<boolean> => {
-    const minRepos = import.meta.env.VITE_GITHUB_REPOS
-    const minFollowers = import.meta.env.VITE_GITHUB_FOLLOWERS
-    const minFollowing = import.meta.env.VITE_GITHUB_FOLLOWING
-
     const resp = await fetch(`https://api.github.com/user`, {
         headers: {
             Authorization: `token ${localStorage.getItem("token")}`

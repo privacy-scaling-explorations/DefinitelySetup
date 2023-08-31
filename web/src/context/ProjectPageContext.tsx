@@ -11,28 +11,19 @@ import {
 } from "../helpers/firebase";
 import {
   CircuitDocumentReferenceAndData,
-  ParticipantDocumentReferenceAndData
+  ParticipantDocumentReferenceAndData,
+  ProjectData,
+  ProjectPageContextProps,
+  ZkeyDownloadLink
 } from "../helpers/interfaces";
 import { checkIfUserContributed, findLargestConstraint, processItems } from "../helpers/utils";
-import { maxConstraintsForBrowser } from "../helpers/constants";
-
+import { awsRegion, bucketPostfix, finalContributionIndex, maxConstraintsForBrowser } from "../helpers/constants";
 
 export const ProjectDataSchema = z.object({
   circuits: z.optional(z.array(z.any())),
   participants: z.optional(z.array(z.any())),
   contributions: z.optional(z.array(z.any()))
 });
-
-export type ProjectData = z.infer<typeof ProjectDataSchema>;
-
-export type ProjectPageContextProps = {
-  hasUserContributed: boolean;
-  projectData: ProjectData | null;
-  isLoading: boolean;
-  runTutorial: boolean;
-  avatars?: string[];
-  largestCircuitConstraints: number,
-};
 
 export const defaultProjectData: ProjectData = {};
 
@@ -47,6 +38,7 @@ const ProjectPageContext = createContext<ProjectPageContextProps>({
   runTutorial: false,
   avatars: [],
   largestCircuitConstraints: maxConstraintsForBrowser + 1, // contribution on browser has 100000 max constraints
+  finalZkeys: []
 });
 
 export const useProjectPageContext = () => useContext(ProjectPageContext);
@@ -58,20 +50,36 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
   const [avatars, setAvatars] = useState<string[]>([]);
   const [hasUserContributed, setHasUserContributed] = useState<boolean>(false);
   const [largestCircuitConstraints, setLargestCircuitConstraints] = useState<number>(maxConstraintsForBrowser + 1) // contribution on browser has 100000 max constraints
+  const [finalZkeys, setFinalZkeys] = useState<ZkeyDownloadLink[]>([])
 
   const { projects } = useStateContext();
   const { ceremonyName } = useParams();
 
   const project = projects.find((project) => project.ceremony.data.title === ceremonyName);
-  const projectId = project?.ceremony.uid || "HmLZ1vjZjhDPU0v3q8kD";
+  const projectId = project?.ceremony.uid;
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
+        if (projectId === undefined) return 
         const circuitsDocs = await getCeremonyCircuits(projectId);
         const circuits: CircuitDocumentReferenceAndData[] = circuitsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data }));
 
+        const finalZkeys: ZkeyDownloadLink[] = []
+        for (const circuit of circuits) {
+          const { prefix } = circuit.data
+          finalZkeys.push(
+            { 
+              zkeyFilename: `${prefix}_${finalContributionIndex}.zkey`, 
+              zkeyURL: `https://${project?.ceremony.data.prefix}${bucketPostfix}.s3.${awsRegion}.amazonaws.com/circuits/${
+                prefix
+              }/contributions/${prefix}_${finalContributionIndex}.zkey`
+            }
+          )
+        }
+
+        setFinalZkeys(finalZkeys)
         const participantsDocs = await getAllCollectionDocs(`ceremonies/${projectId}/participants`);
         const participants: ParticipantDocumentReferenceAndData[] = participantsDocs.map((document: DocumentData) => ({ uid: document.id, data: document.data() }));
 
@@ -108,7 +116,7 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
 
 
   return (
-    <ProjectPageContext.Provider value={{ largestCircuitConstraints, hasUserContributed, projectData, isLoading, runTutorial, avatars }}>
+    <ProjectPageContext.Provider value={{ finalZkeys, largestCircuitConstraints, hasUserContributed, projectData, isLoading, runTutorial, avatars }}>
       {children}
     </ProjectPageContext.Provider>
   );

@@ -38,12 +38,11 @@ import {
 } from "@chakra-ui/react";
 import { StateContext } from "../context/StateContext";
 import {
-  ProjectData,
   ProjectDataSchema,
   useProjectPageContext
 } from "../context/ProjectPageContext";
 import { FaCloudDownloadAlt, FaCopy } from "react-icons/fa";
-import { CeremonyState } from "../helpers/interfaces";
+import { CeremonyState, ProjectData } from "../helpers/interfaces";
 import { FiTarget, FiZap, FiEye, FiUser, FiMapPin, FiWifi } from "react-icons/fi";
 import {
   bytesToMegabytes,
@@ -65,7 +64,7 @@ type RouteParams = {
 const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { user, projects, setRunTutorial, runTutorial } = useContext(StateContext);
-  const { hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
+  const { latestZkeys, finalBeacon, finalZkeys, hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -75,18 +74,15 @@ const ProjectPage: React.FC = () => {
     }
   };
 
-
   // find a project with the given ceremony name
   const project = projects.find((p) => p.ceremony.data.title === ceremonyName);
 
   // Validate the project data against the schema
   const validatedProjectData: ProjectData = ProjectDataSchema.parse(projectData);
 
-  /// @todo work on multiple circuits.
-  /// @todo uncomplete info for mocked fallback circuit data.
-
   const circuitsClean =
     validatedProjectData.circuits?.map((circuit) => ({
+      template: circuit.data.template,
       name: circuit.data.name,
       description: circuit.data.description,
       constraints: circuit.data.metadata?.constraints,
@@ -99,12 +95,12 @@ const ProjectPage: React.FC = () => {
       currentContributor: circuit.data.waitingQueue?.currentContributor,
       memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
         .toString()
-
         .slice(0, 5),
       avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
       maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
     })) ?? [];
 
+  // parse contributions and sort by zkey name
   const contributionsClean =
     validatedProjectData.contributions?.map((contribution) => ({
       doc: contribution.data.files?.lastZkeyFilename ?? "",
@@ -116,30 +112,14 @@ const ProjectPage: React.FC = () => {
         contribution.data?.files?.transcriptBlake2bHash ?? "",
         10
       )
-    })) ?? [];
+    })).slice().sort((a: any, b: any) => {
+      const docA = a.doc.toLowerCase()
+      const docB = b.doc.toLowerCase()
 
-  const circuit = validatedProjectData.circuits
-    ? validatedProjectData.circuits[0]
-    : {
-        data: {
-          fixedTimeWindow: 10,
-          template: {
-            source: "todo",
-            paramsConfiguration: [2, 3, 4]
-          },
-          compiler: {
-            version: "0.5.1",
-            commitHash: "0xabc"
-          },
-          avgTimings: {
-            fullContribution: 100
-          },
-          zKeySizeInBytes: 10,
-          waitingQueue: {
-            completedContributions: 0
-          }
-        }
-      };
+      if (docA < docB) return -1
+      if (docA > docB) return 1
+      return 0
+    }) ?? [];
 
   // Commands
   const contributeCommand =
@@ -148,33 +128,32 @@ const ProjectPage: React.FC = () => {
       : `phase2cli auth && phase2cli contribute -c ${project?.ceremony.data.prefix}`;
   const installCommand = `npm install -g @p0tion/phase2cli`;
   const authCommand = `phase2cli auth`;
-  const zKeyFilename = !circuit || isLoading ? "" : `${circuit.data.prefix}_final.zkey`;
-  const downloadLink =
-    !project || !circuit || isLoading
-      ? ""
-      : `https://${project?.ceremony.data.prefix}${
-          import.meta.env.VITE_CONFIG_CEREMONY_BUCKET_POSTFIX
-        }.s3.${import.meta.env.VITE_AWS_REGION}.amazonaws.com/circuits/${
-          circuit.data.prefix
-        }/contributions/${zKeyFilename}`;
+  const beaconValue = finalBeacon?.beacon
+  const beaconHash = finalBeacon?.beaconHash
+ 
   // Hook for clipboard
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
   const { onCopy: copyInstall, hasCopied: copiedInstall } = useClipboard(installCommand);
   const { onCopy: copyAuth, hasCopied: copiedAuth } = useClipboard(authCommand);
+  const { onCopy: copyBeaconValue, hasCopied: copiedBeaconValue } = useClipboard(beaconValue || "")
+  const { onCopy: copyBeaconHash, hasCopied: copiedBeaconHash } = useClipboard(beaconHash || "")
 
-  /// @todo with a bit of refactor, could be used everywhere for downloading files from S3.
+
   // Download a file from AWS S3 bucket.
-  const downloadFileFromS3 = () => {
-    fetch(downloadLink).then((response) => {
-      response.blob().then((blob) => {
-        const fileURL = window.URL.createObjectURL(blob);
-
-        let alink = document.createElement("a");
-        alink.href = fileURL;
-        alink.download = zKeyFilename;
-        alink.click();
+  const downloadFileFromS3 = (index: number, name: string) => {
+    if (finalZkeys) {
+      fetch(finalZkeys[index].zkeyURL).then((response) => {
+        response.blob().then((blob) => {
+          const fileURL = window.URL.createObjectURL(blob);
+  
+          let alink = document.createElement("a");
+          alink.href = fileURL;
+          alink.download = name;
+          alink.click();
+        });
       });
-    });
+    }
+    
   };
 
   return (
@@ -258,8 +237,12 @@ const ProjectPage: React.FC = () => {
                   alignSelf={"stretch"}
                 >
                   {
-                    user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
+                    project.ceremony.data.state === CeremonyState.OPENED && user && !hasUserContributed && largestCircuitConstraints < maxConstraintsForBrowser ?
                       <Contribution ceremonyId={project.ceremony.uid} /> :
+                      project.ceremony.data.state !== CeremonyState.OPENED ?
+                      <Text color="gray.500" fontSize={12} fontWeight="bold">
+                        This ceremony is {project.ceremony.data.state.toLocaleLowerCase()}.
+                      </Text> :
                       hasUserContributed ?
                       <Text color="gray.500" fontSize={12} fontWeight="bold">
                         You have already contributed to this ceremony. Thank you for your participation.
@@ -362,8 +345,8 @@ const ProjectPage: React.FC = () => {
                   <Tab className="contributionsButton" fontSize={12}>
                     Contributions
                   </Tab>
-                  <Tab className="detailsButton" fontSize={12}>
-                    Details
+                  <Tab className="linksButton" fontSize={12}>
+                    About
                   </Tab>
                   <Tab className="zKeyNavigationButton" fontSize={12}>
                     Download ZKey
@@ -485,60 +468,155 @@ const ProjectPage: React.FC = () => {
                     </Box>
                   </TabPanel>
                   <TabPanel>
-                    <VStack
+                  <VStack
                       alignSelf={"stretch"}
                       alignItems={"center"}
                       justifyContent={"center"}
                       spacing={8}
                       py={0}
                     >
-                      <Text textAlign={"center"} fontWeight={"700"} fontSize={"3.5rem"} maxW="15ch">
-                        {" "}
-                        How it works
-                      </Text>
-                      <Text
-                        textAlign={"center"}
-                        fontWeight={"500"}
-                        fontSize={"12px"}
-                        maxW="50ch"
-                        letterSpacing={"0.01rem"}
+                      <Box alignItems="center" alignSelf={"stretch"} w="full">
+                      <SimpleGrid
+                        alignSelf={"stretch"}
+                        maxW={["392px", "390px", "100%"]}
+                        columns={1}
+                        spacing={6}
                       >
-                        {" "}
-                        DefinitelySetup is powered by p0tion, a framework for setting up, managing and contributing to trusted setup ceremonies.
-                        You can use this page to view the details of a ceremony, and also to download the final zKey, which will be made available 
-                        once the ceremony is finalized. 
-                      </Text>
-                      <Text textAlign={"center"} fontWeight={"600"} fontSize={"18px"} maxW="30ch">
-                        {" "}
-                        Search for ceremonies, contribute your entropy to the system.
-                      </Text>
-                      <Text textAlign={"center"} fontWeight={"500"} fontSize={"12px"} maxW="50ch">
-                        {" "}
-                        Please note that when circuits have a large number of constraints (you can usually see that when the memory requirements 
-                        are greater than 100mb), the contribution might take a long time.
-                      </Text>
+                        {circuitsClean.map((circuit, index) => (
+                          <Box key={index} borderWidth={1} borderRadius="lg" p={4}>
+                            <Heading fontSize={16} size="md" mb={2}>
+                              {circuit.name} - {circuit.description}
+                            </Heading>
+                            <SimpleGrid columns={[2, 2]} spacing={4}>
+                              <Flex justify="space-between" align="center">
+                                <Stat>
+                                  <StatLabel fontSize={12}>Parameters</StatLabel>
+                                  <StatNumber fontSize={16}>
+                                    {
+                                      circuit.template.paramConfiguration ?
+                                      circuit.template.paramConfiguration.join(" ") :
+                                      "No parameters"
+                                    }
+                                  </StatNumber>
+                                </Stat>
+                              </Flex>
+                              <Stat>
+                                <StatLabel fontSize={12}>Commit Hash</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  {truncateString(circuit.template.commitHash, 6)}
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel fontSize={12}>Template Link</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  <a href={circuit.template.source} target="_blank">
+                                  {truncateString(circuit.template.source, 16)}
+                                  </a>
+                                </StatNumber>
+                              </Stat>
+                            </SimpleGrid>
+                          </Box>
+                        ))}
+                      </SimpleGrid>
+                    </Box>
+                      
                     </VStack>
                   </TabPanel>
-
-                  <TabPanel>
-                    <Text fontSize={12} fontWeight="bold">
-                      Download Final ZKey:
+                  <TabPanel textAlign={"center"}>
+                    {
+                      project?.ceremony.data.state === CeremonyState.FINALIZED && beaconHash && beaconValue &&
+                      <div>
+                        <Text fontSize={14} fontWeight="bold">
+                        Final contribution beacon
+                        </Text>
+                        <Button 
+                          margin={4}
+                          leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                          variant="outline"
+                          fontSize={12}
+                          fontWeight={"regular"}
+                          onClick={copyBeaconValue}
+                        >
+                          {
+                            copiedBeaconValue ?
+                            "Copied"
+                            : `Beacon ${finalBeacon?.beacon}`
+                          }
+                        </Button>
+                        <Button 
+                          margin={4}
+                          leftIcon={<Box as={FaCopy} w={3} h={3} />}
+                          variant="outline"
+                          fontSize={12}
+                          fontWeight={"regular"}
+                          onClick={copyBeaconHash}
+                        >
+                          {
+                            copiedBeaconHash ?
+                            "Copied"
+                            : `Beacon hash ${truncateString(finalBeacon?.beaconHash)}`
+                          }
+                        </Button>
+                      </div>
+                    }
+                    <Text p={4} fontSize={14} fontWeight="bold">
+                      Download Final ZKey(s)
                     </Text>
                     <Text color="gray.500">
-                      Use the command below to download the final ZKey file from the S3 bucket.
+                      Press the button below to download the final ZKey files from the S3 bucket.
                     </Text>
-                    <Button
-                      leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
-                      fontSize={12}
-                      variant="outline"
-                      onClick={downloadFileFromS3}
-                      fontWeight={"regular"}
-                      isDisabled={
-                        project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
-                      }
-                    >
-                      Download From S3
-                    </Button>
+                    {
+                      finalZkeys?.map((zkey, index) => {
+                        return (
+                          <Button
+                          margin={"20px"}
+                          key={index}
+                          leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                          fontSize={12}
+                          variant="outline"
+                          onClick={() => downloadFileFromS3(index, zkey.zkeyFilename)}
+                          fontWeight={"regular"}
+                          isDisabled={
+                            project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                          }
+                        >
+                          Download {zkey.zkeyFilename}
+                        </Button>
+                        )
+                      })
+                    }
+                    {
+                      project?.ceremony.data.state === CeremonyState.FINALIZED &&
+                      <>
+                        <Text p={4} fontSize={14} fontWeight="bold">
+                        Download Last ZKey(s)
+                        </Text>
+                        <Text color="gray.500">
+                          You can use this zKey(s) with the beacon value to verify that the final zKey(s) was computed correctly.
+                        </Text>
+                        {
+                          latestZkeys?.map((zkey, index) => {
+                            return (
+                              <Button
+                              margin={"20px"}
+                              key={index}
+                              leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                              fontSize={12}
+                              variant="outline"
+                              onClick={() => downloadFileFromS3(index, zkey.zkeyFilename)}
+                              fontWeight={"regular"}
+                              isDisabled={
+                                project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                              }
+                            >
+                              Download {zkey.zkeyFilename}
+                            </Button>
+                            )
+                          })
+                        }
+                      </>
+                    }
+                   
                   </TabPanel>
                 </TabPanels>
               </Tabs>

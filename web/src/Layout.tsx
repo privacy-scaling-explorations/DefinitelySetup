@@ -101,12 +101,6 @@ const Layout: React.FC<React.PropsWithChildren<{}>> = () => {
             </Heading>
           </HStack>
           <HStack spacing="24px" fontSize={14}>
-            {/* <Heading as={Link} fontSize={14} fontWeight={"normal"} to="/page2">
-              About
-            </Heading>
-            <Heading as={Link} fontSize={14} fontWeight={"normal"} to="/page3">
-              Documentation
-            </Heading> */}
             <ColorModeSwitch />
             <Login />
           </HStack>

@@ -43,8 +43,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln16.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln16.wasm"
         },
@@ -67,8 +65,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln17.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln17.wasm"
         },
@@ -91,8 +87,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln18.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln18.wasm"
         },
@@ -115,8 +109,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln19.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln19.wasm"
         },
@@ -139,8 +131,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln20.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln20.wasm"
         },
@@ -163,8 +153,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln21.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln21.wasm"
         },
@@ -187,8 +175,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln22.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln22.wasm"
         },
@@ -211,8 +197,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln23.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln23.wasm"
         },
@@ -235,8 +219,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln24.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln24.wasm"
         },
@@ -259,8 +241,6 @@
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln25.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln25.wasm"
         },
@@ -276,14 +256,13 @@
         },
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
-          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramsConfiguration": [26, 16]
         },
         "verification": {
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln26.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln26.wasm"
         },
@@ -300,14 +279,13 @@
         },
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
-          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramsConfiguration": [27, 16]
         },
         "verification": {
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln27.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln27.wasm"
         },
@@ -324,14 +302,13 @@
         },
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
-          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramsConfiguration": [28, 16]
         },
         "verification": {
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln28.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln28.wasm"
         },
@@ -348,14 +325,13 @@
         },
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
-          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramsConfiguration": [29, 16]
         },
         "verification": {
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln29.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln29.wasm"
         },
@@ -372,14 +348,13 @@
         },
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
-          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramsConfiguration": [30, 16]
         },
         "verification": {
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln30.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln30.wasm"
         },
@@ -396,14 +371,13 @@
         },
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
-          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramsConfiguration": [31, 16]
         },
         "verification": {
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln31.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln31.wasm"
         },
@@ -420,14 +394,13 @@
         },
         "template": {
           "source": "https://github.com/Rate-Limiting-Nullifier/circom-rln",
-          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d"
+          "commitHash": "17f0fed7d8d19e8b127fd0b3e5295a4831193a0d",
+          "paramsConfiguration": [32, 16]
         },
         "verification": {
           "cfOrVm": "CF"
         },
         "artifacts": {
-          "bucket": "p0tion-test-definitely-setup",
-          "region": "us-east-1",
           "r1csStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln32.r1cs",
           "wasmStoragePath": "https://p0tion-test-definitely-setup.s3.amazonaws.com/rln32.wasm"
         },

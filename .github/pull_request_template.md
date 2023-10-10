@@ -57,7 +57,7 @@ Failing to follow the above instructions, will result in the CI checks failing. 
           "template": {
               "source": "<HTTPS_URL_OF_THE_CIRCOM_FILE>",
               "commitHash": "<TEMPLATE_COMMIT_HASH>",
-              "paramConfiguration": [6,8,3,2]
+              "paramsConfiguration": [6,8,3,2]
           },
           "verification": {
               "cfOrVm": "CF"
@@ -91,7 +91,7 @@ Failing to follow the above instructions, will result in the CI checks failing. 
     - template - an object made of:
         - source - a string with the URL of the circom file
         - commitHash -  a string with the commit id (needs to be a GitHub commit hash)
-        - paramConfiguration - an array of numbers with the parameters of the circuit template
+        - paramsConfiguration - an array of numbers with the parameters of the circuit template
     - verification - an object detailing how the circuit's zKeys will be verified
         - cfOrVm - a string with either "CF" or "VM". If "VM" the following must be added:
             - vmConfigurationType - a string with the VM type - options:

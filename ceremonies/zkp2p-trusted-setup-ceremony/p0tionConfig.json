@@ -1,0 +1,76 @@
+{
+  "title": "ZKP2P Trusted Setup Ceremony",
+  "description": "This is a trusted setup ceremony for the ZKP2P protocol",
+  "startDate": "2023-10-20T10:30:00",
+  "endDate": "2023-10-27T10:30:00",
+  "timeoutMechanismType": "FIXED",
+  "penalty": 3,
+  "circuits": [
+    {
+      "description": "ZKP2P Venmo Send circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkp2p/zk-p2p",
+        "commitHash": "242724a2a8736814c90f27a8131af79ee001ca20",
+        "paramsConfiguration": [1024, 6272, 121, 17, 7]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2/v0.0.7/venmo_send/venmo_send.r1cs",
+        "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2/v0.0.7/venmo_send/venmo_send.wasm"
+      },
+      "name": "ZKP2P-Venmo-Send",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "ZKP2P Venmo Receive circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkp2p/zk-p2p",
+        "commitHash": "242724a2a8736814c90f27a8131af79ee001ca20",
+        "paramsConfiguration": [1024, 6720, 121, 17, 7]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2/v0.0.7/venmo_receive/venmo_receive.r1cs",
+        "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2/v0.0.7/venmo_receive/venmo_receive.wasm"
+      },
+      "name": "ZKP2P-Venmo-Receive",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "ZKP2P Venmo Registration circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkp2p/zk-p2p",
+        "commitHash": "242724a2a8736814c90f27a8131af79ee001ca20",
+        "paramsConfiguration": [1024, 6272, 121, 17, 7]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2/v0.0.7/venmo_registration/venmo_registration.r1cs",
+        "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2/v0.0.7/venmo_registration/venmo_registration.wasm"
+      },
+      "name": "ZKP2P-Venmo-Registration",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    }
+  ]
+}

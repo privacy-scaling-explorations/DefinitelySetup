@@ -1,0 +1,142 @@
+{
+  "title": "Email Wallet Trusted Setup Ceremony",
+  "description": "This is a trusted setup ceremony for the Email Wallet protocol",
+  "startDate": "2023-11-12T00:00:00",
+  "endDate": "2023-11-14T00:00:00",
+  "timeoutMechanismType": "FIXED",
+  "penalty": 3,
+  "circuits": [
+    {
+      "description": "Email Wallet: Account Creation circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/email-wallet",
+        "commitHash": "1871987e282bc0ea57d5436066730d5efd4ec9a3",
+        "paramsConfiguration": []
+      },
+      "verification": {
+        "cfOrVm": "VM"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/account_creation.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/account_creation.wasm"
+      },
+      "name": "EmailWallet-Account-Creation",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "Email Wallet: Account Init circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/email-wallet",
+        "commitHash": "1871987e282bc0ea57d5436066730d5efd4ec9a3",
+        "paramsConfiguration": [121, 17, 1024]
+      },
+      "verification": {
+        "cfOrVm": "VM"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/account_init.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/account_init.wasm"
+      },
+      "name": "EmailWallet-Account-Init",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "Email Wallet: Email Sender circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/email-wallet",
+        "commitHash": "1871987e282bc0ea57d5436066730d5efd4ec9a3",
+        "paramsConfiguration": [121, 17, 1024, 512]
+      },
+      "verification": {
+        "cfOrVm": "VM"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/email_sender.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/email_sender.wasm"
+      },
+      "name": "EmailWallet-Email-Sender",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "Email Wallet: Claim circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/email-wallet",
+        "commitHash": "1871987e282bc0ea57d5436066730d5efd4ec9a3",
+        "paramsConfiguration": []
+      },
+      "verification": {
+        "cfOrVm": "VM"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/claim.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/claim.wasm"
+      },
+      "name": "EmailWallet-Claim",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "Email Wallet: Account Transport circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/email-wallet",
+        "commitHash": "1871987e282bc0ea57d5436066730d5efd4ec9a3",
+        "paramsConfiguration": [121, 17, 1024]
+      },
+      "verification": {
+        "cfOrVm": "VM"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/account_transport.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/account_transport.wasm"
+      },
+      "name": "EmailWallet-Account-Transport",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "Email Wallet: Announcement circuit",
+      "compiler": {
+        "version": "2.1.5",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/email-wallet",
+        "commitHash": "1871987e282bc0ea57d5436066730d5efd4ec9a3",
+        "paramsConfiguration": []
+      },
+      "verification": {
+        "cfOrVm": "VM"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/announcement.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/email-wallet-zkeys/announcement.wasm"
+      },
+      "name": "EmailWallet-Announcement",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    }
+  ]
+}

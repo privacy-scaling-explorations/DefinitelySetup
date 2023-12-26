@@ -1,0 +1,76 @@
+{
+    "title": "ZKP2P Trusted Setup Ceremony V2",
+    "description": "This is a trusted setup ceremony for the ZKP2P protocol",
+    "startDate": "2023-11-27T10:30:00",
+    "endDate": "2023-11-29T10:30:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 3,
+    "circuits": [
+      {
+        "description": "ZKP2P Venmo Send V2 circuit",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/zkp2p/zk-p2p",
+          "commitHash": "",
+          "paramsConfiguration": [1024, 6272, 121, 17, 7]
+        },
+        "verification": {
+          "cfOrVm": "VM"
+        },
+        "artifacts": {
+          "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.1.2/venmo_send/venmo_send.r1cs",
+          "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.1.2/venmo_send/venmo_send.wasm"
+        },
+        "name": "ZKP2P-Venmo-Send-V2",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 1
+      },
+      {
+        "description": "ZKP2P HDFC Send circuit",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/zkp2p/zk-p2p",
+          "commitHash": "",      // todo: Add this
+          "paramsConfiguration": [1024, 4352, 121, 17, 7]
+        },
+        "verification": {
+          "cfOrVm": "VM"
+        },
+        "artifacts": {
+          "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.1.2/hdfc_send/hdfc_send.r1cs",
+          "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.1.2/hdfc_send/hdfc_send.wasm"
+        },
+        "name": "ZKP2P-HDFC-Send",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 1
+      },
+      {
+        "description": "ZKP2P HDFC Registration circuit",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/zkp2p/zk-p2p",
+          "commitHash": "", // todo: Add this
+          "paramsConfiguration": [1024, 4352, 121, 17, 7]
+        },
+        "verification": {
+          "cfOrVm": "VM"
+        },
+        "artifacts": {
+          "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.1.2/hdfc_registration/hdfc_registration.r1cs",
+          "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.1.2/hdfc_registration/hdfc_registration.wasm"
+        },
+        "name": "ZKP2P-HDFC-Registration",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 1
+      }
+    ]
+  }

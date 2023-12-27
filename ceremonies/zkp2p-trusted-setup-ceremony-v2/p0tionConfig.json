@@ -14,7 +14,7 @@
         },
         "template": {
           "source": "https://github.com/zkp2p/zk-p2p",
-          "commitHash": "",
+          "commitHash": "264480858d8dd4a19f39d7e549534fccbbe61873",
           "paramsConfiguration": [1024, 6272, 121, 17, 7]
         },
         "verification": {
@@ -36,7 +36,7 @@
         },
         "template": {
           "source": "https://github.com/zkp2p/zk-p2p",
-          "commitHash": "",      // todo: Add this
+          "commitHash": "264480858d8dd4a19f39d7e549534fccbbe61873",
           "paramsConfiguration": [1024, 4352, 121, 17, 7]
         },
         "verification": {
@@ -58,7 +58,7 @@
         },
         "template": {
           "source": "https://github.com/zkp2p/zk-p2p",
-          "commitHash": "", // todo: Add this
+          "commitHash": "264480858d8dd4a19f39d7e549534fccbbe61873",
           "paramsConfiguration": [1024, 4352, 121, 17, 7]
         },
         "verification": {

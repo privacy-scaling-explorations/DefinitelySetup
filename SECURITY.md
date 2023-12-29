@@ -29,4 +29,4 @@ Only critical severity bug fixes will be backported to past major releases.
 
 ## Legal
 
-You are solely responsible for any use of DefinitelySetup and you assume all risks associated with any such use. This Security Policy in no way evidences or represents an on-going duty by any contributor, including the Ethereum Foundation (EF), to correct any flaws or alert you to all or any of the potential risks of utilizing the project.
+You are solely responsible for any use of DefinitelySetup and you assume all risks associated with any such use. This Security Policy in no way evidences or represents an ongoing duty by any contributor, including the Ethereum Foundation (EF), to correct any flaws or alert you to all or any of the potential risks of utilizing the project.

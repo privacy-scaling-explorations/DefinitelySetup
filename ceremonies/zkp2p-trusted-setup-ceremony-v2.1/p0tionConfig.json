@@ -1,0 +1,32 @@
+{
+    "title": "ZKP2P Trusted Setup Ceremony V2.1",
+    "description": "This is a trusted setup ceremony for the ZKP2P protocol",
+    "startDate": "2024-01-17T10:30:00",
+    "endDate": "2024-01-19T10:30:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 3,
+    "circuits": [
+      {
+        "description": "ZKP2P HDFC Send circuit",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/zkp2p/zk-p2p",
+          "commitHash": "7293bce5633b5bda8aa379451efe1860a7c5081e",
+          "paramsConfiguration": [1024, 4352, 121, 17, 7]
+        },
+        "verification": {
+          "cfOrVm": "VM"
+        },
+        "artifacts": {
+          "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.1/hdfc_send/hdfc_send.r1cs",
+          "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.1/hdfc_send/hdfc_send.wasm"
+        },
+        "name": "ZKP2P-HDFC-Send",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 1
+      }
+    ]
+  }

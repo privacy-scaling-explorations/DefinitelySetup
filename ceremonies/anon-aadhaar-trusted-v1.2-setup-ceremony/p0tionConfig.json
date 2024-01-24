@@ -1,0 +1,33 @@
+{
+    "title": "Anon Aadhaar Trusted Setup Ceremony",
+    "description": "This is a trusted setup ceremony for the Anon Aadhaar",
+    "startDate": "2024-01-25T10:30:00",
+    "endDate": "2024-01-26T00:00:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 3,
+    "circuits": [
+      {
+          "description": "Anon Aadhaar QR Verifier circuit",
+          "compiler": {
+            "version": "2.1.6",
+            "commitHash": "57b18f68794189753964bfb6e18e64385fed9c2c"
+          },
+          "template": {
+            "source": "https://github.com/anon-aadhaar/anon-aadhaar",
+            "commitHash": "ad7f24f8ec254e44064f485f654f6dbfa39f4832",
+            "paramsConfiguration": []
+          },
+          "verification": {
+            "cfOrVm": "CF"
+          },
+          "artifacts": {
+            "r1csStoragePath": "https://d1re67zv2jtrxt.cloudfront.net/aadhaar-verifier.r1cs",
+            "wasmStoragePath": "https://d1re67zv2jtrxt.cloudfront.net/aadhaar-verifier.wasm"
+          },
+          "name": "AadhaarVerifier",
+          "fixedTimeWindow": 3,
+          "sequencePosition": 1
+      }
+    ]
+  }
+  

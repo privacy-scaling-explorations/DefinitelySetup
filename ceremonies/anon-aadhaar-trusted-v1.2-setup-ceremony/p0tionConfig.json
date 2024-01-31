@@ -1,8 +1,8 @@
 {
     "title": "Anon Aadhaar Trusted Setup Ceremony",
     "description": "This is a trusted setup ceremony for the Anon Aadhaar",
-    "startDate": "2024-01-25T10:30:00",
-    "endDate": "2024-01-26T00:00:00",
+    "startDate": "2024-01-31T10:30:00",
+    "endDate": "2024-02-02T00:00:00",
     "timeoutMechanismType": "FIXED",
     "penalty": 3,
     "circuits": [

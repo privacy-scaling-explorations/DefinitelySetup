@@ -1,7 +1,7 @@
 {
     "title": "ZKP2P Trusted Setup Ceremony V2.4",
     "description": "This is a trusted setup ceremony for the ZKP2P protocol",
-    "startDate": "2024-02-04T10:30:00",
+    "startDate": "2024-02-05T10:30:00",
     "endDate": "2024-02-06T10:30:00",
     "timeoutMechanismType": "FIXED",
     "penalty": 3,

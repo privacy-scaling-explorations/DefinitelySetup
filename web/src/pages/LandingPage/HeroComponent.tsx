@@ -14,6 +14,8 @@ import { ScrollBanner } from "./Banner";
 export function HeroComponent({ projects, waitingQueue }: HeroComponentProps) {
   const bannerImages: any[] = []
 
+  const sortedProjects = projects.slice().sort((a, b) => b.ceremony.data.endDate - a.ceremony.data.endDate);
+
   for (const queue of waitingQueue) {
     bannerImages.push({
       imageUrl: "https://res.cloudinary.com/pse-qf-maci/image/upload/v1690230945/Banner_qb6zlf.png",
@@ -53,7 +55,7 @@ export function HeroComponent({ projects, waitingQueue }: HeroComponentProps) {
           <Box width="100%" px={8} py={0}>
             {projects.length > 0 ? (
               <SimpleGrid columns={[1, null, 1]} spacing={0}>
-                {projects.map((project, index) => (
+                {sortedProjects.map((project, index) => (
                   <ProjectCard key={index} project={project} />
                 ))}
               </SimpleGrid>

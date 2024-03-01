@@ -53,14 +53,14 @@ pnpm install
 Copy the `.env.default` file to `.env`:
 
 ```bash
-cp .env.default .env
+cp .default.env .env
 ```
 
 And add your environment variables.
 
 ### Build
 
-Rum:
+Run:
 
 ```bash
 pnpm build

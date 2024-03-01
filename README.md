@@ -16,7 +16,7 @@ Steps for Using DefinitelySetup to run your own ceremony:
 
 - Create a Pull Request: Once your files are ready, you'll need to create a pull request (PR) in the DefinitelySetup repository. Use the provided PR template to guide you in filling out the necessary information.
 
-- Approval and Merging: If your circuit's constraint size is less than 1M, your PR will be automatically approved and merged at the end of the week. If you are trying to run a ceremony for a circuit with larger contraing sizes please open an issue to start a grant flow to cover infrastrcture costs.
+- Approval and Merging: If your circuit's constraint size is less than 1M, your PR will be automatically approved and merged at the end of the week. If you are trying to run a ceremony for a circuit with larger contraing sizes please open an issue to start a grant flow to cover infrastructure costs.
 
 - Starting the Ceremony: Once your PR is merged, the ceremony will commence. You and other users will be able to see the ceremony on the DefinitelySetup website.
 

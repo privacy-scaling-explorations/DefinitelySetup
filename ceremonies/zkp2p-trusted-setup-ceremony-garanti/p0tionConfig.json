@@ -1,0 +1,76 @@
+{
+    "title": "ZKP2P Trusted Setup Ceremony Garanti",
+    "description": "This is a trusted setup ceremony for the garanti circuits of ZKP2P protocol",
+    "startDate": "2024-03-20T10:30:00",
+    "endDate": "2024-03-22T10:30:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 3,
+    "circuits": [
+      {
+        "description": "ZKP2P Garanti Send circuit",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/zkp2p/zk-p2p",
+          "commitHash": "b1423a9e2357bdd22a0f54178309c86dd60fece2",
+          "paramsConfiguration": [512, 2688, 121, 17, 7]
+        },
+        "verification": {
+          "cfOrVm": "VM"
+        },
+        "artifacts": {
+          "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.5/garanti_send/garanti_send.r1cs",
+          "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.5/garanti_send/garanti_send.wasm"
+        },
+        "name": "ZKP2P-Garanti-Send",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 1
+      },
+      {
+        "description": "ZKP2P Garanti Registration circuit",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/zkp2p/zk-p2p",
+          "commitHash": "b1423a9e2357bdd22a0f54178309c86dd60fece2",
+          "paramsConfiguration": [512, 2688, 121, 17, 7]
+        },
+        "verification": {
+          "cfOrVm": "VM"
+        },
+        "artifacts": {
+          "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.5/garanti_registration/garanti_registration.r1cs",
+          "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.5/garanti_registration/garanti_registration.wasm"
+        },
+        "name": "ZKP2P-Venmo-Registration",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 1
+      },
+      {
+        "description": "ZKP2P Garanti Body Suffix Hasher circuit",
+        "compiler": {
+          "version": "2.1.5",
+          "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+        },
+        "template": {
+          "source": "https://github.com/zkp2p/zk-p2p",
+          "commitHash": "b1423a9e2357bdd22a0f54178309c86dd60fece2",
+          "paramsConfiguration": [10752]
+        },
+        "verification": {
+          "cfOrVm": "VM"
+        },
+        "artifacts": {
+          "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.5/garanti_body_suffix_hasher/garanti_body_suffix_hasher.r1cs",
+          "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.5/garanti_body_suffix_hasher/garanti_body_suffix_hasher.wasm"
+        },
+        "name": "ZKP2P-Garanti-Body-Suffix-Hasher",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 1
+      }
+    ]
+}

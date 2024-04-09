@@ -171,6 +171,7 @@ export interface CeremonyDocument {
   type: CeremonyType
   coordinatorId: string
   lastUpdated: number
+  hideInWeb?: boolean
 }
 
 /**
@@ -494,9 +495,9 @@ export interface ZkeyDownloadLink {
  * @property {number} waitingQueue - the number of participants in the waiting queue.
  */
 export interface WaitingQueue {
-  ceremonyName: string 
-  circuitName: string 
-  waitingQueue: number 
+  ceremonyName: string
+  circuitName: string
+  waitingQueue: number
 }
 
 /**
@@ -513,7 +514,7 @@ export interface Project {
   circuits?: CircuitDocumentReferenceAndData[] | null
   participants?: ParticipantDocumentReferenceAndData[] | null
   contributions?: ContributionDocumentReferenceAndData[] | null
-  coordinatorId?: string 
+  coordinatorId?: string
 }
 
 export interface State {
@@ -578,6 +579,6 @@ export type StateProviderProps = {
  * @property {string} hash - the hash of the beacon.
  */
 export interface FinalBeacon {
-  beacon: string 
+  beacon: string
   beaconHash: string
 }

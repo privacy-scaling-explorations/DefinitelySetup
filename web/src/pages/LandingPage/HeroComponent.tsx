@@ -13,6 +13,7 @@ import { ScrollBanner } from "./Banner";
 
 export function HeroComponent({ projects, waitingQueue }: HeroComponentProps) {
   const bannerImages: any[] = []
+  const sortedProjects = projects.sort((a, b) => b.ceremony.data.endDate - a.ceremony.data.endDate);
 
   for (const queue of waitingQueue) {
     bannerImages.push({

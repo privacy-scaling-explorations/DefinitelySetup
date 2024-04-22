@@ -100,7 +100,7 @@ const ProjectPage: React.FC = () => {
       maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
     })) ?? [];
 
-  // parse contributions and sort by zkey name
+  // parse contributions and sort by zkey name. FIlter for valid contribs.
   const contributionsClean =
     validatedProjectData.contributions?.map((contribution) => ({
       doc: contribution.data.files?.lastZkeyFilename ?? "",
@@ -112,7 +112,9 @@ const ProjectPage: React.FC = () => {
         contribution.data?.files?.transcriptBlake2bHash ?? "",
         10
       )
-    })).slice().sort((a: any, b: any) => {
+    })).slice()
+      .filter((c: any) => c.valid)
+      .sort((a: any, b: any) => {
       const docA = a.doc.toLowerCase()
       const docB = b.doc.toLowerCase()
 

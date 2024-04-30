@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import {
   Box,
   Text,
@@ -23,6 +24,17 @@ export function HeroComponent({ projects, waitingQueue }: HeroComponentProps) {
       } `
     })    
   }
+
+  const SortedProjectCards = useMemo(
+    () =>
+      projects
+        .sort((a, b) => b.ceremony.data.endDate - a.ceremony.data.endDate)
+        .map((project) => (
+          <ProjectCard key={project.ceremony.uid} project={project} />
+        )),
+    [projects]
+  )
+
  
   return (
     <>
@@ -53,9 +65,7 @@ export function HeroComponent({ projects, waitingQueue }: HeroComponentProps) {
           <Box width="100%" px={8} py={0}>
             {projects.length > 0 ? (
               <SimpleGrid columns={[1, null, 1]} spacing={0}>
-                {projects.map((project, index) => (
-                  <ProjectCard key={index} project={project} />
-                ))}
+                {SortedProjectCards}
               </SimpleGrid>
             ) : (
               <Text>No ceremonies live yet!</Text>

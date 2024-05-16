@@ -140,19 +140,45 @@ const ProjectPage: React.FC = () => {
   const { onCopy: copyBeaconValue, hasCopied: copiedBeaconValue } = useClipboard(beaconValue || "")
   const { onCopy: copyBeaconHash, hasCopied: copiedBeaconHash } = useClipboard(beaconHash || "")
 
+  const elProgress = document.getElementById('progress');
+  const  progress = ({loaded, fileSize}: {loaded: number, fileSize: number}) => {
+    if (elProgress) 
+      elProgress.innerHTML = Math.round(loaded/fileSize*100)+'%';
+  }
 
   // Download a file from AWS S3 bucket.
   const downloadFileFromS3 = (index: number, name: string) => {
     if (finalZkeys) {
-      fetch(finalZkeys[index].zkeyURL).then((response) => {
-        response.blob().then((blob) => {
-          const fileURL = window.URL.createObjectURL(blob);
-  
-          let alink = document.createElement("a");
-          alink.href = fileURL;
-          alink.download = name;
-          alink.click();
-        });
+      fetch(finalZkeys[index].zkeyURL)
+        .then((response) => {
+          const contentLength = response.headers.get('content-length');
+          const fileSize = parseInt(contentLength!, 10);
+          let loaded = 0;
+
+          const res = new Response(new ReadableStream({
+            async start(controller) {
+              if (response.body) {
+                const reader = response.body.getReader();
+                for (;;) {
+                  const {done, value} = await reader.read();
+                  if (done) break;
+                  loaded += value.byteLength;
+                  progress({loaded, fileSize})
+                  controller.enqueue(value);
+                }
+                controller.close();
+              }
+            }
+          }));
+
+          res.blob().then((blob) => {
+            const fileURL = window.URL.createObjectURL(blob);
+    
+            let alink = document.createElement("a");
+            alink.href = fileURL;
+            alink.download = name;
+            alink.click();
+          });
       });
     }
     
@@ -618,6 +644,8 @@ const ProjectPage: React.FC = () => {
                             )
                           })
                         }
+                        <Text id="progress">
+                        </Text>
                       </>
                     }
                    

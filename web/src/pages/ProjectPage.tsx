@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -146,19 +146,16 @@ const ProjectPage: React.FC = () => {
   let downloadProgress = fileSize > 0 ? Math.round(100*loaded/fileSize) : 0;
 
   // Download a file from AWS S3 bucket.
-  const downloadFileFromS3 = (_index: number, name: string) => {                                         
+  const downloadFileFromS3 = (index: number, name: string) => {                                         
     if (finalZkeys) {
-      const tempUrl = "https://pse-trusted-setup-ppot.s3.eu-central-1.amazonaws.com/pot28_0080/ppot_0080_17.ptau"
-      fetch(tempUrl ,   /*finalZkeys[index].zkeyURL*/ {
+      fetch(finalZkeys[index].zkeyURL , {
         mode: 'cors',
         headers: {
           'Access-Control-Allow-Origin':'*'
         }})
         .then((response) => {
           const contentLength = response.headers.get('content-length');
-          setDownloadSize(ds => {return {...ds, fileSize: parseInt(contentLength!, 10)}});
-          console.log(`length ${contentLength}`);
-          setDownloadSize(ds => {return {...ds, loaded: 0}});
+          setDownloadSize(() => {return {loaded: 0, fileSize: parseInt(contentLength!, 10)}});
 
           const res = new Response(new ReadableStream({
             async start(controller) {

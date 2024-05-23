@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -22,6 +22,7 @@ import {
   BreadcrumbItem,
   Flex,
   Icon,
+  Progress,
   SimpleGrid,
   SkeletonText,
   Table,
@@ -65,6 +66,8 @@ const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { user, projects, setRunTutorial, runTutorial } = useContext(StateContext);
   const { latestZkeys, finalBeacon, finalZkeys, hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
+  //const [ downloadProgress, setDownloadProgress ] = useState(0)
+  const [ {loaded, fileSize}, setDownloadSize] = useState({loaded: 0, fileSize: 0})
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -140,20 +143,22 @@ const ProjectPage: React.FC = () => {
   const { onCopy: copyBeaconValue, hasCopied: copiedBeaconValue } = useClipboard(beaconValue || "")
   const { onCopy: copyBeaconHash, hasCopied: copiedBeaconHash } = useClipboard(beaconHash || "")
 
-  const elProgress = document.getElementById('progress');
-  const  progress = ({loaded, fileSize}: {loaded: number, fileSize: number}) => {
-    if (elProgress) 
-      elProgress.innerHTML = Math.round(loaded/fileSize*100)+'%';
-  }
+  let downloadProgress = fileSize > 0 ? Math.round(100*loaded/fileSize) : 0;
 
   // Download a file from AWS S3 bucket.
-  const downloadFileFromS3 = (index: number, name: string) => {
+  const downloadFileFromS3 = (_index: number, name: string) => {                                         
     if (finalZkeys) {
-      fetch(finalZkeys[index].zkeyURL)
+      const tempUrl = "https://pse-trusted-setup-ppot.s3.eu-central-1.amazonaws.com/pot28_0080/ppot_0080_17.ptau"
+      fetch(tempUrl ,   /*finalZkeys[index].zkeyURL*/ {
+        mode: 'cors',
+        headers: {
+          'Access-Control-Allow-Origin':'*'
+        }})
         .then((response) => {
           const contentLength = response.headers.get('content-length');
-          const fileSize = parseInt(contentLength!, 10);
-          let loaded = 0;
+          setDownloadSize(ds => {return {...ds, fileSize: parseInt(contentLength!, 10)}});
+          console.log(`length ${contentLength}`);
+          setDownloadSize(ds => {return {...ds, loaded: 0}});
 
           const res = new Response(new ReadableStream({
             async start(controller) {
@@ -162,16 +167,18 @@ const ProjectPage: React.FC = () => {
                 for (;;) {
                   const {done, value} = await reader.read();
                   if (done) break;
-                  loaded += value.byteLength;
-                  progress({loaded, fileSize})
+                  setDownloadSize(ds => {return {...ds, loaded: ds.loaded+value.byteLength}});
                   controller.enqueue(value);
                 }
                 controller.close();
+              } else {
+                console.log(`no body`)
               }
             }
           }));
 
           res.blob().then((blob) => {
+            console.log()
             const fileURL = window.URL.createObjectURL(blob);
     
             let alink = document.createElement("a");
@@ -644,8 +651,7 @@ const ProjectPage: React.FC = () => {
                             )
                           })
                         }
-                        <Text id="progress">
-                        </Text>
+                        <Progress colorScheme="green" value={downloadProgress}></Progress>
                       </>
                     }
                    

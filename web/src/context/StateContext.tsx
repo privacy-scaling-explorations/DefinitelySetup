@@ -123,7 +123,8 @@ export const useInitialStateContext = () => {
 
       // 2. Post-process data.
       const ceremonies: CeremonyDocumentReferenceAndData[] = docs.map((document: DocumentData) => { return { uid: document.id, data: document.data() } })
-      const projects: Project[] = ceremonies.map((ceremony: CeremonyDocumentReferenceAndData) => { return { ceremony: ceremony } })
+      const ceremoniesVisibleInWeb = ceremonies.filter((ceremony) => ceremony.data.hideInWeb !== true)
+      const projects: Project[] = ceremoniesVisibleInWeb.map((ceremony: CeremonyDocumentReferenceAndData) => { return { ceremony: ceremony } })
 
       const queue: WaitingQueue[] = []
       for (const project of projects) {
@@ -134,7 +135,7 @@ export const useInitialStateContext = () => {
       }
 
       setWaitingQueue(queue)
-      // 3. Store data.      
+      // 3. Store data.
       setProjects(projects)
       setLoading(false)
     }
@@ -142,14 +143,14 @@ export const useInitialStateContext = () => {
     setRunTutorial(true)
 
     fetchData()
-   
+
   },[])
 
   return { waitingQueue, projects, setProjects, circuit, setCircuit, search, setSearch, loading, setLoading, runTutorial, setRunTutorial };
 };
 
 export const StateProvider: React.FC<StateProviderProps> = ({ children }) => {
- 
+
   const [user, setUser] = useState<string | undefined>(
     localStorage.getItem("username") || undefined
   );

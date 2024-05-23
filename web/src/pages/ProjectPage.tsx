@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -22,6 +22,7 @@ import {
   BreadcrumbItem,
   Flex,
   Icon,
+  Progress,
   SimpleGrid,
   SkeletonText,
   Table,
@@ -65,6 +66,8 @@ const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { user, projects, setRunTutorial, runTutorial } = useContext(StateContext);
   const { latestZkeys, finalBeacon, finalZkeys, hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
+  //const [ downloadProgress, setDownloadProgress ] = useState(0)
+  const [ {loaded, fileSize}, setDownloadSize] = useState({loaded: 0, fileSize: 0})
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -100,7 +103,7 @@ const ProjectPage: React.FC = () => {
       maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
     })) ?? [];
 
-  // parse contributions and sort by zkey name
+  // parse contributions and sort by zkey name. FIlter for valid contribs.
   const contributionsClean =
     validatedProjectData.contributions?.map((contribution) => ({
       doc: contribution.data.files?.lastZkeyFilename ?? "",
@@ -112,7 +115,9 @@ const ProjectPage: React.FC = () => {
         contribution.data?.files?.transcriptBlake2bHash ?? "",
         10
       )
-    })).slice().sort((a: any, b: any) => {
+    })).slice()
+      .filter((c: any) => c.valid)
+      .sort((a: any, b: any) => {
       const docA = a.doc.toLowerCase()
       const docB = b.doc.toLowerCase()
 
@@ -138,19 +143,46 @@ const ProjectPage: React.FC = () => {
   const { onCopy: copyBeaconValue, hasCopied: copiedBeaconValue } = useClipboard(beaconValue || "")
   const { onCopy: copyBeaconHash, hasCopied: copiedBeaconHash } = useClipboard(beaconHash || "")
 
+  let downloadProgress = fileSize > 0 ? Math.round(100*loaded/fileSize) : 0;
 
   // Download a file from AWS S3 bucket.
-  const downloadFileFromS3 = (index: number, name: string) => {
+  const downloadFileFromS3 = (index: number, name: string) => {                                         
     if (finalZkeys) {
-      fetch(finalZkeys[index].zkeyURL).then((response) => {
-        response.blob().then((blob) => {
-          const fileURL = window.URL.createObjectURL(blob);
-  
-          let alink = document.createElement("a");
-          alink.href = fileURL;
-          alink.download = name;
-          alink.click();
-        });
+      fetch(finalZkeys[index].zkeyURL , {
+        mode: 'cors',
+        headers: {
+          'Access-Control-Allow-Origin':'*'
+        }})
+        .then((response) => {
+          const contentLength = response.headers.get('content-length');
+          setDownloadSize(() => {return {loaded: 0, fileSize: parseInt(contentLength!, 10)}});
+
+          const res = new Response(new ReadableStream({
+            async start(controller) {
+              if (response.body) {
+                const reader = response.body.getReader();
+                for (;;) {
+                  const {done, value} = await reader.read();
+                  if (done) break;
+                  setDownloadSize(ds => {return {...ds, loaded: ds.loaded+value.byteLength}});
+                  controller.enqueue(value);
+                }
+                controller.close();
+              } else {
+                console.log(`no body`)
+              }
+            }
+          }));
+
+          res.blob().then((blob) => {
+            console.log()
+            const fileURL = window.URL.createObjectURL(blob);
+    
+            let alink = document.createElement("a");
+            alink.href = fileURL;
+            alink.download = name;
+            alink.click();
+          });
       });
     }
     
@@ -616,6 +648,7 @@ const ProjectPage: React.FC = () => {
                             )
                           })
                         }
+                        <Progress colorScheme="green" value={downloadProgress}></Progress>
                       </>
                     }
                    

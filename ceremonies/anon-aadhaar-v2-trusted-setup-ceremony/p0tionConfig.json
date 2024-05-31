@@ -1,0 +1,33 @@
+{
+    "title": "Anon Aadhaar V2 Trusted Setup Ceremony",
+    "description": "This is a trusted setup ceremony for the Anon Aadhaar v2",
+    "startDate": "2024-06-03T00:00:00",
+    "endDate": "2024-06-10T00:00:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 3,
+    "circuits": [
+      {
+          "name": "AadhaarVerifier",
+          "description": "Aadhaar Verifier circuit",
+          "compiler": {
+            "version": "2.1.9",
+            "commitHash": "2eaaa6dface934356972b34cab64b25d382e59de"
+          },
+          "template": {
+            "source": "https://github.com/anon-aadhaar/anon-aadhaar",
+            "commitHash": "bbdfd9d3037f5126dd69c672b72c668b763f4ac7",
+            "paramsConfiguration": []
+          },
+          "verification": {
+            "cfOrVm": "CF"
+          },
+          "artifacts": {
+            "r1csStoragePath": "https://anon-aadhaar-artifacts.s3.eu-central-1.amazonaws.com/v2.0.0/aadhaar-verifier.r1cs",
+            "wasmStoragePath": "https://anon-aadhaar-artifacts.s3.eu-central-1.amazonaws.com/v2.0.0/aadhaar-verifier.wasm"
+          },
+          "fixedTimeWindow": 3,
+          "sequencePosition": 1
+      }
+    ]
+  }
+  

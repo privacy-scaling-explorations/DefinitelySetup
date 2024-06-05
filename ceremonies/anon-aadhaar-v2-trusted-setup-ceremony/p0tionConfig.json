@@ -25,7 +25,7 @@
             "r1csStoragePath": "https://anon-aadhaar-artifacts.s3.eu-central-1.amazonaws.com/v2.0.0/aadhaar-verifier.r1cs",
             "wasmStoragePath": "https://anon-aadhaar-artifacts.s3.eu-central-1.amazonaws.com/v2.0.0/aadhaar-verifier.wasm"
           },
-          "fixedTimeWindow": 3,
+          "fixedTimeWindow": 10,
           "sequencePosition": 1
       }
     ]

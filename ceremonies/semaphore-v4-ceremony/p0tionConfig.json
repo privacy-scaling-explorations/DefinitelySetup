@@ -1,0 +1,778 @@
+{
+  "title": "Semaphore V4 Ceremony",
+  "description": "The trusted setup Phase 2 ceremony for the Semaphore protocol version four (V4) circuits",
+  "startDate": "2024-06-10T00:00:00",
+  "endDate": "2024-07-10T00:00:00",
+  "timeoutMechanismType": "FIXED",
+  "penalty": 1440,
+  "circuits": [
+    {
+      "description": "Semaphore V4 / max_depth = 1",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          1
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1vNQKg7XllDZ-M7_7xriK0cNno3LtvXin",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1jlRLlbBjqA7SdLS3kpRMd3Rqk6fGVM6l"
+      },
+      "name": "SemaphoreV4-1",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 1
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 2",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          2
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1JPQnmNMwh2rzSLWFoqoT5OJGqVTPS9x9",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=10F71e_2CkY148j4iVX99TsQLhtjR9WfD"
+      },
+      "name": "SemaphoreV4-2",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 2
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 3",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          3
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=14piGLL0gP_K-g4R83c-lMbtXV89JG4rN",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1w1OJWulx-_fwv2wOYUL5Q71VTgzWyarm"
+      },
+      "name": "SemaphoreV4-3",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 3
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 4",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          4
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1WZv6-tTyOUHRp_8jAs7KPSUohLbXr-53",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=17FJ8EQRgNhMHvnL7SbsiSp6mB3oR5-1N"
+      },
+      "name": "SemaphoreV4-4",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 4
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 5",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          5
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1X7SgrHsB-6B_oyPGEJqbA4B3xy9qf8zo",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1u-MtedkkHMUVzwvJIaKFfdreD_OxlMXh"
+      },
+      "name": "SemaphoreV4-5",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 5
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 6",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          6
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1WH6TgQCy2-jU_Udn0n3-alR_UJLzh-R9",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=14GP3JPgGdwC9k9kPqrbY-cx2D0PeM-kd"
+      },
+      "name": "SemaphoreV4-6",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 6
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 7",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          7
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1hNbe-BldRZXQVSEt26qwMxFfU_90uVnm",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1MV-1kftXpDWgFOrrR4V7GU3YoMi4w-dZ"
+      },
+      "name": "SemaphoreV4-7",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 7
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 8",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          8
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1IMUDhwuaLNjZNT25wvgSGkkxET_BrIrr",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1b9Rqz_gvRoebQUxC6RAE_TKlUVbTqaih"
+      },
+      "name": "SemaphoreV4-8",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 8
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 9",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          9
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1vYrZ6FwF4S6MHtNtKCX0uFpOmH-iKAAX",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=13X-wcacoWsJP7keDlquxYY4yv8fMhC8i"
+      },
+      "name": "SemaphoreV4-9",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 9
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 10",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          10
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1aGxMIVqujCbWlHrV4Un_XgXf3unrxgcQ",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=12hl7NxyiUhwWnqLFbZ5zOU2ifOewVDPa"
+      },
+      "name": "SemaphoreV4-10",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 10
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 11",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          11
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1VlQ2GjTWsKgsOicTkU5ne-t68iRjUVEx",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1Q092FqqmdHy6Z-k-W_6Lmlp7qG-P9jBe"
+      },
+      "name": "SemaphoreV4-11",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 11
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 12",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          12
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1moTWcG_dpijH2QoFi9S4KqEfDLEzsHyp",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1jYH8i9cdPTAgW6oMmPRfZQ6sMRbrBuYT"
+      },
+      "name": "SemaphoreV4-12",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 12
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 13",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          13
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1kc6zera5XikaFDNI7VafbzdBH3Qg94RT",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1CNipQzFvgrAeJqKjo09xCvd7u7tZLnrM"
+      },
+      "name": "SemaphoreV4-13",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 13
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 14",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          14
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=10r9F_aqUShO9BdBOYX4h0PW0zu1EPkki",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=14lcvndanK6155t84iFggStrnojjE4kMJ"
+      },
+      "name": "SemaphoreV4-14",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 14
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 15",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          15
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1woxCFAbNAbPUbyrN0-JZAufdY_Pl566k",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1pp6KVPLjXcHd5XJJyIdx5DRo4d_9frxG"
+      },
+      "name": "SemaphoreV4-15",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 15
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 16",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          16
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1ZL-AQGyC0yWntzGTTyFVhVF3NYsBGK7v",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1fp0VXxZBHjZ2dQpTjqGA6f9Pyt3EpzYA"
+      },
+      "name": "SemaphoreV4-16",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 16
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 17",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          17
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1nG0c-HDNAjwXPXxy_bO5zU7R_ogVjA5g",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1Z2iZ_oQ1JAvoUljHzC44R6IYKa7SOwg0"
+      },
+      "name": "SemaphoreV4-17",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 17
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 18",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          18
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1fO2SpAQhubjrWM3nO6J5hNzoe0sfArxb",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1OeMZ_y9_Rmfv6ZLX-AiMjSXC3XwfX4yO"
+      },
+      "name": "SemaphoreV4-18",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 18
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 19",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          19
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1hC0cJbNOKS9sMaI1u903d6zup5tEG73l",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1qqnO46dRRDaHhMxynQxEy6oZY308O-Pk"
+      },
+      "name": "SemaphoreV4-19",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 19
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 20",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          20
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1uKiHf11so0hoN3IUe-Ak0EKUfoMyEZG2",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1KRdkxWqLY36yO6MnK8jeCCffJIkqGMnK"
+      },
+      "name": "SemaphoreV4-20",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 20
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 21",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          21
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1JykUY7t7h3A7sOBJeauVaXh43wa3k249",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1_8vFHcG3f1_I3V5xZnLBnxs6Gs6_4jFp"
+      },
+      "name": "SemaphoreV4-21",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 21
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 22",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          22
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1jgTC-VjJaRwjbTG18cdmhQMMST4t4dNZ",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1Qo9RV3xaGUCiL2KZlZjRJwJcJL8ns1i9"
+      },
+      "name": "SemaphoreV4-22",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 22
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 23",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          23
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1FpBpuT-W1bVJ80G276UmUr1U0iEcm-ku",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=13BeBlcswJNeAoPU_85Baiq-MuSO7PkkW"
+      },
+      "name": "SemaphoreV4-23",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 23
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 24",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          24
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1NDGzmIBj9yht9wbXrYH-kylTu8LkQCkY",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1w2Nx7W9W6poeBlo-1qBxP45FPyaHM0uV"
+      },
+      "name": "SemaphoreV4-24",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 24
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 25",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          25
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1MVdkEQgVW7luuC4D3ZIj0U7Nz2nwmmE_",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1rcIHNF3d_DVIBQ0ZnZEvPfVLX0CUpHd_"
+      },
+      "name": "SemaphoreV4-25",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 25
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 26",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          26
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1Xr9l5g_QKafMTHTIP5cNwnjgU_AzRapp",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1rNwYZdqXhk3RumQjIOZ73FDIHx68l0b6"
+      },
+      "name": "SemaphoreV4-26",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 26
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 27",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          27
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1h-hGl0e3ArhWQgRQC4XwitS-wgWUXIG7",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1QKVj5LVTUyaYWyj7ydRYBSEphhH92WKw"
+      },
+      "name": "SemaphoreV4-27",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 27
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 28",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          28
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1i3T3EySfN0-qqCIbV5VOyf_l7dIVRzQz",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1P-sg9be0T88Lsml0rQCPUSyzVOR3KNpz"
+      },
+      "name": "SemaphoreV4-28",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 28
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 29",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          29
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1yr4BfZKWHJtzwahj4tFpuELAev4u8Bjh",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1xYs17QY9WGOpzJsB8U-OZppBd5_g9Xws"
+      },
+      "name": "SemaphoreV4-29",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 29
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 30",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          30
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1263_OPT7nCQty9nD7SbP9SPogI_xpL8K",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1gLJOPFLa5Oo4CL5x5bEy_PV2ELxuhn-w"
+      },
+      "name": "SemaphoreV4-30",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 30
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 31",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          31
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1y90h6xmorat8ZETtWoA5nC0iNc1BJVZN",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1fQvr5BatuA-8YK9GYvb99TMkmqPT99PJ"
+      },
+      "name": "SemaphoreV4-31",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 31
+    },
+    {
+      "description": "Semaphore V4 / max_depth = 32",
+      "compiler": {
+        "version": "2.1.7",
+        "commitHash": "c7ec469225d08fbc02cda700a03881551bb61000"
+      },
+      "template": {
+        "source": "https://github.com/semaphore-protocol/semaphore/blob/main/packages/circuits/src/semaphore.circom",
+        "commitHash": "e884186488dcaf2fa22e0f36606fee8aa7880c8f",
+        "paramsConfiguration": [
+          32
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://drive.google.com/uc?export=download&id=1-OqE6X4xNjqMRfczgoo6_GI2Je8ZYpX_",
+        "wasmStoragePath": "https://drive.google.com/uc?export=download&id=1EtGooVJQkh28XcnGOvnBOzEyZBWxJ_bR"
+      },
+      "name": "SemaphoreV4-32",
+      "fixedTimeWindow": 10,
+      "sequencePosition": 32
+    }
+  ]
+}

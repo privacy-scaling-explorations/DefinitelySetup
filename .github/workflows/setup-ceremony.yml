@@ -63,7 +63,7 @@ jobs:
 
     # install p0tion
     - name: Install p0tion globally
-      run: npm install -g @p0tion/phase2clinpm@0.0.0-0aa6a31
+      run: npm install -g @p0tion/phase2cli
 
     # write env to file
     - name: Write env locally
@@ -116,7 +116,7 @@ jobs:
 
     # install p0tion
     - name: Install p0tion globally
-      run: npm install -g @p0tion/phase2cli@0.0.0-0aa6a31
+      run: npm install -g @p0tion/phase2cli
 
     # write env to file
     - name: Write env locally

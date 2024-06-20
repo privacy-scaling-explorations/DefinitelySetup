@@ -45,7 +45,7 @@ pnpm install
 
 ### Local Development
 
-**Prerequisities**
+**Prerequisites**
 
 -  Node.js version 16.0 or higher.
 -  pnpm version 8.6.7 or higher.

@@ -147,7 +147,8 @@ export const handleStartOrResumeContribution = async (
     circuit: FirebaseDocumentInfo,
     participant: FirebaseDocumentInfo,
     contributorIdentifier: string,
-    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void
+    circuitProgress: any[],
+    setStatus: (message: string, loading?: boolean, attestationLink?: string, circuitProgress?: any[]) => void
 ) => {
     const ceremony = await getDocumentById("ceremonies", ceremonyId)
     const ceremonyData = ceremony.data()
@@ -167,7 +168,8 @@ export const handleStartOrResumeContribution = async (
         return 
     } 
 
-    setStatus(`You are contributing at circuit #${sequencePosition}`, true)
+    circuitProgress[sequencePosition-1].state = 1
+    setStatus(`You are contributing at circuit #${sequencePosition}`, true, undefined, circuitProgress)
 
     let updatedParticipantData = updatedParticipant.data()!
 
@@ -297,7 +299,7 @@ export const listenToCeremonyCircuitDocumentChanges = (
     ceremonyId: string,
     participantId: string,
     circuit: FirebaseDocumentInfo,
-    setStatus: (message: string, loading?: boolean) => void
+    setStatus: (message: string, loading?: boolean ) => void
 ) => {
     let cachedLatestPosition = 0
 
@@ -334,7 +336,7 @@ export const listenToCeremonyCircuitDocumentChanges = (
 
         // Check if the participant is now the new current contributor for the circuit.
         if (latestParticipantPositionInQueue === 1) {
-            setStatus(`You are now the first in the queue, getting ready for contributing.`, true)
+            setStatus(`You are now the first in the queue, getting ready for contributing.`, true, undefined, circuitProgress)
             // Unsubscribe from updates.
             unsubscribeToCeremonyCircuitListener()
             // eslint-disable no-unused-vars
@@ -405,7 +407,7 @@ export const listenToParticipantDocumentChanges = async (
     ceremonyId: string,
     participantProviderId: string,
     token: string,
-    setStatus: (message: string, loading?: boolean, attestationLink?: string) => void
+    setStatus: (message: string, loading?: boolean, attestationLink?: string, circuitProgress?: any[]) => void
 ) => {
     const ceremonyDodc = await getDocumentById(commonTerms.collections.ceremonies.name, ceremonyId)
     const ceremonyData = ceremonyDodc.data()
@@ -432,6 +434,12 @@ export const listenToParticipantDocumentChanges = async (
         } = changedParticipant.data()!
 
         const circuits = await getCeremonyCircuits(ceremonyId)
+        const circuitProgress = circuits.map(c => {
+            return {
+                sequence: c.sequencePosition,
+                state: 0
+            }
+        })
 
         if (
             changedStatus === ParticipantStatus.WAITING &&
@@ -447,7 +455,6 @@ export const listenToParticipantDocumentChanges = async (
 
         if (changedContributionProgress > 0 && changedContributionProgress <= circuits.length) {
             const circuit = circuits[changedContributionProgress-1]
-
             if (!circuit.data) return 
 
             const { waitingQueue } = circuit.data
@@ -529,7 +536,7 @@ export const listenToParticipantDocumentChanges = async (
             
             if (isCurrentContributor && hasResumableStep && startingOrResumingContribution) {
                 setStatus("Starting or resuming contribution", true)
-                await handleStartOrResumeContribution(ceremonyId, circuit, changedParticipant, participantProviderId, setStatus)
+                await handleStartOrResumeContribution(ceremonyId, circuit, changedParticipant, participantProviderId, circuitProgress, setStatus)
             } else if (isWaitingForContribution) {
                 listenToCeremonyCircuitDocumentChanges(ceremonyId, participant.id, circuit, setStatus)
             }
@@ -539,15 +546,16 @@ export const listenToParticipantDocumentChanges = async (
                 isResumingContribution &&
                 changedContributionStep === ParticipantContributionStep.VERIFYING
             ) {
-                setStatus("Resuming and verifying", false)
-                setStatus("Verifying might have not started if you are in this step. Please wait for a confirmation or timeout", false)
+                setStatus("Resuming and verifying", false, undefined, circuitProgress)
+                setStatus("Verifying might have not started if you are in this step. Please wait for a confirmation or timeout", false, undefined, circuitProgress)
             }
 
             if (progressToNextContribution && noStatusChanges &&
                 (changedStatus === ParticipantStatus.DONE || changedStatus === ParticipantStatus.CONTRIBUTED)) {
                     // get the latest verification result 
                     const res = await getLatestVerificationResult(ceremonyId, circuit.id, participant.id)
-                    setStatus(`Result of previous contribution - verified = ${res}`, false)
+                    circuitProgress[changedContributionProgress-1].state = 2
+                    setStatus(`Result of previous contribution - verified = ${res}`, false, undefined, circuitProgress)
             }
 
             // check timeout
@@ -555,7 +563,7 @@ export const listenToParticipantDocumentChanges = async (
                 // alert how long
                 const activeTimeouts = await getCurrentActiveParticipantTimeout(ceremonyId, participant.id)
                 if (activeTimeouts.length !== 1) {
-                    setStatus("You are timed out, please reload the page and wait for the timeout to expire", false)
+                    setStatus("You are timed out, please reload the page and wait for the timeout to expire", false, undefined, circuitProgress)
                     unsubscribe()
                 }
 
@@ -563,7 +571,7 @@ export const listenToParticipantDocumentChanges = async (
                 const activeTimeout = activeTimeouts[0]!
 
                 if (!activeTimeout.data) {
-                    setStatus("There seems to be an error with the timeout, please reload the page and try again or contact the coordinator", false)
+                    setStatus("There seems to be an error with the timeout, please reload the page and try again or contact the coordinator", false, undefined, circuitProgress)
                     unsubscribe()
                 }
 

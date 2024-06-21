@@ -1,0 +1,115 @@
+{
+  "title": "Iden3 Circuits V3 Trusted Setup Ceremony",
+  "description": "This is a trusted setup ceremony for the Rate-Limiting Nullifier protocol",
+  "startDate": "2024-07-01T10:30:00",
+  "endDate": "2024-07-31T00:00:00",
+  "timeoutMechanismType": "FIXED",
+  "penalty": 3,
+  "circuits": [
+    {
+      "description": "AuthV3 Circuit",
+      "compiler": {
+        "version": "2.1.1",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/develop/circuits/authV3.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          40,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://iden3-circuits-bucket.s3.eu-west-1.amazonaws.com/trusted_setup/AuthV3/circuit.r1cs",
+        "wasmStoragePath": "https://iden3-circuits-bucket.s3.eu-west-1.amazonaws.com/trusted_setup/AuthV3/circuit.wasm"
+      },
+      "name": "AuthV3",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "credentialAtomicQueryV3 Circuit",
+      "compiler": {
+        "version": "2.1.1",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/develop/circuits/credentialAtomicQueryV3.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          40,
+          32,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://iden3-circuits-bucket.s3.eu-west-1.amazonaws.com/trusted_setup/credentialAtomicQueryV3/circuit.r1cs",
+        "wasmStoragePath": "https://iden3-circuits-bucket.s3.eu-west-1.amazonaws.com/trusted_setup/credentialAtomicQueryV3/circuit.wasm"
+      },
+      "name": "credentialAtomicQueryV3",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "credentialAtomicQueryV3OnChain Circuit",
+      "compiler": {
+        "version": "2.1.1",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/develop/circuits/credentialAtomicQueryV3OnChain.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          40,
+          32,
+          64,
+          40,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://iden3-circuits-bucket.s3.eu-west-1.amazonaws.com/trusted_setup/credentialAtomicQueryV3OnChain/circuit.r1cs",
+        "wasmStoragePath": "https://iden3-circuits-bucket.s3.eu-west-1.amazonaws.com/trusted_setup/credentialAtomicQueryV3OnChain/circuit.wasm"
+      },
+      "name": "credentialAtomicQueryV3OnChain",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "linkedMultiQuery10 Circuit",
+      "compiler": {
+        "version": "2.1.1",
+        "commitHash": "127414e9088cc017a357233f30f3fd7d91a8906c"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/develop/circuits/linkedMultiQuery10.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          10,
+          32,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://iden3-circuits-bucket.s3.eu-west-1.amazonaws.com/trusted_setup/linkedMultiQuery10/circuit.r1cs",
+        "wasmStoragePath": "https://iden3-circuits-bucket.s3.eu-west-1.amazonaws.com/trusted_setup/linkedMultiQuery10/circuit.wasm"
+      },
+      "name": "linkedMultiQuery10",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    }
+  ]
+}

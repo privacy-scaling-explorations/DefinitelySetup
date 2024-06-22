@@ -55,7 +55,7 @@
       },
       "name": "credentialAtomicQueryV3",
       "fixedTimeWindow": 3,
-      "sequencePosition": 1
+      "sequencePosition": 2
     },
     {
       "description": "credentialAtomicQueryV3OnChain Circuit",
@@ -83,7 +83,7 @@
       },
       "name": "credentialAtomicQueryV3OnChain",
       "fixedTimeWindow": 3,
-      "sequencePosition": 1
+      "sequencePosition": 3
     },
     {
       "description": "linkedMultiQuery10 Circuit",
@@ -109,7 +109,7 @@
       },
       "name": "linkedMultiQuery10",
       "fixedTimeWindow": 3,
-      "sequencePosition": 1
+      "sequencePosition": 4
     }
   ]
 }

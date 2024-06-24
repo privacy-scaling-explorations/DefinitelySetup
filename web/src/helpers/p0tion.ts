@@ -127,6 +127,7 @@ export const contribute = async (ceremonyId: string, setStatus: (message: string
         setStatus("You can participate to this ceremony", false)
 
         const participant = await getDocumentById(`ceremonies/${ceremonyId}/participants`, user.uid)
+        console.log(`init listen`)
         await listenToParticipantDocumentChanges(participant, ceremonyId, participantProviderId!, token, setStatus)
     } catch (error: any) {
         setStatus(error)
@@ -336,7 +337,7 @@ export const listenToCeremonyCircuitDocumentChanges = (
 
         // Check if the participant is now the new current contributor for the circuit.
         if (latestParticipantPositionInQueue === 1) {
-            setStatus(`You are now the first in the queue, getting ready for contributing.`, true, undefined, circuitProgress)
+            setStatus(`You are now the first in the queue, getting ready for contributing.`, true)
             // Unsubscribe from updates.
             unsubscribeToCeremonyCircuitListener()
             // eslint-disable no-unused-vars
@@ -415,6 +416,7 @@ export const listenToParticipantDocumentChanges = async (
         setStatus(`There is no such ceremony`, false)
         return 
     }
+    console.log(`get snapshot`)
     const unsubscribe = onSnapshot(participant.ref, async (changedParticipant: DocumentSnapshot) => {
         // Extract data.
         const {
@@ -434,9 +436,10 @@ export const listenToParticipantDocumentChanges = async (
         } = changedParticipant.data()!
 
         const circuits = await getCeremonyCircuits(ceremonyId)
+        console.log(`circuitProgress ${circuits.length}`)
         const circuitProgress = circuits.map(c => {
             return {
-                sequence: c.sequencePosition,
+                sequence: c.data.sequencePosition,
                 state: 0
             }
         })

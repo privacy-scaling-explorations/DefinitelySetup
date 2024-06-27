@@ -436,13 +436,18 @@ export const listenToParticipantDocumentChanges = async (
         } = changedParticipant.data()!
 
         const circuits = await getCeremonyCircuits(ceremonyId)
-        console.log(`circuitProgress ${circuits.length}`)
-        const circuitProgress = circuits.map(c => {
+        const circuitProgress = circuits.map((c,i) => {
+            let st = 0
+            if (i <= changedContributionProgress-1) st = 2
+            else if (i == changedContributionProgress-1) st = 1
+
             return {
                 sequence: c.data.sequencePosition,
-                state: 0
+                state: st
             }
         })
+        console.log(`circuitProgress ${circuitProgress.length}`)
+        console.log(`prev/changedContrProgr ${changedContributionProgress} ${prevContributionProgress}`)
 
         if (
             changedStatus === ParticipantStatus.WAITING &&
@@ -451,7 +456,7 @@ export const listenToParticipantDocumentChanges = async (
             !changedContributionProgress
         ) {
             // Progress the participant to the next circuit making it ready for contribution.
-            setStatus("Progressing to the next circuit", true)
+            setStatus("Progressing to the next circuit", true, undefined, circuitProgress)
             await progressToNextCircuitForContribution(ceremonyId)
             await sleep(1000)
         }
@@ -550,7 +555,7 @@ export const listenToParticipantDocumentChanges = async (
                 changedContributionStep === ParticipantContributionStep.VERIFYING
             ) {
                 setStatus("Resuming and verifying", false, undefined, circuitProgress)
-                setStatus("Verifying might have not started if you are in this step. Please wait for a confirmation or timeout", false, undefined, circuitProgress)
+                setStatus("Verifying might have not started if you are in this step. Please wait for a confirmation or timeout", false)
             }
 
             if (progressToNextContribution && noStatusChanges &&

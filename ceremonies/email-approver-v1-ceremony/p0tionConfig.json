@@ -1,0 +1,33 @@
+{
+    "title": "Email Approver V1 Setup Ceremony",
+    "description": "This is a trusted setup ceremony for the Email Approver V1 circuit",
+    "startDate": "2024-06-18T00:00:00",
+    "endDate": "2024-07-18T00:00:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 3,
+    "circuits": [
+      {
+          "description": "Email Approver V1 Circuit",
+          "compiler": {
+            "version": "2.1.6",
+            "commitHash": "57b18f68794189753964bfb6e18e64385fed9c2c"
+          },
+          "template": {
+            "source": "https://github.com/SoulWallet/email-approver/blob/main/packages/circuits/EmailApprover.circom",
+            "commitHash": "30ca27e58dcc261aa3aafad2603124157783b640",
+            "paramsConfiguration": []
+          },
+          "verification": {
+            "cfOrVm": "CF"
+          },
+          "artifacts": {
+            "r1csStoragePath": "https://email-approver-v1-definitely-setup.s3.us-west-2.amazonaws.com/EmailApprover.r1cs",
+            "wasmStoragePath": "https://email-approver-v1-definitely-setup.s3.us-west-2.amazonaws.com/EmailApprover.wasm"
+          },
+          "name": "EmailApprover",
+          "fixedTimeWindow": 3,
+          "sequencePosition": 1
+      }
+    ]
+  }
+  

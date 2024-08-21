@@ -66,8 +66,6 @@ const ProjectPage: React.FC = () => {
   const { ceremonyName } = useParams<RouteParams>();
   const { user, projects, setRunTutorial, runTutorial } = useContext(StateContext);
   const { latestZkeys, finalBeacon, finalZkeys, hasUserContributed, projectData, isLoading, avatars, largestCircuitConstraints } = useProjectPageContext();
-  //const [ downloadProgress, setDownloadProgress ] = useState(0)
-  const [ {loaded, fileSize}, setDownloadSize] = useState({loaded: 0, fileSize: 0})
   // handle the callback from joyride
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -142,51 +140,6 @@ const ProjectPage: React.FC = () => {
   const { onCopy: copyAuth, hasCopied: copiedAuth } = useClipboard(authCommand);
   const { onCopy: copyBeaconValue, hasCopied: copiedBeaconValue } = useClipboard(beaconValue || "")
   const { onCopy: copyBeaconHash, hasCopied: copiedBeaconHash } = useClipboard(beaconHash || "")
-
-  let downloadProgress = fileSize > 0 ? Math.round(100*loaded/fileSize) : 0;
-
-  // Download a file from AWS S3 bucket.
-  const downloadFileFromS3 = (index: number, name: string) => {                                         
-    if (finalZkeys) {
-      fetch(finalZkeys[index].zkeyURL , {
-        mode: 'cors',
-        headers: {
-          'Access-Control-Allow-Origin':'*'
-        }})
-        .then((response) => {
-          const contentLength = response.headers.get('content-length');
-          setDownloadSize(() => {return {loaded: 0, fileSize: parseInt(contentLength!, 10)}});
-
-          const res = new Response(new ReadableStream({
-            async start(controller) {
-              if (response.body) {
-                const reader = response.body.getReader();
-                for (;;) {
-                  const {done, value} = await reader.read();
-                  if (done) break;
-                  setDownloadSize(ds => {return {...ds, loaded: ds.loaded+value.byteLength}});
-                  controller.enqueue(value);
-                }
-                controller.close();
-              } else {
-                console.log(`no body`)
-              }
-            }
-          }));
-
-          res.blob().then((blob) => {
-            console.log()
-            const fileURL = window.URL.createObjectURL(blob);
-    
-            let alink = document.createElement("a");
-            alink.href = fileURL;
-            alink.download = name;
-            alink.click();
-          });
-      });
-    }
-    
-  };
 
   return (
     <>
@@ -602,20 +555,23 @@ const ProjectPage: React.FC = () => {
                     {
                       finalZkeys?.map((zkey, index) => {
                         return (
-                          <Button
-                          margin={"20px"}
-                          key={index}
-                          leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
-                          fontSize={12}
-                          variant="outline"
-                          onClick={() => downloadFileFromS3(index, zkey.zkeyFilename)}
-                          fontWeight={"regular"}
-                          isDisabled={
-                            project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
-                          }
-                        >
-                          Download {zkey.zkeyFilename}
-                        </Button>
+                          <a
+                            href={zkey.zkeyURL}
+                            key={index}
+                          >
+                            <Button
+                              margin={"20px"}
+                              leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                              fontSize={12}
+                              variant="outline"
+                              fontWeight={"regular"}
+                              isDisabled={
+                                project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                              }
+                            >
+                            Download {zkey.zkeyFilename}
+                          </Button>
+                        </a>
                         )
                       })
                     }
@@ -631,24 +587,27 @@ const ProjectPage: React.FC = () => {
                         {
                           latestZkeys?.map((zkey, index) => {
                             return (
-                              <Button
-                              margin={"20px"}
-                              key={index}
-                              leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
-                              fontSize={12}
-                              variant="outline"
-                              onClick={() => downloadFileFromS3(index, zkey.zkeyFilename)}
-                              fontWeight={"regular"}
-                              isDisabled={
-                                project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
-                              }
-                            >
-                              Download {zkey.zkeyFilename}
-                            </Button>
+                              <a
+                                href={zkey.zkeyURL}
+                                key={index}
+                              >
+                                <Button
+                                  margin={"20px"}
+                                  key={index}
+                                  leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                                  fontSize={12}
+                                  variant="outline"
+                                  fontWeight={"regular"}
+                                  isDisabled={
+                                    project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                                  }
+                                >
+                                  Download {zkey.zkeyFilename}
+                                </Button>
+                              </a>
                             )
                           })
                         }
-                        <Progress colorScheme="green" value={downloadProgress}></Progress>
                       </>
                     }
                    

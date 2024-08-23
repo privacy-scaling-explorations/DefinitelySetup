@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -22,7 +22,6 @@ import {
   BreadcrumbItem,
   Flex,
   Icon,
-  Progress,
   SimpleGrid,
   SkeletonText,
   Table,

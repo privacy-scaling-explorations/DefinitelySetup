@@ -50,7 +50,8 @@ import {
   getTimeDifference,
   parseDate,
   singleProjectPageSteps,
-  truncateString
+  truncateString,
+  parseRepoRoot
 } from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
 import ScrollingAvatars from "../components/Avatars";
@@ -490,13 +491,15 @@ const ProjectPage: React.FC = () => {
                               <Stat>
                                 <StatLabel fontSize={12}>Commit Hash</StatLabel>
                                 <StatNumber fontSize={16}>
-                                  {truncateString(circuit.template.commitHash, 6)}
+                                  <a href={`${parseRepoRoot(circuit.template.source)}/tree/${circuit.template.commitHash}`} target="_blank">
+                                    {truncateString(circuit.template.commitHash, 6)}
+                                  </a>
                                 </StatNumber>
                               </Stat>
                               <Stat>
                                 <StatLabel fontSize={12}>Template Link</StatLabel>
                                 <StatNumber fontSize={16}>
-                                  <a href={`${circuit.template.source}/tree/${circuit.template.commitHash}`} target="_blank">
+                                  <a href={circuit.template.source} target="_blank">
                                   {truncateString(circuit.template.source, 16)}
                                   </a>
                                 </StatNumber>

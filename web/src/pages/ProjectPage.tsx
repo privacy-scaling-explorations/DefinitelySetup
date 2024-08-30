@@ -83,6 +83,7 @@ const ProjectPage: React.FC = () => {
   const circuitsClean =
     validatedProjectData.circuits?.map((circuit) => ({
       template: circuit.data.template,
+      compiler: circuit.data.compiler,
       name: circuit.data.name,
       description: circuit.data.description,
       constraints: circuit.data.metadata?.constraints,
@@ -495,9 +496,15 @@ const ProjectPage: React.FC = () => {
                               <Stat>
                                 <StatLabel fontSize={12}>Template Link</StatLabel>
                                 <StatNumber fontSize={16}>
-                                  <a href={circuit.template.source} target="_blank">
+                                  <a href={`${circuit.template.source}/tree/${circuit.template.commitHash}`} target="_blank">
                                   {truncateString(circuit.template.source, 16)}
                                   </a>
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel fontSize={12}>Compiler Version</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  {circuit.compiler.version}
                                 </StatNumber>
                               </Stat>
                             </SimpleGrid>

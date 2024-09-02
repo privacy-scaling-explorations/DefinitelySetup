@@ -50,7 +50,8 @@ import {
   getTimeDifference,
   parseDate,
   singleProjectPageSteps,
-  truncateString
+  truncateString,
+  parseRepoRoot
 } from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
 import ScrollingAvatars from "../components/Avatars";
@@ -83,6 +84,7 @@ const ProjectPage: React.FC = () => {
   const circuitsClean =
     validatedProjectData.circuits?.map((circuit) => ({
       template: circuit.data.template,
+      compiler: circuit.data.compiler,
       name: circuit.data.name,
       description: circuit.data.description,
       constraints: circuit.data.metadata?.constraints,
@@ -489,7 +491,9 @@ const ProjectPage: React.FC = () => {
                               <Stat>
                                 <StatLabel fontSize={12}>Commit Hash</StatLabel>
                                 <StatNumber fontSize={16}>
-                                  {truncateString(circuit.template.commitHash, 6)}
+                                  <a href={`${parseRepoRoot(circuit.template.source)}/tree/${circuit.template.commitHash}`} target="_blank">
+                                    {truncateString(circuit.template.commitHash, 6)}
+                                  </a>
                                 </StatNumber>
                               </Stat>
                               <Stat>
@@ -498,6 +502,12 @@ const ProjectPage: React.FC = () => {
                                   <a href={circuit.template.source} target="_blank">
                                   {truncateString(circuit.template.source, 16)}
                                   </a>
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel fontSize={12}>Compiler Version</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  {circuit.compiler.version}
                                 </StatNumber>
                               </Stat>
                             </SimpleGrid>

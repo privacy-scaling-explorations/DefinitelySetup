@@ -15,6 +15,11 @@ export function truncateString(str: string, numCharacters = 5): string {
     
     return `${firstPart}...${lastPart}`;
 }
+
+export function parseRepoRoot(templateSource: string): string | null {
+  const match = templateSource.match(/^(https:\/\/github\.com\/[^\/]+\/[^\/]+)(?:\/|$)/);
+  return match ? match[1] : null;
+}
     
 export function parseDate(dateString: number): string {
     const parsedDate = new Date(dateString);

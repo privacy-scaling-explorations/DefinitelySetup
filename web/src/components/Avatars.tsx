@@ -1,15 +1,13 @@
 import React from "react"
 import { Avatar, Box } from "@chakra-ui/react"
 
-interface ScrollingAvatarsProps {
-    images?: string[]
-  }
-  
+import { useProjectPageContext } from "../context/ProjectPageContext";
+
 /**
  * Display the participants Avatars in a scrolling list
- * @param {ScrollingAvatarsProps} - the images to show
  */
-const ScrollingAvatars: React.FC<ScrollingAvatarsProps> = ({ images }) => {
+const ScrollingAvatars: React.FC = () => {
+    const {avatars} = useProjectPageContext();
     return (
       <Box
         maxW={"container.md"}
@@ -20,7 +18,7 @@ const ScrollingAvatars: React.FC<ScrollingAvatarsProps> = ({ images }) => {
         px={2}
         borderColor="gray.200"
       >
-        {images && images.length > 0 && images.map((image: string, index: any) => (
+        {avatars && avatars.length > 0 && avatars.map((image: string, index: any) => (
           <Avatar
             key={index}
             src={image}

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   HStack,
@@ -17,9 +18,17 @@ import {
 } from "@chakra-ui/react";
 
 import { useProjectPageContext } from "../context/ProjectPageContext";
+import { Pagination } from "./Pagination";
 
 export const ProjectTabContributions: React.FC = () => {
   const { contributionsClean } = useProjectPageContext();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 100;
+  const totalPages = Math.ceil(contributionsClean.length / itemsPerPage);
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentItems = contributionsClean.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <TabPanel alignSelf={"stretch"}>
       <HStack justifyContent={"space-between"} alignSelf={"stretch"}>
@@ -35,7 +44,12 @@ export const ProjectTabContributions: React.FC = () => {
             <Skeleton height="20px" />
             <Skeleton height="20px" />
           </Stack>
-        ) : (
+        ) : (<>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
           <Table fontSize={12} variant="simple">
             <Thead>
               <Tr>
@@ -45,7 +59,7 @@ export const ProjectTabContributions: React.FC = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {contributionsClean.map((contribution, index) => (
+              {currentItems.map((contribution, index) => (
                 <Tr key={index}>
                   <Td>{contribution.doc}</Td>
                   <Td>{contribution.lastUpdated}</Td>
@@ -61,7 +75,12 @@ export const ProjectTabContributions: React.FC = () => {
               ))}
             </Tbody>
           </Table>
-        )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </>)}
       </Box>
     </TabPanel>
   );

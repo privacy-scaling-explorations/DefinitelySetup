@@ -112,7 +112,6 @@ const ProjectPage: React.FC = () => {
                   callback={handleJoyrideCallback}
                   continuous
                   run={runTutorial}
-                  scrollToFirstStep
                   showProgress
                   showSkipButton
                   steps={singleProjectPageSteps}
@@ -259,7 +258,7 @@ const ProjectPage: React.FC = () => {
               flexGrow={1}
               justifyContent={"flex-start"}
             >
-              <Tabs alignSelf={"stretch"}>
+              <Tabs isLazy alignSelf={"stretch"}>
                 <TabList alignSelf={"stretch"} justifyContent={"space-evenly"}>
                   <Tab className="circuitsView" fontSize={12}>
                     Live Stats

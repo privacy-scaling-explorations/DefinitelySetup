@@ -15,11 +15,18 @@ import {
   CircuitDocumentReferenceAndData,
   FinalBeacon,
   ParticipantDocumentReferenceAndData,
-  ProjectData,
   ProjectPageContextProps,
   ZkeyDownloadLink
 } from "../helpers/interfaces";
-import { checkIfUserContributed, findLargestConstraint, formatZkeyIndex, processItems } from "../helpers/utils";
+import {
+  bytesToMegabytes,
+  checkIfUserContributed,
+  findLargestConstraint,
+  formatZkeyIndex,
+  parseDate,
+  processItems,
+  truncateString,
+} from "../helpers/utils";
 import { awsRegion, bucketPostfix, finalContributionIndex, maxConstraintsForBrowser } from "../helpers/constants";
 
 export const ProjectDataSchema = z.object({
@@ -28,15 +35,12 @@ export const ProjectDataSchema = z.object({
   contributions: z.optional(z.array(z.any()))
 });
 
-export const defaultProjectData: ProjectData = {};
-
 type ProjectPageProviderProps = {
   children: React.ReactNode;
 };
 
 const ProjectPageContext = createContext<ProjectPageContextProps>({
   hasUserContributed: false,
-  projectData: defaultProjectData,
   isLoading: false,
   runTutorial: false,
   avatars: [],
@@ -49,13 +53,14 @@ export const useProjectPageContext = () => useContext(ProjectPageContext);
 export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ children }) => {
   const navigate = useNavigate();
   const { loading: isLoading, setLoading: setIsLoading, runTutorial } = useContext(StateContext);
-  const [ projectData, setProjectData ] = useState<ProjectData | null>(defaultProjectData);
   const [ avatars, setAvatars ] = useState<string[]>([]);
   const [ hasUserContributed, setHasUserContributed ] = useState<boolean>(false);
   const [ largestCircuitConstraints, setLargestCircuitConstraints ] = useState<number>(maxConstraintsForBrowser + 1) // contribution on browser has 100000 max constraints
   const [ finalZkeys, setFinalZkeys ] = useState<ZkeyDownloadLink[]>([])
   const [ latestZkeys, setLatestZkeys ] = useState<ZkeyDownloadLink[]>([])
   const [ finalBeacon, setFinalBeacon ] = useState<FinalBeacon>()
+  const [ circuitsClean, setCircuitsClean ] = useState([]);
+  const [ contributionsClean, setContributionsClean ] = useState([]);
 
   const { projects } = useStateContext();
   const { ceremonyName } = useParams();
@@ -123,7 +128,50 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
         
         const parsedData = ProjectDataSchema.parse(updatedProjectData);
 
-        setProjectData(parsedData);
+        setCircuitsClean(
+          parsedData.circuits?.map((circuit) => ({
+            template: circuit.data.template,
+            compiler: circuit.data.compiler,
+            name: circuit.data.name,
+            description: circuit.data.description,
+            constraints: circuit.data.metadata?.constraints,
+            pot: circuit.data.metadata?.pot,
+            privateInputs: circuit.data.metadata?.privateInputs,
+            publicInputs: circuit.data.metadata?.publicInputs,
+            curve: circuit.data.metadata?.curve,
+            wires: circuit.data.metadata?.wires,
+            completedContributions: circuit.data.waitingQueue?.completedContributions,
+            currentContributor: circuit.data.waitingQueue?.currentContributor,
+            memoryRequirement: bytesToMegabytes(circuit.data.zKeySizeInBytes ?? Math.pow(1024, 2))
+              .toString()
+              .slice(0, 5),
+            avgTimingContribution: Math.round(Number(circuit.data.avgTimings?.fullContribution) / 1000),
+            maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
+          })) ?? []
+        );
+
+        // parse contributions and sort by zkey name. FIlter for valid contribs.
+        setContributionsClean(
+          parsedData.contributions?.map((contribution) => ({
+            doc: contribution.data.files?.lastZkeyFilename ?? "",
+            circuit: contribution.data.files?.lastZkeyFilename
+              .replace(`_${contribution.data.zkeyIndex}.zkey`, ''),
+            verificationComputationTime: contribution.data?.verificationComputationTime ?? "",
+            valid: contribution.data?.valid ?? false,
+            lastUpdated: parseDate(contribution.data?.lastUpdated ?? ""),
+            lastZkeyBlake2bHash: truncateString(contribution.data?.files?.lastZkeyBlake2bHash ?? "", 10),
+            transcriptBlake2bHash: truncateString(
+              contribution.data?.files?.transcriptBlake2bHash ?? "",
+              10
+            )
+          })).slice()
+            .filter((c: any) => c.valid)
+            .reduce((out, cur) => {
+              if(!(cur.circuit in out)) out[cur.circuit] = [];
+              out[cur.circuit].push(cur);
+              return out;
+            }, {}) ?? {}
+        );
 
         const avatars = await getParticipantsAvatar(projectId)
         setAvatars(avatars)
@@ -146,7 +194,18 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
 
 
   return (
-    <ProjectPageContext.Provider value={{ latestZkeys, finalBeacon, finalZkeys, largestCircuitConstraints, hasUserContributed, projectData, isLoading, runTutorial, avatars }}>
+    <ProjectPageContext.Provider value={{
+      latestZkeys,
+      finalBeacon,
+      finalZkeys,
+      largestCircuitConstraints,
+      hasUserContributed,
+      circuitsClean,
+      contributionsClean,
+      isLoading,
+      runTutorial,
+      avatars
+    }}>
       {children}
     </ProjectPageContext.Provider>
   );

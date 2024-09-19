@@ -1,6 +1,5 @@
 import { DocumentData, DocumentReference } from "firebase/firestore";
 import { z } from "zod";
-import { ProjectDataSchema } from "../context/ProjectPageContext";
 
 /**
  * Define different states of a ceremony.
@@ -535,19 +534,8 @@ export interface State {
 
 /**
  * Define the data structure for the project page context.
- * @typedef {Object} ProjectData
- * @property {string} ceremonyName - the name of the ceremony.
- * @property {string} ceremonyDescription - the description of the ceremony.
- * @property {string} ceremonyState - the state of the ceremony.
- * @property {string} ceremonyType - the type of the ceremony.
- */
-export type ProjectData = z.infer<typeof ProjectDataSchema>;
-
-/**
- * Define the data structure for the project page context.
  * @typedef {Object} ProjectPageContextProps
  * @property {boolean} hasUserContributed - true if the user has contributed to the project; otherwise false.
- * @property {ProjectData} projectData - the data about the project.
  * @property {boolean} isLoading - true if the data is being loaded; otherwise false.
  * @property {boolean} runTutorial - true if the tutorial should be run; otherwise false.
  * @property {string[]} [avatars] - the list of avatars for the participants.
@@ -558,7 +546,6 @@ export type ProjectData = z.infer<typeof ProjectDataSchema>;
  */
 export type ProjectPageContextProps = {
   hasUserContributed: boolean
-  projectData: ProjectData | null
   isLoading: boolean
   runTutorial: boolean
   avatars?: string[]

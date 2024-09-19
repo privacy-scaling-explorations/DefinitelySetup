@@ -2,7 +2,7 @@
     "title": "ZKP2P Domain Marketplace Trusted Setup Ceremony",
     "description": "This is a trusted setup ceremony for our new domain marketplace circuits",
     "startDate": "2024-09-20T10:30:00",
-    "endDate": "2024-09-20T10:30:00",
+    "endDate": "2024-09-23T10:30:00",
     "timeoutMechanismType": "FIXED",
     "penalty": 3,
     "circuits": [

@@ -154,6 +154,8 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
         setContributionsClean(
           parsedData.contributions?.map((contribution) => ({
             doc: contribution.data.files?.lastZkeyFilename ?? "",
+            circuit: contribution.data.files?.lastZkeyFilename
+              .replace(`_${contribution.data.zkeyIndex}.zkey`, ''),
             verificationComputationTime: contribution.data?.verificationComputationTime ?? "",
             valid: contribution.data?.valid ?? false,
             lastUpdated: parseDate(contribution.data?.lastUpdated ?? ""),
@@ -164,14 +166,11 @@ export const ProjectPageProvider: React.FC<ProjectPageProviderProps> = ({ childr
             )
           })).slice()
             .filter((c: any) => c.valid)
-            .sort((a: any, b: any) => {
-            const docA = a.doc.toLowerCase()
-            const docB = b.doc.toLowerCase()
-
-            if (docA < docB) return -1
-            if (docA > docB) return 1
-            return 0
-          }) ?? []
+            .reduce((out, cur) => {
+              if(!(cur.circuit in out)) out[cur.circuit] = [];
+              out[cur.circuit].push(cur);
+              return out;
+            }, {}) ?? {}
         );
 
         const avatars = await getParticipantsAvatar(projectId)

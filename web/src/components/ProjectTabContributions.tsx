@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   HStack,
@@ -13,21 +13,36 @@ import {
   Thead,
   Tooltip,
   Tr,
+  Select,
   Skeleton,
   Stack,
 } from "@chakra-ui/react";
 
 import { useProjectPageContext } from "../context/ProjectPageContext";
-import { Pagination } from "./Pagination";
 
 export const ProjectTabContributions: React.FC = () => {
   const { contributionsClean } = useProjectPageContext();
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 100;
-  const totalPages = Math.ceil(contributionsClean.length / itemsPerPage);
+  const [currentPage, setCurrentPage] = useState('');
+  const [currentItems, setCurrentItems] = useState([]);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = contributionsClean.slice(startIndex, startIndex + itemsPerPage);
+  useEffect(() => {
+    setCurrentPage(Object.keys(contributionsClean)[0]);
+  }, [ contributionsClean ]);
+
+  useEffect(() => {
+    if(!(currentPage in contributionsClean)) {
+      setCurrentItems([]);
+      return;
+    }
+    setCurrentItems(contributionsClean[currentPage].sort((a, b) => {
+      const docA = a.doc.toLowerCase()
+      const docB = b.doc.toLowerCase()
+
+      if (docA < docB) return -1
+      if (docA > docB) return 1
+      return 0
+    }));
+  }, [ currentPage ]);
 
   return (
     <TabPanel alignSelf={"stretch"}>
@@ -45,11 +60,19 @@ export const ProjectTabContributions: React.FC = () => {
             <Skeleton height="20px" />
           </Stack>
         ) : (<>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+          <Select
+            onChange={(e) => setCurrentPage(e.target.value)}
+            value={currentPage}
+          >
+            {Object.keys(contributionsClean).map(circuit => (
+              <option
+                key={circuit}
+                value={circuit}
+              >
+                {circuit}
+              </option>
+            ))}
+          </Select>
           <Table fontSize={12} variant="simple">
             <Thead>
               <Tr>
@@ -59,7 +82,7 @@ export const ProjectTabContributions: React.FC = () => {
               </Tr>
             </Thead>
             <Tbody>
-              {currentItems.map((contribution, index) => (
+              {currentItems?.map((contribution, index) => (
                 <Tr key={index}>
                   <Td>{contribution.doc}</Td>
                   <Td>{contribution.lastUpdated}</Td>
@@ -75,11 +98,6 @@ export const ProjectTabContributions: React.FC = () => {
               ))}
             </Tbody>
           </Table>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
         </>)}
       </Box>
     </TabPanel>

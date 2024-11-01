@@ -50,7 +50,7 @@ pnpm install
 -  Node.js version 16.0 or higher.
 -  pnpm version 8.6.7 or higher.
 
-Copy the `.env.default` file to `.env`:
+Copy the `.default.env` file to `.env`:
 
 ```bash
 cp .env.default .env
@@ -60,7 +60,7 @@ And add your environment variables.
 
 ### Build
 
-Rum:
+Run:
 
 ```bash
 pnpm build

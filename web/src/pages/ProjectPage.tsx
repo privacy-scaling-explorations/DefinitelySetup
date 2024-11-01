@@ -50,7 +50,8 @@ import {
   getTimeDifference,
   parseDate,
   singleProjectPageSteps,
-  truncateString
+  truncateString,
+  parseRepoRoot
 } from "../helpers/utils";
 import Joyride, { STATUS } from "react-joyride";
 import ScrollingAvatars from "../components/Avatars";
@@ -83,6 +84,7 @@ const ProjectPage: React.FC = () => {
   const circuitsClean =
     validatedProjectData.circuits?.map((circuit) => ({
       template: circuit.data.template,
+      compiler: circuit.data.compiler,
       name: circuit.data.name,
       description: circuit.data.description,
       constraints: circuit.data.metadata?.constraints,
@@ -100,7 +102,7 @@ const ProjectPage: React.FC = () => {
       maxTiming: Math.round((Number(circuit.data.avgTimings?.fullContribution) * 1.618) / 1000)
     })) ?? [];
 
-  // parse contributions and sort by zkey name
+  // parse contributions and sort by zkey name. FIlter for valid contribs.
   const contributionsClean =
     validatedProjectData.contributions?.map((contribution) => ({
       doc: contribution.data.files?.lastZkeyFilename ?? "",
@@ -112,7 +114,9 @@ const ProjectPage: React.FC = () => {
         contribution.data?.files?.transcriptBlake2bHash ?? "",
         10
       )
-    })).slice().sort((a: any, b: any) => {
+    })).slice()
+      .filter((c: any) => c.valid)
+      .sort((a: any, b: any) => {
       const docA = a.doc.toLowerCase()
       const docB = b.doc.toLowerCase()
 
@@ -137,24 +141,6 @@ const ProjectPage: React.FC = () => {
   const { onCopy: copyAuth, hasCopied: copiedAuth } = useClipboard(authCommand);
   const { onCopy: copyBeaconValue, hasCopied: copiedBeaconValue } = useClipboard(beaconValue || "")
   const { onCopy: copyBeaconHash, hasCopied: copiedBeaconHash } = useClipboard(beaconHash || "")
-
-
-  // Download a file from AWS S3 bucket.
-  const downloadFileFromS3 = (index: number, name: string) => {
-    if (finalZkeys) {
-      fetch(finalZkeys[index].zkeyURL).then((response) => {
-        response.blob().then((blob) => {
-          const fileURL = window.URL.createObjectURL(blob);
-  
-          let alink = document.createElement("a");
-          alink.href = fileURL;
-          alink.download = name;
-          alink.click();
-        });
-      });
-    }
-    
-  };
 
   return (
     <>
@@ -505,7 +491,9 @@ const ProjectPage: React.FC = () => {
                               <Stat>
                                 <StatLabel fontSize={12}>Commit Hash</StatLabel>
                                 <StatNumber fontSize={16}>
-                                  {truncateString(circuit.template.commitHash, 6)}
+                                  <a href={`${parseRepoRoot(circuit.template.source)}/tree/${circuit.template.commitHash}`} target="_blank">
+                                    {truncateString(circuit.template.commitHash, 6)}
+                                  </a>
                                 </StatNumber>
                               </Stat>
                               <Stat>
@@ -514,6 +502,12 @@ const ProjectPage: React.FC = () => {
                                   <a href={circuit.template.source} target="_blank">
                                   {truncateString(circuit.template.source, 16)}
                                   </a>
+                                </StatNumber>
+                              </Stat>
+                              <Stat>
+                                <StatLabel fontSize={12}>Compiler Version</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  {circuit.compiler.version}
                                 </StatNumber>
                               </Stat>
                             </SimpleGrid>
@@ -570,20 +564,23 @@ const ProjectPage: React.FC = () => {
                     {
                       finalZkeys?.map((zkey, index) => {
                         return (
-                          <Button
-                          margin={"20px"}
-                          key={index}
-                          leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
-                          fontSize={12}
-                          variant="outline"
-                          onClick={() => downloadFileFromS3(index, zkey.zkeyFilename)}
-                          fontWeight={"regular"}
-                          isDisabled={
-                            project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
-                          }
-                        >
-                          Download {zkey.zkeyFilename}
-                        </Button>
+                          <a
+                            href={zkey.zkeyURL}
+                            key={index}
+                          >
+                            <Button
+                              margin={"20px"}
+                              leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                              fontSize={12}
+                              variant="outline"
+                              fontWeight={"regular"}
+                              isDisabled={
+                                project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                              }
+                            >
+                            Download {zkey.zkeyFilename}
+                          </Button>
+                        </a>
                         )
                       })
                     }
@@ -599,20 +596,24 @@ const ProjectPage: React.FC = () => {
                         {
                           latestZkeys?.map((zkey, index) => {
                             return (
-                              <Button
-                              margin={"20px"}
-                              key={index}
-                              leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
-                              fontSize={12}
-                              variant="outline"
-                              onClick={() => downloadFileFromS3(index, zkey.zkeyFilename)}
-                              fontWeight={"regular"}
-                              isDisabled={
-                                project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
-                              }
-                            >
-                              Download {zkey.zkeyFilename}
-                            </Button>
+                              <a
+                                href={zkey.zkeyURL}
+                                key={index}
+                              >
+                                <Button
+                                  margin={"20px"}
+                                  key={index}
+                                  leftIcon={<Box as={FaCloudDownloadAlt} w={3} h={3} />}
+                                  fontSize={12}
+                                  variant="outline"
+                                  fontWeight={"regular"}
+                                  isDisabled={
+                                    project?.ceremony.data.state !== CeremonyState.FINALIZED ? true : false
+                                  }
+                                >
+                                  Download {zkey.zkeyFilename}
+                                </Button>
+                              </a>
                             )
                           })
                         }

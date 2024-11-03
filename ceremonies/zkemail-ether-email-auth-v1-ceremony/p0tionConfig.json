@@ -29,6 +29,28 @@
       "sequencePosition": 1
     },
     {
+      "description": "Ether Email Auth V1: Main Circuit with Subject Parsing",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "2eaaa6dface934356972b34cab64b25d382e59de"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth_legacy.circom",
+        "commitHash": "8f7245da055dd6b8563353b2028547d438d9260a",
+        "paramsConfiguration": []
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-legacy/v1.0.0/email_auth_legacy.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-legacy/v1.0.0/email_auth_legacy.wasm"
+      },
+      "name": "EmailAuthLegacy",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 2
+    },
+    {
       "description": "Ether Email Auth V1: Main Circuit with Body Parsing and Recipient Commitment",
       "compiler": {
         "version": "2.1.9",
@@ -48,7 +70,7 @@
       },
       "name": "EmailAuthWithRecipient",
       "fixedTimeWindow": 3,
-      "sequencePosition": 2
+      "sequencePosition": 3
     }
   ]
 }

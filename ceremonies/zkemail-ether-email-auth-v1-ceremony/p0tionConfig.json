@@ -1,0 +1,54 @@
+{
+  "title": "ZKEmail Ether Email Auth V1 Ceremony",
+  "description": "This is a trusted setup ceremony for the ether-email-auth circuits, used for email-based account recovery",
+  "startDate": "2024-11-03T15:00:00",
+  "endDate": "2024-11-09T14:00:00",
+  "timeoutMechanismType": "FIXED",
+  "penalty": 3,
+  "circuits": [
+    {
+      "description": "Ether Email Auth V1: Main Circuit with Body Parsing",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "2eaaa6dface934356972b34cab64b25d382e59de"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth.circom",
+        "commitHash": "8f7245da055dd6b8563353b2028547d438d9260a",
+        "paramsConfiguration": []
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth/v1.0.0/email_auth.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth/v1.0.0/email_auth.wasm"
+      },
+      "name": "EmailAuth",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "Ether Email Auth V1: Main Circuit with Body Parsing and Recipient Commitment",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "2eaaa6dface934356972b34cab64b25d382e59de"
+      },
+      "template": {
+        "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth_with_recipient.circom",
+        "commitHash": "8f7245da055dd6b8563353b2028547d438d9260a",
+        "paramsConfiguration": []
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-with-recipient/v1.0.0/email_auth_with_recipient.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-with-recipient/v1.0.0/email_auth_with_recipient.wasm"
+      },
+      "name": "EmailAuthWithRecipient",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 2
+    }
+  ]
+}

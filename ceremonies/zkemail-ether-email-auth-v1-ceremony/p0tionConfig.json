@@ -2,7 +2,7 @@
   "title": "ZKEmail Ether Email Auth V1 Ceremony",
   "description": "This is a trusted setup ceremony for the ether-email-auth circuits, used for email-based account recovery",
   "startDate": "2024-11-03T15:00:00",
-  "endDate": "2024-11-09T14:00:00",
+  "endDate": "2024-11-10T14:00:00",
   "timeoutMechanismType": "FIXED",
   "penalty": 3,
   "circuits": [

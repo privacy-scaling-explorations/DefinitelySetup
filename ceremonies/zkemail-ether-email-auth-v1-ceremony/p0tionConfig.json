@@ -1,8 +1,8 @@
 {
   "title": "ZKEmail Ether Email Auth V1 Ceremony",
   "description": "This is a trusted setup ceremony for the ether-email-auth circuits, used for email-based account recovery",
-  "startDate": "2024-11-05T16:00:00",
-  "endDate": "2024-11-10T14:00:00",
+  "startDate": "2024-11-09T00:00:00",
+  "endDate": "2024-11-10T16:59:59",
   "timeoutMechanismType": "FIXED",
   "penalty": 3,
   "circuits": [
@@ -14,15 +14,15 @@
       },
       "template": {
         "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth.circom",
-        "commitHash": "cc76ee0733a53b83f7dea5a5aef18b2a11b13427",
+        "commitHash": "92199b1730e8a02699b86992a0748e2d135674ac",
         "paramsConfiguration": []
       },
       "verification": {
         "cfOrVm": "CF"
       },
       "artifacts": {
-        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth/v1.0.0/email_auth.r1cs",
-        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth/v1.0.0/email_auth.wasm"
+        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth/v1.0.2/email_auth.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth/v1.0.2/email_auth.wasm"
       },
       "name": "EmailAuth",
       "fixedTimeWindow": 3,
@@ -36,15 +36,15 @@
       },
       "template": {
         "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth_legacy.circom",
-        "commitHash": "cc76ee0733a53b83f7dea5a5aef18b2a11b13427",
+        "commitHash": "92199b1730e8a02699b86992a0748e2d135674ac",
         "paramsConfiguration": []
       },
       "verification": {
         "cfOrVm": "CF"
       },
       "artifacts": {
-        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-legacy/v1.0.0/email_auth_legacy.r1cs",
-        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-legacy/v1.0.0/email_auth_legacy.wasm"
+        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-legacy/v1.0.2/email_auth_legacy.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-legacy/v1.0.2/email_auth_legacy.wasm"
       },
       "name": "EmailAuthLegacy",
       "fixedTimeWindow": 3,
@@ -58,15 +58,15 @@
       },
       "template": {
         "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth_with_recipient.circom",
-        "commitHash": "cc76ee0733a53b83f7dea5a5aef18b2a11b13427",
+        "commitHash": "92199b1730e8a02699b86992a0748e2d135674ac",
         "paramsConfiguration": []
       },
       "verification": {
         "cfOrVm": "CF"
       },
       "artifacts": {
-        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-with-recipient/v1.0.0/email_auth_with_recipient.r1cs",
-        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-with-recipient/v1.0.0/email_auth_with_recipient.wasm"
+        "r1csStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-with-recipient/v1.0.2/email_auth_with_recipient.r1cs",
+        "wasmStoragePath": "https://storage.googleapis.com/circom-ether-email-auth-with-recipient/v1.0.2/email_auth_with_recipient.wasm"
       },
       "name": "EmailAuthWithRecipient",
       "fixedTimeWindow": 3,

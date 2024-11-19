@@ -1,8 +1,8 @@
 {
   "title": "ZKEmail Ether Email Auth V1 Ceremony",
   "description": "This is a trusted setup ceremony for the ether-email-auth circuits, used for email-based account recovery",
-  "startDate": "2024-11-09T00:00:00",
-  "endDate": "2024-11-10T16:59:59",
+  "startDate": "2024-11-20T00:00:00",
+  "endDate": "2024-11-27T23:59:59",
   "timeoutMechanismType": "FIXED",
   "penalty": 3,
   "circuits": [
@@ -14,7 +14,7 @@
       },
       "template": {
         "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth.circom",
-        "commitHash": "92199b1730e8a02699b86992a0748e2d135674ac",
+        "commitHash": "984b5919a9be715b743b08863ab6471c2b5356a6",
         "paramsConfiguration": []
       },
       "verification": {
@@ -36,7 +36,7 @@
       },
       "template": {
         "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth_legacy.circom",
-        "commitHash": "92199b1730e8a02699b86992a0748e2d135674ac",
+        "commitHash": "984b5919a9be715b743b08863ab6471c2b5356a6",
         "paramsConfiguration": []
       },
       "verification": {
@@ -58,7 +58,7 @@
       },
       "template": {
         "source": "https://github.com/zkemail/ether-email-auth/blob/main/packages/circuits/src/email_auth_with_recipient.circom",
-        "commitHash": "92199b1730e8a02699b86992a0748e2d135674ac",
+        "commitHash": "984b5919a9be715b743b08863ab6471c2b5356a6",
         "paramsConfiguration": []
       },
       "verification": {

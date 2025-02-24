@@ -117,7 +117,7 @@ The script will upload your artifacts to a S3 bucket of your choice (must be own
         - r1csStoragePath - a string with the r1cs storage path on S3 e.g. "https://test-ceremony.region.amazonaws.com/circuit.r1cs"
         - wasmStoragePath - a string with the wasm storage path on s3 e.g. "https://test-ceremony.region.amazonaws.com/circuit.wasm"
     - name - a string with the circuit name
-    - dynamicThreshold - if selected dynamic timeout please enter the threshold here as a number
-    - fixedTimeWindow - if selected fixed timeout please enter the time window here as a number
+    - dynamicThreshold - if selected dynamic timeout please enter the threshold here as a number (as percentage 0 < dynamicThreshold < 100)
+    - fixedTimeWindow - if selected fixed timeout please enter the time window here as a number (the unit is minutes)
     - sequencePosition - a number with the circuit sequence position. Each sequence must be different and it should start from 1. The circuit with the lowest sequence number will be the first one which users will contribute to.
 

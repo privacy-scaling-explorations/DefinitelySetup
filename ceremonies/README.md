@@ -113,6 +113,23 @@ The script will upload your artifacts to a S3 bucket of your choice (must be own
                 * "io1"
                 * "st1"
                 * "sc1"
+    * Example for **CF**:
+    ```json
+    "verification": {
+        "cfOrVm": "CF",
+    }
+    ```
+    * Example for **VM**:
+    ```json
+    "verification": {
+        "cfOrVm": "VM",
+        "vm": {
+            "vmConfigurationType": "c5.4xlarge",
+            "vmDiskSize": "30",
+            "vmDiskType": "gp2"
+        }
+    }
+    ```
     - artifacts - an object with the storage path to the r1cs and wasm on s3
         - r1csStoragePath - a string with the r1cs storage path on S3 e.g. "https://test-ceremony.region.amazonaws.com/circuit.r1cs"
         - wasmStoragePath - a string with the wasm storage path on s3 e.g. "https://test-ceremony.region.amazonaws.com/circuit.wasm"

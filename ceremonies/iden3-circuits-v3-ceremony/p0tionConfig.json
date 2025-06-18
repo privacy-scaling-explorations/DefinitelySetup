@@ -293,6 +293,164 @@
       "name": "credentialAtomicQueryV3Universal-16-16-64",
       "fixedTimeWindow": 3,
       "sequencePosition": 11
+    },
+    {
+      "description": "Passport credential sha1",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/0xPolygonID/passport-circuits/blob/main/circuits/credential/instances/credential_sha1.circom",
+        "commitHash": "96aa3d9fc4f86d33637cc6cd5645bed298c0b5a7",
+        "paramsConfiguration": [
+          160,
+          8,
+          14
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha1/credential_sha1.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha1/credential_sha1.wasm"
+      },
+      "name": "credential_sha1",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 12
+    },
+    {
+      "description": "Passport credential sha224",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/0xPolygonID/passport-circuits/blob/main/circuits/credential/instances/credential_sha224.circom",
+        "commitHash": "96aa3d9fc4f86d33637cc6cd5645bed298c0b5a7",
+        "paramsConfiguration": [
+          224,
+          8,
+          14
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha224/credential_sha224.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha224/credential_sha224.wasm"
+      },
+      "name": "credential_sha224",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 13
+    },
+    {
+      "description": "Passport credential sha256",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/0xPolygonID/passport-circuits/blob/main/circuits/credential/instances/credential_sha256.circom",
+        "commitHash": "96aa3d9fc4f86d33637cc6cd5645bed298c0b5a7",
+        "paramsConfiguration": [
+          256,
+          8,
+          14
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha256/credential_sha256.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha256/credential_sha256.wasm"
+      },
+      "name": "credential_sha256",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 14
+    },
+    {
+      "description": "Passport credential sha384",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/0xPolygonID/passport-circuits/blob/main/circuits/credential/instances/credential_sha384.circom",
+        "commitHash": "96aa3d9fc4f86d33637cc6cd5645bed298c0b5a7",
+        "paramsConfiguration": [
+          256,
+          8,
+          14
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha384/credential_sha384.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha384/credential_sha384.wasm"
+      },
+      "name": "credential_sha384",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 15
+    },
+    {
+      "description": "Passport credential sha512",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/0xPolygonID/passport-circuits/blob/main/circuits/credential/instances/credential_sha512.circom",
+        "commitHash": "96aa3d9fc4f86d33637cc6cd5645bed298c0b5a7",
+        "paramsConfiguration": [
+          512,
+          8,
+          14
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha512/credential_sha512.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/passport/credential_sha512/credential_sha512.wasm"
+      },
+      "name": "credential_sha512",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 16
+    },
+    {
+      "description": "Anon Aadhaar circuit",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/0xPolygonID/passport-circuits/blob/main/circuits/anonAadhaarV1/instances/anonAadhaarV1.circom",
+        "commitHash": "96aa3d9fc4f86d33637cc6cd5645bed298c0b5a7",
+        "paramsConfiguration": [
+          121,
+          17,
+          1536,
+          9,
+          13
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/anonAadhaar/anonAadhaarV1/anonAadhaarV1.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/anonAadhaar/anonAadhaarV1/anonAadhaarV1.wasm"
+      },
+      "name": "anonAadhaarV1",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 17
     }
   ]
 }

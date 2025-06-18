@@ -1,0 +1,298 @@
+{
+  "title": "Iden3 Circuits V3 Ceremony",
+  "description": "This is a trusted setup ceremony for the Iden3 Circuits",
+  "startDate": "2025-06-28T00:00:00",
+  "endDate": "2025-07-04T00:00:00",
+  "timeoutMechanismType": "FIXED",
+  "penalty": 3,
+  "circuits": [
+    {
+      "description": "AuthV3 Circuit",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/authV3.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          40,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/authV3/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/authV3/circuit.wasm"
+      },
+      "name": "AuthV3",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 1
+    },
+    {
+      "description": "AuthV3 Circuit 8 IdOwnershipLevels, 32 onChainLevels",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/authV3-8-32.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          8,
+          32
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/authV3-8-32/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/authV3-8-32/circuit.wasm"
+      },
+      "name": "authV3-8-32",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 2
+    },
+    {
+      "description": "CredentialAtomicQueryV3 circuit 40 issuerLevels, 32 claimLevels, 64 maxValueArraySize",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/credentialAtomicQueryV3.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          40,
+          32,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3/circuit.wasm"
+      },
+      "name": "credentialAtomicQueryV3",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 3
+    },
+    {
+      "description": "credentialAtomicQueryV3 circuit 16 issuerLevels, 16 claimLevels, 64 maxValueArraySize",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/credentialAtomicQueryV3-16-16-64.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          16,
+          16,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3-16-16-64/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3-16-16-64/circuit.wasm"
+      },
+      "name": "credentialAtomicQueryV3-16-16-64",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 4
+    },
+    {
+      "description": "credentialAtomicQueryV3OnChain сircuit 40 issuerLevels, 32 claimLevels, 64 maxValueArraySize, 40 idOwnershipLevels, 64 onChainLevels",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/credentialAtomicQueryV3OnChain.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          40,
+          32,
+          64,
+          40,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3OnChain/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3OnChain/circuit.wasm"
+      },
+      "name": "credentialAtomicQueryV3OnChain",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 5
+    },
+    {
+      "description": "credentialAtomicQueryV3OnChain-16-16-64-16-32 сircuit 16 issuerLevels, 16 claimLevels, 64 maxValueArraySize, 16 idOwnershipLevels, 32 onChainLevels",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/credentialAtomicQueryV3OnChain-16-16-64-16-32.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          16,
+          16,
+          64,
+          16,
+          32
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3OnChain-16-16-64-16-32/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3OnChain-16-16-64-16-32/circuit.wasm"
+      },
+      "name": "credentialAtomicQueryV3OnChain-16-16-64-16-32",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 6
+    },
+    {
+      "description": "linkedMultiQuery10 сircuit 10 number of queries, 32 claimLevels, 64 maxValueArraySize",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/linkedMultiQuery10.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          10,
+          32,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/linkedMultiQuery10/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/linkedMultiQuery10/circuit.wasm"
+      },
+      "name": "linkedMultiQuery10",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 7
+    },
+    {
+      "description": "linkedMultiQuery5 сircuit 5 number of queries, 32 claimLevels, 64 maxValueArraySize",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/linkedMultiQuery5.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          5,
+          32,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/linkedMultiQuery5/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/linkedMultiQuery5/circuit.wasm"
+      },
+      "name": "linkedMultiQuery5",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 8
+    },
+    {
+      "description": "linkedMultiQuery3 сircuit 3 number of queries, 32 claimLevels, 64 maxValueArraySize",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/linkedMultiQuery3.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          3,
+          32,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/linkedMultiQuery3/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/linkedMultiQuery3/circuit.wasm"
+      },
+      "name": "linkedMultiQuery3",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 9
+    },
+    {
+      "description": "CredentialAtomicQueryV3Universal circuit 40 issuerLevels, 32 claimLevels, 64 maxValueArraySize",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/credentialAtomicQueryV3Universal.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          40,
+          32,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3Universal/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3Universal/circuit.wasm"
+      },
+      "name": "credentialAtomicQueryV3Universal",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 10
+    },
+    {
+      "description": "credentialAtomicQueryV3Universal circuit 16 issuerLevels, 16 claimLevels, 64 maxValueArraySize",
+      "compiler": {
+        "version": "2.1.9",
+        "commitHash": "e5246e677f7f474c45b1820205e1a505edbf6fd7"
+      },
+      "template": {
+        "source": "https://github.com/iden3/circuits/blob/feature/trusted-setup-sizes/circuits/credentialAtomicQueryV3Universal-16-16-64.circom",
+        "commitHash": "f97118a19fb647a5b3c81b04afc1d10cf9ba7b84",
+        "paramsConfiguration": [
+          16,
+          16,
+          64
+        ]
+      },
+      "verification": {
+        "cfOrVm": "CF"
+      },
+      "artifacts": {
+        "r1csStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3Universal-16-16-64/circuit.r1cs",
+        "wasmStoragePath": "https://pse-trusted-setup.s3.eu-west-1.amazonaws.com/v3-circuits/credentialAtomicQueryV3Universal-16-16-64/circuit.wasm"
+      },
+      "name": "credentialAtomicQueryV3Universal-16-16-64",
+      "fixedTimeWindow": 3,
+      "sequencePosition": 11
+    }
+  ]
+}

@@ -129,7 +129,7 @@ export const contribute = async (ceremonyId: string, setStatus: (message: string
         const participant = await getDocumentById(`ceremonies/${ceremonyId}/participants`, user.uid)
         await listenToParticipantDocumentChanges(participant, ceremonyId, participantProviderId!, token, setStatus)
     } catch (error: any) {
-        setStatus(error)
+        setStatus(`Unexpected error during contribution: ${JSON.stringify(error)}`, false)
     }
 
 }

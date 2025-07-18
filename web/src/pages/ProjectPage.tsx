@@ -134,7 +134,7 @@ const ProjectPage: React.FC = () => {
   const authCommand = `phase2cli auth`;
   const beaconValue = finalBeacon?.beacon
   const beaconHash = finalBeacon?.beaconHash
- 
+
   // Hook for clipboard
   const { onCopy: copyContribute, hasCopied: copiedContribute } = useClipboard(contributeCommand);
   const { onCopy: copyInstall, hasCopied: copiedInstall } = useClipboard(installCommand);
@@ -237,8 +237,8 @@ const ProjectPage: React.FC = () => {
                         <Text color="gray.500">
                           You can contribute to this project by running the CLI commands below.
                         </Text>
-                      
-                        <Button 
+
+                        <Button
                           leftIcon={<Box as={FaCopy} w={3} h={3} />}
                           variant="outline"
                           fontSize={12}
@@ -251,7 +251,7 @@ const ProjectPage: React.FC = () => {
                             : `> npm install -g @p0tion/phase2cli`
                           }
                         </Button>
-                        <Button 
+                        <Button
                           leftIcon={<Box as={FaCopy} w={3} h={3} />}
                           variant="outline"
                           fontSize={12}
@@ -276,7 +276,7 @@ const ProjectPage: React.FC = () => {
                             : `> phase2cli contribute`
                           }
                         </Button>
-                    </>  
+                    </>
                   }
                 </VStack>
                 <VStack spacing={2} py={2} alignSelf={"stretch"}>
@@ -307,10 +307,10 @@ const ProjectPage: React.FC = () => {
                 </VStack>
               </>
             )}
-            <VStack 
+            <VStack
               maxW={["390px", "390px", "100%"]}
               minW={["390px", "390px", null]}
-            > 
+            >
               <ScrollingAvatars images={avatars}/>
             </VStack>
             <VStack
@@ -510,12 +510,18 @@ const ProjectPage: React.FC = () => {
                                   {circuit.compiler.version}
                                 </StatNumber>
                               </Stat>
+                              <Stat>
+                                <StatLabel fontSize={12}>Powers of Tau</StatLabel>
+                                <StatNumber fontSize={16}>
+                                  {circuit.pot}
+                                </StatNumber>
+                              </Stat>
                             </SimpleGrid>
                           </Box>
                         ))}
                       </SimpleGrid>
                     </Box>
-                      
+
                     </VStack>
                   </TabPanel>
                   <TabPanel textAlign={"center"}>
@@ -525,7 +531,7 @@ const ProjectPage: React.FC = () => {
                         <Text fontSize={14} fontWeight="bold">
                         Final contribution beacon
                         </Text>
-                        <Button 
+                        <Button
                           margin={4}
                           leftIcon={<Box as={FaCopy} w={3} h={3} />}
                           variant="outline"
@@ -539,7 +545,7 @@ const ProjectPage: React.FC = () => {
                             : `Beacon ${finalBeacon?.beacon}`
                           }
                         </Button>
-                        <Button 
+                        <Button
                           margin={4}
                           leftIcon={<Box as={FaCopy} w={3} h={3} />}
                           variant="outline"
@@ -619,7 +625,7 @@ const ProjectPage: React.FC = () => {
                         }
                       </>
                     }
-                   
+
                   </TabPanel>
                 </TabPanels>
               </Tabs>

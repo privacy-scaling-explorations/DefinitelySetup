@@ -1,0 +1,32 @@
+{
+    "title": "ZKP2P Domain Marketplace Ceremony",
+    "description": "This is a trusted setup ceremony for our new domain marketplace circuits",
+    "startDate": "2024-09-20T10:30:00",
+    "endDate": "2024-09-23T10:30:00",
+    "timeoutMechanismType": "FIXED",
+    "penalty": 3,
+    "circuits": [
+      {
+        "description": "ZKP2P Namecheap Push circuit",
+        "compiler": {
+          "version": "2.1.9",
+          "commitHash": "2eaaa6dface934356972b34cab64b25d382e59de"
+        },
+        "template": {
+          "source": "https://github.com/zkp2p/zk-p2p",
+          "commitHash": "f175c4f9d4bd02f9fbc0672f8e55e5e6a052d90c",
+          "paramsConfiguration": [768, 768, 121, 17]
+        },
+        "verification": {
+          "cfOrVm": "VM"
+        },
+        "artifacts": {
+          "r1csStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.7/namecheap_push/namecheap_push.r1cs",
+          "wasmStoragePath": "https://zk-p2p.s3.amazonaws.com/v2.5/v0.2.7/namecheap_push/namecheap_push.wasm"
+        },
+        "name": "ZKP2P-Namecheap-Push",
+        "fixedTimeWindow": 3,
+        "sequencePosition": 1
+      }
+    ]
+}

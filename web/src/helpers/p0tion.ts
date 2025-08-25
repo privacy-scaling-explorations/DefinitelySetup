@@ -85,11 +85,31 @@ export const contribute = async (ceremonyId: string, setStatus: (message: string
         follower${minFollowers > 1 ? "s" : ""}, 
         and follow ${minFollowing} user${minFollowers > 1 ? "s" : ""}. 
         Please fulfil the requirements and login again.`)
-        return 
+        return
     }
 
     // we are sure to get this cause the user is authenticated
     const participantProviderId = await getGithubProviderUserId(token)
+
+    // make sure the user has a valid token
+    // if not, the user registered, but the server has not processed it yet by setting the token
+    let userTokens = await user.getIdTokenResult()
+    let hasUserToken = userTokens.claims.participant === true || userTokens.claims.coordinator === true
+    for (let i = 0; i < 3; i++) {
+        if (!hasUserToken) {
+            // refresh the auth information from the server again, it might have updated it in the meantime
+            console.log("Refreshing user auth information")
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            // Force refresh the user's auth state and tokens
+            await user.reload()
+            await user.getIdToken(true)
+            userTokens = await user.getIdTokenResult()
+            hasUserToken = userTokens.claims.participant === true || userTokens.claims.coordinator === true
+        }
+        else {
+            break
+        }
+    }
 
     try {
         setStatus("Checking if you can contribute to the ceremony", true)
